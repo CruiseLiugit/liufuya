@@ -6360,8 +6360,12 @@ body .dawn.v-app-loading {
 	width: 20px;
 	height: 20px;
 }
-
+/*
 .dawn .dawn-view .toolbar .v-spacing {
+	width: 10px;
+}
+*/
+.dawn .dawn-view .v-spacing {
 	width: 10px;
 }
 
@@ -6424,6 +6428,7 @@ body .dawn.v-app-loading {
 	text-shadow: 0 1px 1px #000;
 }
 
+/*
 .dawn .dawn-view .toolbar {
 	padding: 20px;
 	text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
@@ -6441,6 +6446,42 @@ body .dawn.v-app-loading {
 	top: 2px;
 	right: 3px;
 }
+*/
+
+/* ----------------------- Apple Style toolbar begin---------------------------  */
+.dawn .toolbar {
+	background: #ccc url(images/gradient.png) repeat-x bottom left;
+}
+
+.dawn .toolbar .v-button {
+	display: block;
+	width: 65px;
+	height: 55px;
+	background: transparent;
+	border: none;
+	text-align: center;
+}
+
+.dawn .toolbar .v-button img {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 5px;
+}
+
+.dawn .toolbar .v-button span {
+	font-size: x-small;
+	text-shadow: #fafafa 1px 1px 0;
+}
+
+.dawn .v-app {
+	background: #d0e2ec;
+	font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+	color: #222;
+}
+
+/* ----------------------- Apple Style toolbar end---------------------------  */
+
 
 .dawn .dawn-view .h1 {
 	padding-right: 1em;
