@@ -128,8 +128,8 @@ public class UserLoginScreen extends CustomComponent {
 		passwordField.setRequired(true);
 		userNameField.focus(); // 获取鼠标焦点
 		// loginButton.setClickShortcut(KeyCode.ENTER); // 对应键盘操作
-		userNameField.setValue("");
-		passwordField.setValue("");
+		userNameField.setValue("liu");
+		passwordField.setValue("liu");
 
 		// 键盘操作
 		final ShortcutListener enter = new ShortcutListener("Sign In",
