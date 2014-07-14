@@ -29,7 +29,7 @@ public class PanelSystemManager extends Panel {
 		super(caption);
 		// TODO Auto-generated constructor stub
 		// 这里创建 面板，设置标题
-		this.setWidth("260px");
+		this.setWidth("200px");
 		this.setHeight("380px");
 
 		// 创建 Accordion

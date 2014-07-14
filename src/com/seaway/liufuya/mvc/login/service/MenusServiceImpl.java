@@ -149,11 +149,11 @@ public class MenusServiceImpl {
 				inAuthMap.put("authCode", authorityId);
 				inAuthMap.put("menuCode", menus.getMenuCode());
 				inAuthMap.put("modelCode", buttonId);
-				if (buttonId.equals(Constants.RUN_BUTTON_CODE)) { // 运行按钮code
-					inAuthMap.put("isMenu", "1");
-				} else {
-					inAuthMap.put("isMenu", "0");
-				}
+//				if (buttonId.equals(Constants.RUN_BUTTON_CODE)) { // 运行按钮code
+//					inAuthMap.put("isMenu", "1");
+//				} else {
+//					inAuthMap.put("isMenu", "0");
+//				}
 				menusDao.insertAuthority(inAuthMap); // 插入权限表
 
 				// 插入权限结束

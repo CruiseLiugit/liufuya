@@ -30,7 +30,7 @@ public class MyLoignForm {
 			PasswordField passwordField, Button loginButton) {
 		
 	    CssLayout loginPanel = new CssLayout();
-		loginPanel.addStyleName("login-panel");
+		//loginPanel.addStyleName("login-panel");
 
 		HorizontalLayout labels = new HorizontalLayout();
 		labels.setWidth("100%");
