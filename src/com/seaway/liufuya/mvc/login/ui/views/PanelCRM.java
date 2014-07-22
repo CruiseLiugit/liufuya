@@ -102,36 +102,11 @@ public class PanelCRM extends Panel implements ItemClickListener {
 	
 	public void itemClick(ItemClickEvent event) {
 		if (event.getSource() == tree1) {
-			UI.getCurrent().setContent(new CrmManageScreen());
-			
-//			Object itemId = event.getItemId();
-//			if (itemId != null) {
-//				if ("会员资料".equals(itemId)) {
-//					//getDataSource().refresh(PersonReferenceContainer.defaultQueryMetaData);
-//					//showListView();
-//					
-////					Button btn = new Button("Go to MainView", new Button.ClickListener() {
-////
-////						@Override
-////						public void buttonClick(ClickEvent event) {
-////							// TODO Auto-generated method stub
-////							navigator.navigateTo(mainview);  //传递名称
-////						}
-////					});
-//					
-//					//Notification.show("会员资料");
-//					// 切换到新页面
-//					UI.getCurrent().setContent(new CrmManageScreen());
-//					//进入界面，需要传递信息，表示当前要看到的是    会员资料。进入后默认显示会员列表信息
-//					
-//				} else if ("扩展资料".equals(itemId)) {
-//					//showSearchView();
-//					Notification.show("扩展资料");
-//				} else if ("会员等级".equals(itemId)) {
-//					//search((SearchFilter) itemId);
-//					Notification.show("会员等级");
-//				}
-//			}
+			String itemId = (String)event.getItemId();
+			if (itemId != null) {
+				//在 CrmManageScreen 类中，根据 itemId 进行判断显示哪个模块
+				UI.getCurrent().setContent(new CrmManageScreen(itemId));
+			}
 		}
 	}
 	

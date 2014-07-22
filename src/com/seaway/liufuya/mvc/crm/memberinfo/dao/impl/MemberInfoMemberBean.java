@@ -5,10 +5,12 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
@@ -25,6 +27,7 @@ import com.seaway.liufuya.mvc.crm.memberinfo.dao.MemberInfoManager;
 import com.seaway.liufuya.mvc.crm.memberinfo.data.Citypart;
 import com.seaway.liufuya.mvc.crm.memberinfo.data.Member;
 import com.seaway.liufuya.mvc.crm.memberinfo.data.MemberBean;
+import com.seaway.liufuya.mvc.crm.memberlevel.pojo.MemberLevel;
 import com.vaadin.data.util.BeanItemContainer;
 
 @IocBean
@@ -125,36 +128,6 @@ public class MemberInfoMemberBean extends BasicDao implements
 		return sql.getList(MemberBean.class);
 	}
 
-	@Override
-	public MemberBean getPerson(int id) {
-
-		System.out.println("---------baseDao  dao = " + dao);
-
-		Cnd condition = Cnd.where("id", "=", id);
-		// return findByCondition(Member.class, condition);
-
-		MemberBean bean = new MemberBean();
-		bean.setId(1);
-		bean.setCity("上海闵行区");
-		bean.setCreatedate("2014-04-20");
-		bean.setLoginname("18944375849");
-		bean.setRealname("张超");
-		bean.setUsercode("8989-sdfhjj23-sdfkj34");
-		bean.setUsersex("男");
-		bean.setUsertype("网站注册");
-		return bean;
-	}
-
-	@Override
-	public MemberBean savePerson(MemberBean person) {
-		if (person.getId() == 0) {
-			this.save(person);
-		} else {
-			this.update(person);
-		}
-
-		return person;
-	}
 
 	// ------------------------------
 	// 2014-07-12 新增。查询数据库城市表格 lfy_citypart
@@ -181,8 +154,21 @@ public class MemberInfoMemberBean extends BasicDao implements
 	public Member getMemeberByLoginname(String loginname) {
 		Cnd condition = Cnd.where("loginName", "=", loginname)
 				.and("status", "=", "1");
-
 		return findByCondition(Member.class, condition);
+	}
+	
+	
+	
+	public void saveMember(Member ml){
+		
+		String uuid = UUID.randomUUID().toString();
+		ml.setUser_code(uuid);
+		ml.setUser_type("4");
+		ml.setCreate_date(new Date());
+		ml.setRegDate(new Date());
+		ml.setStatus("1");
+	
+		this.save(ml);
 	}
 
 }

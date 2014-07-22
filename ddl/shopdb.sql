@@ -160,6 +160,27 @@ INSERT INTO `lfy_citypart` (`id`, `address_name`, `address_desc`, `address_paren
 (7, '高新区', '高新区', 5, '1'),
 (8, '世纪大道', '世纪大道', 3, '1');
 
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `lfyshop_memberlevel`
+-- 2014-07-11 增加
+--
+
+CREATE TABLE IF NOT EXISTS `lfyshop_memberlevel` (
+  `id` bigint(10) NOT NULL AUTO_INCREMENT,
+  `level_code` varchar(50) DEFAULT NULL COMMENT '等级编码',
+  `levelName` varchar(100) DEFAULT NULL COMMENT '等级名称',
+  `levelBegin` int(11) DEFAULT NULL COMMENT '起始值',
+  `levelEnd` int(11) DEFAULT NULL COMMENT '终止值',
+  `create_date` datetime DEFAULT NULL COMMENT '创建时间',
+  `createPerson` varchar(255) DEFAULT NULL COMMENT '创建人',
+  `status` varchar(255) DEFAULT NULL COMMENT '1 正常 0 删除',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+
 -- --------------------------------------------------------
 
 --

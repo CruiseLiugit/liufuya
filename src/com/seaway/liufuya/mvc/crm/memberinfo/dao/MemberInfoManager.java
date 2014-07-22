@@ -18,10 +18,6 @@ public interface MemberInfoManager {
 	 */
 	//public List<MemberInfoReference> getMemberBeanReferences(QueryMetaData queryMetaData, String... propertyNames);
     
-    public MemberBean getPerson(int id);
-
-    public MemberBean savePerson(MemberBean person);
-
     //单纯从数据库获取满足条件的所有会员信息对象列表
 	public List<MemberBean> getMemberBeanList();
 	

@@ -16,11 +16,13 @@ import org.nutz.log.Logs;
 import com.seaway.liufuya.common.Constants;
 import com.seaway.liufuya.common.HttpRequestBiz;
 import com.seaway.liufuya.common.HttpService;
+import com.seaway.liufuya.common.util.DateUtil;
 import com.seaway.liufuya.mvc.crm.memberinfo.dao.impl.MemberInfoMemberBean;
 import com.seaway.liufuya.mvc.crm.memberinfo.data.Citypart;
 import com.seaway.liufuya.mvc.crm.memberinfo.data.Member;
 import com.seaway.liufuya.mvc.crm.memberinfo.data.MemberBean;
 import com.seaway.liufuya.mvc.crm.memberinfo.module.Ovip;
+import com.seaway.liufuya.mvc.crm.memberlevel.pojo.MemberLevel;
 import com.seaway.liufuya.mvc.crm.ui.CrmManageScreen;
 import com.seaway.liufuya.mvc.crm.ui.data.Person;
 import com.vaadin.data.Container;
@@ -68,7 +70,7 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 
 /**
- * 把表格和表单合并在一个类中管理
+ * 会员资料面板 把表格和表单合并在一个类中管理
  * 
  * @author lililiu
  * 
@@ -88,18 +90,15 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 	private static final int COLUMN_SPACE = 13;
 	// 查询会员数据的数据库对象
 	private MemberInfoMemberBean memberManager = null;
-	// ---------弹出新增窗口需要
-	// 弹出窗口需要组件，表单相关，新增会员
-	private FieldGroup fieldGroup;
-	private Action actionDelete = new Action("删除");
-
 	// 整个页面，上下分割的 垂直布局面板
 	private final VerticalSplitPanel vsplit = new VerticalSplitPanel();
+	private Table tb = null;   //页面显示数据表格
 	// ---------下面表单 查询，修改需要
 	private VerticalLayout buttonVLayout = new VerticalLayout();
 	private Button save = new Button("保存", (ClickListener) this);
 	private Button cancel = new Button("取消", (ClickListener) this);
 	private Button edit = new Button("编辑", (ClickListener) this);
+
 	private final ComboBox cities = new ComboBox("城市");
 	private HorizontalLayout footer; // 底部
 	// Member that will bind to the "name" property
@@ -107,30 +106,36 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 	// @PropertyId("firstName")
 	// 只有两者不一样的时候，才用 @PropertyId 进行统一
 	// 1.实体卡 2.网站注册 3.微信注册 4.后台注册
-	private TextField telphone = new TextField("手机号码"); // 整个作为登录账户
-	private TextField realName = new TextField("真实姓名");// 真实姓名
-	private OptionGroup sex = new OptionGroup("性别"); // // 1.男 0女
-	private PopupDateField birthday = new PopupDateField("会员生日"); // 生日
-	private TextField card_number = new TextField("身份证号"); // 身份证号
-	private TextField email = new TextField("邮箱");
-	private final ComboBox work_type = new ComboBox("工作类型"); // 工作类型
-	private final ComboBox family_money = new ComboBox("家庭收入"); // 家庭收入
-	private final ComboBox age_area = new ComboBox("年龄段"); // 年龄段
-	private TextField entityCardNumber = new TextField("实体卡卡号"); // 实体卡卡号
+	TextField telphone = null;// 整个作为登录账户
+	TextField realName = null;// 真实姓名
+	OptionGroup sex = null; // // 1.男 0女
+	PopupDateField birthday = null; // 生日
+	TextField card_number = null; // 身份证号
+	TextField email = null;
+	ComboBox work_type = null; // 工作类型
+	ComboBox family_money = null; // 家庭收入
+	ComboBox age_area = null; // 年龄段
+	TextField entityCardNumber = null; // 实体卡卡号
 	// 1 已开卡 2 已使用 3 已作废
-	private final ComboBox entityCardStatus = new ComboBox("实体卡状态"); // 实体卡状态
+	ComboBox entityCardStatus = null; // 实体卡状态
 	// 余额、积分 实体卡从 crds 表获取，根据 关联 id 一一获取
-	private TextField memberCard_balance = new TextField("会员卡余额"); // 会员卡余额
-	private TextField memberCard_score = new TextField("会员卡积分"); // 会员卡积分
+	TextField memberCard_balance = null; // 会员卡余额
+	TextField memberCard_score = null; // 会员卡积分
 
+	// //////////////////////////////////////////////////////
+	// 编辑的表单
 	FormLayout btFormlayout = new FormLayout();
-	// Now use a binder to bind the members
 	FieldGroup btFormbinder = null;
+	// 增加的表单
+	FormLayout addFormlayout = new FormLayout();
+	FieldGroup addFormbinder = null;
+
 	// 为了美观，底部添加一个 TabSheet
 	TabSheet tabsheet = new TabSheet();
 
 	public MemberInfoListView(MemberInfoMemberBean memberManager) {
 		this.memberManager = memberManager;
+		this.init();
 
 		// 右侧创建一个导航工具条,水平布局
 		HorizontalLayout navBar = new HorizontalLayout();
@@ -143,9 +148,9 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 		Button btnAdd = new Button("新增"); // 增加 按钮
 		btnAdd.setIcon(new ThemeResource("icons/16/add.png"));
 		btnAdd.setDescription("增加会员");
-		Button btnDownload = new Button("下载"); // 增加 按钮
-		btnDownload.setIcon(new ThemeResource("icons/16/disk-download.png"));
-		btnDownload.setDescription("下载POS系统会员数据");
+		Button btnDownload = new Button("列表"); // 增加 按钮
+		btnDownload.setIcon(new ThemeResource("icons/16/database-cloud.png"));
+		btnDownload.setDescription("选择显示数据库中数据");
 		navBarButtons.addComponent(btnAdd);
 		navBarButtons.addComponent(btnDownload);
 
@@ -158,8 +163,6 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 		btnAdd.addClickListener(new Button.ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
-				// personForm.addContact(); // 增加
-				// openProductWindow(event.getItem(), "Edit product");
 				openProductWindow(new BeanItem<Member>(new Member()), "新增会员窗口");
 			}
 		});
@@ -168,21 +171,7 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 			@Override
 			public void buttonClick(ClickEvent event) {
 				// personForm.addContact(); // 增加
-				Notification.show("正在从POS系统下载数据，请等待", Type.HUMANIZED_MESSAGE);
-				try {
-					HttpRequestBiz http = new HttpRequestBiz();
-					String count = http.getPOSVipMemberCountJsonByGet();
-					log.info("POS系统会员数据量为 :" + count);
-					Notification.show("POS系统会员信息目前有" + count + "条数据，下载中...",
-							Type.HUMANIZED_MESSAGE);
-					List<Ovip> list = http.getPOSVipMemberJsonByGet();
-
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					Notification.show("从POS系统下载数据失败，原因：内存不足",
-							Type.WARNING_MESSAGE);
-					e.printStackTrace();
-				}
+				Notification.show("报表功能正在完成中，请等待", Type.HUMANIZED_MESSAGE);
 
 			}
 		});
@@ -195,7 +184,7 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 
 		// 对表格进行改进，增加对每个字段的搜索过滤框
 		VerticalLayout tablelayout = new VerticalLayout();
-		Table tb = createTable(container);
+		tb = createTable(container);
 		tablelayout.addComponent(createFilters(tb)); // 表格过滤框
 		tablelayout.addComponent(tb); // 表格
 		vsplit.setFirstComponent(tablelayout);
@@ -206,6 +195,95 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 		this.addComponent(navBar); // 导航栏
 		this.addComponent(vsplit); // 上下分割面板
 		this.setExpandRatio(vsplit, 1);
+	}
+
+	// --------------------------------------------------------------
+	// 初始化页面组件
+	private void init() {
+		telphone = new TextField("手机号码"); // 整个作为登录账户
+		realName = new TextField("真实姓名");// 真实姓名
+		sex = new OptionGroup("性别"); // // 1.男 0女
+		birthday = new PopupDateField("会员生日"); // 生日
+		card_number = new TextField("身份证号"); // 身份证号
+		email = new TextField("邮箱");
+		work_type = new ComboBox("工作类型"); // 工作类型
+		family_money = new ComboBox("家庭收入"); // 家庭收入
+		age_area = new ComboBox("年龄段"); // 年龄段
+		entityCardNumber = new TextField("实体卡卡号"); // 实体卡卡号
+		// 1 已开卡 2 已使用 3 已作废
+		entityCardStatus = new ComboBox("实体卡状态"); // 实体卡状态
+		// 余额、积分 实体卡从 crds 表获取，根据 关联 id 一一获取
+		memberCard_balance = new TextField("会员卡余额"); // 会员卡余额
+		memberCard_score = new TextField("会员卡积分"); // 会员卡积分
+
+		// 允许用户输入新的城市
+		// cities.setNewItemsAllowed(true);
+		// 不允许输入空值
+		cities.setNullSelectionAllowed(false);
+		// 从数据库 获取所有的城市
+		List<Citypart> citylist = memberManager.getTopCityList();
+		for (Citypart citypart : citylist) {
+			cities.addItem(citypart.getAddress_name());
+		}
+		// 性别
+		sex.addItem(1);
+		sex.setItemCaption(1, "先生");
+		sex.addItem(2);
+		sex.setItemCaption(2, "女士");
+		//sex.select(0); // 默认选中男性
+		sex.setNullSelectionAllowed(false);
+		//sex.setImmediate(true);
+		//sex.setHtmlContentAllowed(true);
+
+		// 生日
+		birthday.setImmediate(true);
+		birthday.setTimeZone(TimeZone.getTimeZone("UTC"));
+		birthday.setLocale(Locale.CHINA);
+		birthday.setResolution(Resolution.DAY);
+		// 工作类型
+		for (String type : Constants.MEMBER_WORK_TYPES) {
+			work_type.addItem(type);
+		}
+
+		// 家庭收入
+		for (String money : Constants.MEMBER_FAMILY_MONEY) {
+			family_money.addItem(money);
+		}
+
+		// 年龄段
+		for (String age : Constants.MEMBER_AGE_AREAS) {
+			age_area.addItem(age);
+		}
+
+		// 实体卡状态
+		for (String statu : Constants.MEMBER_ENTITY_CARD_STATUS) {
+			entityCardStatus.addItem(statu);
+		}
+
+		// 必填项
+		telphone.setRequired(true);
+		realName.setRequired(true);
+//		telphone.setImmediate(true);
+//		realName.setImmediate(true);
+
+		// placeHolder提示
+		telphone.setInputPrompt("手机号码作为登录名");
+
+		// 长度限制
+		telphone.setMaxLength(11);
+		card_number.setMaxLength(19);
+		realName.setMaxLength(20);
+		email.setMaxLength(25);
+
+		// 输入校验
+		// firstName.setNullRepresentation(""); // 为空是替换为""
+		email.addValidator(new EmailValidator("请输入正确的邮箱地址，如xxx@163.com"));
+		// 正则表达式验证
+		telphone.addValidator(new RegexpValidator("[1-9][0-9]{10}", "请输入11位手机号码"));
+//		memberCard_balance.addValidator(new RegexpValidator("[0-9]*",
+//				"请输入数字"));
+//		memberCard_score.addValidator(new RegexpValidator("[0-9]*",
+//				"请输入数字"));
 	}
 
 	/**
@@ -260,7 +338,11 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 			field.setWidth(columnWidth + COLUMN_SPACE, Unit.PIXELS);
 
 			if ("cardscore".equals(columnID) || "cardbalance".equals(columnID)) {
-				field.setConverter(Integer.class);
+				//field.setConverter(Integer.class);
+				Label lb = new Label();
+				lb.setWidth(columnWidth + COLUMN_SPACE, Unit.PIXELS);
+				filtersLayout.addComponent(lb);
+				field.setVisible(false); // 隐藏掉这两个输入框
 			}
 			field.addTextChangeListener(new TextChangeListener() {
 				@Override
@@ -309,140 +391,102 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 		Window window = new Window(caption);
 		window.setWidth(400, Unit.PIXELS);
 		window.setModal(true);
-
-		FormLayout lay = this.createAddUserForm(beanItem);
-		lay.addComponent(createOkButton(window));
 		
-		setItemDataSource(beanItem);
-		
-		window.setContent(lay);
+		window.setContent(createAddForm(beanItem, window));
 		getUI().addWindow(window);
 	}
 
-	private Button createOkButton(final Window window) {
+
+	private Layout createAddForm(Item item, final Window window) {
+		// 往 FormLayout 中添加组件
+		addFormlayout.removeAllComponents();
+		addFormlayout.setWidth(100, Unit.PERCENTAGE);
+		addFormlayout.setSpacing(true);
+
+		addFormlayout.addComponent(telphone);
+		addFormlayout.addComponent(realName);
+		addFormlayout.addComponent(sex);
+		addFormlayout.addComponent(birthday);
+		addFormlayout.addComponent(card_number);
+		addFormlayout.addComponent(email);
+		addFormlayout.addComponent(cities);
+		addFormlayout.addComponent(work_type);
+		addFormlayout.addComponent(family_money);
+		addFormlayout.addComponent(age_area);
+		addFormlayout.addComponent(entityCardNumber);
+		addFormlayout.addComponent(entityCardStatus);
+		addFormlayout.addComponent(memberCard_balance);
+		addFormlayout.addComponent(memberCard_score);
+		
+		addFormbinder = new BeanFieldGroup<Member>(Member.class);
+		addFormbinder.setItemDataSource(item);
+		addFormbinder.setBuffered(true);
+		addFormbinder.bindMemberFields(this); // 绑定
+
 		Button okButton = new Button("增加");
 		okButton.addClickListener(new ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				try {
-					fieldGroup.commit();
-					BeanItem<Member> beanItem = (BeanItem<Member>) fieldGroup
-							.getItemDataSource();
-					// 更新 数据源，更新表格
-					// tableContainer.addItem(beanItem.getBean());
-					// updateTable();
-					window.close();
-				} catch (CommitException e) {
+					boolean flag = addFormbinder.isValid();
+					log.info(">>>>>>>>>>>>>> 验证结果 :"+flag);
+					if (!flag) {
+						Notification.show("带 * 字段不能为空，请填写完成再提交");
+						//验证电话重复
+						String loginname = telphone.getValue();
+						Member mb = memberManager.getMemeberByLoginname(loginname);
+						if (mb != null && !mb.getUser_code().equals("")) {
+							Notification.show("该电话号码，已经被注册，请更换手机号码");
+						}
+					} else {
+						addFormbinder.commit();
+						// 提交到数据库
+						Member ml = new Member();
+						ml.setTelphone(telphone.getValue());
+						ml.setLoginName(telphone.getValue()); //这里要验证重名
+						ml.setRealName(realName.getValue());
+						ml.setBirthday(birthday.getValue());
+						ml.setCard_number(card_number.getValue());
+						ml.setEmail(email.getValue());
+						ml.setEntityCardNumber(entityCardNumber.getValue());
+						ml.setMemberCard_balance(new Integer(memberCard_balance.getValue()));
+						ml.setMemberCard_score(new Integer(memberCard_score.getValue()));
+						
+						
+						//ml.setCity(cities.getValue());
+						Object sess = sex.getValue();
+						Object citt = cities.getValue();
+						log.info(">>>>>>>>>>>>>>>>>  选中性别 :"+sess+"   ,  city :"+citt);
+						
+						
+						//memberManager.saveMember(ml);
+						
+						/*
+	OptionGroup sex = null; // // 1.男 0女
+	ComboBox work_type = null; // 工作类型
+	ComboBox family_money = null; // 家庭收入
+	ComboBox age_area = null; // 年龄段
+	// 1 已开卡 2 已使用 3 已作废
+	ComboBox entityCardStatus = null; // 实体卡状态
+	
+						 * */
+//						service.saveMemberLevel(name, begin, end, createPerson);
+						
+						// /////////////////////////////////////////////////////////////////
+						fillContainer(container);
+						tb.setContainerDataSource(container); // 这里数据源要切换
+						window.close();
+					}
+				} catch (Exception e) {
 					Notification.show(e.getMessage(), Type.ERROR_MESSAGE);
 				}
 			}
 		});
-		return okButton;
+		addFormlayout.addComponent(okButton);
+		return addFormlayout;
 	}
 
 	// ------------------------------------------------------
-	// 点击<新增>按钮的表单
-	private FormLayout createAddUserForm(Item item) {
-		FormLayout layout = new FormLayout();
-		
-		// 不允许输入空值
-		cities.setNullSelectionAllowed(false);
-		// 从数据库 获取所有的城市
-		List<Citypart> citylist = memberManager.getTopCityList();
-		for (Citypart citypart : citylist) {
-			cities.addItem(citypart.getAddress_name());
-		}
-		// 性别
-		sex.addItem(1);
-		sex.setItemCaption(1, "先生");
-		sex.addItem(2);
-		sex.setItemCaption(2, "女士");
-		sex.select(0); // 默认选中男性
-		sex.setNullSelectionAllowed(false);
-		sex.setImmediate(true);
-		sex.setHtmlContentAllowed(true);
-
-		// 生日
-		birthday.setImmediate(true);
-		birthday.setTimeZone(TimeZone.getTimeZone("UTC"));
-		birthday.setLocale(Locale.CHINA);
-		birthday.setResolution(Resolution.DAY);
-		// 工作类型
-		for (String type : Constants.MEMBER_WORK_TYPES) {
-			work_type.addItem(type);
-		}
-
-		// 家庭收入
-		for (String money : Constants.MEMBER_FAMILY_MONEY) {
-			family_money.addItem(money);
-		}
-
-		// 年龄段
-		for (String age : Constants.MEMBER_AGE_AREAS) {
-			age_area.addItem(age);
-		}
-
-		// 实体卡状态
-		for (String statu : Constants.MEMBER_ENTITY_CARD_STATUS) {
-			entityCardStatus.addItem(statu);
-		}
-
-		// 必填项
-		telphone.setRequired(true);
-		realName.setRequired(true);
-		telphone.setImmediate(true);
-		realName.setImmediate(true);
-
-		// placeHolder提示
-		telphone.setInputPrompt("手机号码作为登录名");
-
-		// 长度限制
-		telphone.setMaxLength(11);
-		card_number.setMaxLength(19);
-		realName.setMaxLength(20);
-		email.setMaxLength(25);
-
-		// 输入校验
-		// firstName.setNullRepresentation(""); // 为空是替换为""
-		email.addValidator(new EmailValidator("请输入正确的邮箱地址，如xxx@163.com"));
-		// 正则表达式验证
-		telphone.addValidator(new RegexpValidator("[1-9][0-9]{9}", "请输入11位手机号码"));
-		memberCard_balance.addValidator(new RegexpValidator("[1-9][0-9]*",
-				"请输入数字"));
-		memberCard_score.addValidator(new RegexpValidator("[1-9][0-9]*",
-				"请输入数字"));
-
-		// 往 FormLayout 中添加组件
-		layout.setWidth(100, Unit.PERCENTAGE);
-		layout.setSpacing(true);
-
-		layout.addComponent(telphone);
-		layout.addComponent(realName);
-		layout.addComponent(sex);
-		layout.addComponent(birthday);
-		layout.addComponent(card_number);
-		layout.addComponent(email);
-		layout.addComponent(work_type);
-		layout.addComponent(family_money);
-		layout.addComponent(age_area);
-		layout.addComponent(entityCardNumber);
-		layout.addComponent(entityCardStatus);
-		layout.addComponent(memberCard_balance);
-		layout.addComponent(memberCard_score);
-
-		FieldGroup btbinder = new BeanFieldGroup<Member>(Member.class);
-		btbinder.setItemDataSource(item);
-		btbinder.setBuffered(true);
-		btbinder.bindMemberFields(this); // 绑定
-		
-		if (footer != null) {
-			footer.setVisible(false);
-			btFormlayout.setVisible(false);
-		}
-		
-		return layout;
-	}
-
 	// 底部 TabSheet 和 表单
 	private Layout createForm(Item item) {
 		footer = new HorizontalLayout();
@@ -451,77 +495,9 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 		footer.addComponent(cancel);
 		footer.addComponent(edit);
 		footer.setVisible(false);
-		
-		// 允许用户输入新的城市
-		// cities.setNewItemsAllowed(true);
-		// 不允许输入空值
-		cities.setNullSelectionAllowed(false);
-		// 从数据库 获取所有的城市
-		List<Citypart> citylist = memberManager.getTopCityList();
-		for (Citypart citypart : citylist) {
-			cities.addItem(citypart.getAddress_name());
-		}
-		// 性别
-		sex.addItem(1);
-		sex.setItemCaption(1, "先生");
-		sex.addItem(2);
-		sex.setItemCaption(2, "女士");
-		sex.select(0); // 默认选中男性
-		sex.setNullSelectionAllowed(false);
-		sex.setImmediate(true);
-		sex.setHtmlContentAllowed(true);
-
-		// 生日
-		birthday.setImmediate(true);
-		birthday.setTimeZone(TimeZone.getTimeZone("UTC"));
-		birthday.setLocale(Locale.CHINA);
-		birthday.setResolution(Resolution.DAY);
-		// 工作类型
-		for (String type : Constants.MEMBER_WORK_TYPES) {
-			work_type.addItem(type);
-		}
-
-		// 家庭收入
-		for (String money : Constants.MEMBER_FAMILY_MONEY) {
-			family_money.addItem(money);
-		}
-
-		// 年龄段
-		for (String age : Constants.MEMBER_AGE_AREAS) {
-			age_area.addItem(age);
-		}
-
-		// 实体卡状态
-		for (String statu : Constants.MEMBER_ENTITY_CARD_STATUS) {
-			entityCardStatus.addItem(statu);
-		}
-
-		// 必填项
-		telphone.setRequired(true);
-		realName.setRequired(true);
-		telphone.setImmediate(true);
-		realName.setImmediate(true);
-
-		// placeHolder提示
-		telphone.setInputPrompt("手机号码作为登录名");
-
-		// 长度限制
-		telphone.setMaxLength(11);
-		card_number.setMaxLength(19);
-		realName.setMaxLength(20);
-		email.setMaxLength(25);
-
-		// 输入校验
-		// firstName.setNullRepresentation(""); // 为空是替换为""
-		email.addValidator(new EmailValidator("请输入正确的邮箱地址，如xxx@163.com"));
-		// 正则表达式验证
-		telphone.addValidator(new RegexpValidator("[1-9][0-9]{9}", "请输入11位手机号码"));
-		memberCard_balance.addValidator(new RegexpValidator("[1-9][0-9]*",
-				"请输入数字"));
-		memberCard_score.addValidator(new RegexpValidator("[1-9][0-9]*",
-				"请输入数字"));
 
 		// 往 FormLayout 中添加组件
+		btFormlayout.removeAllComponents();
 		btFormlayout.setWidth(100, Unit.PERCENTAGE);
 		btFormlayout.setSpacing(true);
 
@@ -547,13 +523,11 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 				"icons/16/user-normal.png"));
 		buttonVLayout.addComponent(tabsheet);
 
-		
 		return buttonVLayout;
 	}
 
 	public void buttonClick(ClickEvent event) {
 		Button source = event.getButton();
-
 		if (source == save) {
 			/* If the given input is not valid there is no point in continuing */
 			if (!this.btFormbinder.isValid()) {
@@ -586,7 +560,6 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 			setReadOnly(false);
 		}
 	}
-
 
 	/**
 	 * 绑定表单中数据的
@@ -656,20 +629,6 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 			MemberBean memberBean = (MemberBean) iterator.next();
 			container.addItem(memberBean);
 		}
-	}
-
-	// ---------------
-	/**
-	 * Updates the sample caption
-	 */
-	private void updateCaption(TextField sample, final int textLength) {
-		final StringBuilder builder = new StringBuilder();
-		builder.append(String.valueOf(textLength));
-		if (sample.getMaxLength() >= 0) {
-			builder.append("/").append(sample.getMaxLength());
-		}
-		builder.append("字符数");
-		sample.setCaption(builder.toString());
 	}
 
 }

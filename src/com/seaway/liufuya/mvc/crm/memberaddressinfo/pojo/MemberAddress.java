@@ -1,4 +1,4 @@
-package com.seaway.liufuya.mvc.crm.memberinfo.data;
+package com.seaway.liufuya.mvc.crm.memberaddressinfo.pojo;
 
 import java.io.Serializable;
 import java.util.Date;

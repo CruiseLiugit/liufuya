@@ -4,12 +4,14 @@ import org.nutz.dao.Dao;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
-import com.seaway.liufuya.BasicDao;
 import com.seaway.liufuya.LiufuyaUI;
 import com.seaway.liufuya.common.Constants;
+import com.seaway.liufuya.mvc.crm.memberaddressinfo.dao.MemberAddressBeanDao;
+import com.seaway.liufuya.mvc.crm.memberaddressinfo.layout.MemberAddressListLayout;
 import com.seaway.liufuya.mvc.crm.memberinfo.dao.impl.MemberInfoMemberBean;
-import com.seaway.liufuya.mvc.crm.memberinfo.layout.MemberInfoForm;
 import com.seaway.liufuya.mvc.crm.memberinfo.layout.MemberInfoListView;
+import com.seaway.liufuya.mvc.crm.memberlevel.dao.MemberLevelDao;
+import com.seaway.liufuya.mvc.crm.memberlevel.layout.MemberLevelListLayout;
 import com.seaway.liufuya.mvc.crm.ui.dao.PersonManager;
 import com.seaway.liufuya.mvc.crm.ui.dao.impl.PersonManagerBean;
 import com.seaway.liufuya.mvc.crm.ui.data.Person;
@@ -25,20 +27,14 @@ import com.seaway.liufuya.mvc.crm.ui.layout.SearchView;
 import com.seaway.liufuya.mvc.crm.ui.layout.SharingOptions;
 import com.seaway.liufuya.mvc.login.ui.LoginScreen;
 import com.seaway.liufuya.mvc.login.ui.UserMenusScreen;
-import com.seaway.liufuya.mvc.login.ui.views.PanelCRM;
-import com.seaway.liufuya.mvc.login.ui.views.PanelReport;
-import com.seaway.liufuya.mvc.login.ui.views.PanelSale;
-import com.seaway.liufuya.mvc.login.ui.views.PanelSystemManager;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ThemeResource;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -46,7 +42,6 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -67,7 +62,6 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 	public PersonManagerBean personManager;
 	private PersonReferenceContainer dataSource;
 	
-	private BasicDao baseDao = null;
 	private Dao nutzDao = null;
 
 	// --------------顶部工具栏组件-----------------------------
@@ -78,9 +72,6 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 	private NavigationTree tree = new NavigationTree(this,
 			Constants.CRM_MENUS_TREE);
 
-	// ----------------导航页面---------------------------------
-	private Navigator navigator = null;
-	private String toview = null;
 	// ----------------主界面内容-------------------------------
 	private HorizontalSplitPanel horizontalSplit = new HorizontalSplitPanel();
 	// Lazyly created ui references
@@ -93,15 +84,21 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 	private SharingOptions sharingOptions = null;
 
 	// 会员资料组件
-	private MemberInfoListView memberListView = null;
-	//private MemberInfoList memberList = null;
-	private MemberInfoForm memberForm = null;
-	public MemberInfoMemberBean memberManager;
+	private MemberInfoListView memberListView = null;             //会员资料
+	private MemberAddressListLayout memberAddressListView = null; //会员扩展资料
+	public MemberLevelListLayout memberLevelView = null;          //会员等级管理
+	//数据库对象
+	public MemberInfoMemberBean memberManager;      //会员管理
+	public MemberAddressBeanDao memberAddressDao;   //会员扩展资料
+	private MemberLevelDao memberLevelManager ;     //会员等级
+	
 	
 	/**
 	 * 构造函数，初始化界面
 	 */
-	public CrmManageScreen() {
+	public CrmManageScreen() {}
+	
+	public CrmManageScreen(String itemId) {
 		log.info("---------init()--------");
 		try {
 			this.nutzDao = LiufuyaUI.getCurrent().initNutzDao();
@@ -113,21 +110,19 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		//----------------------------------------------------------
 		
 		buildMainLayout();    //创建空白的启动页面
+		//这个是 用 Person 对象做增删改查的 Demo  getListView()
 		//setMainComponent(this.getListView());  //往启动页面右侧添加默认会员管理页面列表
-		setMainComponent(this.getMemberInfoListView());  //往启动页面右侧添加默认会员管理页面列表
-	}
-
-	/**
-	 * 备用方法，用于导航 控制页面跳转
-	 * 
-	 * @param navigator
-	 * @param toview
-	 */
-	public CrmManageScreen(Navigator navigator, String toview) {
-//		this.navigator = navigator;
-//		this.toview = toview;
-		buildMainLayout();
-		setMainComponent(getMemberInfoListView());
+		
+		if ("会员资料".equals(itemId)) {
+			Notification.show("会员资料");
+			setMainComponent(this.getMemberInfoListView());  //往启动页面右侧添加默认会员管理页面列表
+		} else if ("扩展资料".equals(itemId)) {
+			Notification.show("扩展资料");
+			setMainComponent(this.getMemberAddressListView());
+		} else if ("会员等级".equals(itemId)) {
+			Notification.show("会员等级");
+			setMainComponent(this.getMemberLevelListLayout());
+		}
 	}
 
 	/**
@@ -145,7 +140,7 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		VerticalLayout root = new VerticalLayout();
 		root.setStyleName(Reindeer.LAYOUT_BLUE);
 		root.setSizeFull(); // 满屏
-
+		
 		// 头部
 		root.addComponent(createTopToolbar()); // 工具栏
 		root.addComponent(horizontalSplit); // 中间为左右分割
@@ -191,7 +186,7 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		search.addClickListener(this);// .addListener((ClickListener) this);
 		user.addClickListener(this);
 		logout.addClickListener(this);
-
+	
 		backToMenu.setIcon(new ThemeResource("icons/19/home.png"));
 		search.setIcon(new ThemeResource("icons/19/Search.png"));
 		user.setIcon(new ThemeResource("icons/19/my-account.png"));
@@ -260,7 +255,8 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 	// --------------------------------------------------------------
 	/**
 	 * 进入页面默认显示 会员资料界面，可以通过 左侧菜单控制
-	 * 
+	 * 会员资料页面
+	 *
 	 * @return
 	 */
 	private MemberInfoListView getMemberInfoListView() {
@@ -277,6 +273,43 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		return memberListView;
 	}
 
+	// --------------------------------------------------------------
+	/**
+	 * 会员扩展信息列表
+	 * @return
+	 */
+	private MemberAddressListLayout getMemberAddressListView() {
+		log.info(">>>>>>>>>>>>>>>创建会员扩展信息列表");
+		if (memberAddressDao == null) {
+			this.memberAddressDao = new MemberAddressBeanDao(nutzDao);
+		}
+		
+		if (memberAddressListView == null) {
+			//所有的表格和表单，都在一个类中控制
+			memberAddressListView = new MemberAddressListLayout(memberAddressDao);
+		}
+		return memberAddressListView;
+	}
+	
+	
+	// --------------------------------------------------------------
+		/**
+		 * 会员等级管理列表
+		 * @return
+		 */
+		private MemberLevelListLayout getMemberLevelListLayout() {
+			log.info(">>>>>>>>>>>>>>>创建会员等级 扩展信息列表");
+			if (memberLevelManager == null) {
+				this.memberLevelManager = new MemberLevelDao(nutzDao);
+			}
+			
+			if (memberLevelView == null) {
+				//所有的表格和表单，都在一个类中控制
+				memberLevelView = new MemberLevelListLayout(memberLevelManager);
+			}
+			return memberLevelView;
+		}
+	
 	// ----------------------------------------------------------------
 	private SearchView getSearchView() {
 		if (searchView == null) {
@@ -366,16 +399,17 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 						case 0:
 							log.info(">>>>>>>>>>>>> 会员界面");
 							// 会员资料
-							this.getMemberInfoListView();
+							setMainComponent(this.getMemberInfoListView());
 							break;
 						case 1:
 							// 扩展资料
-							log.info("扩展资料");
-							this.getListView();
+							log.info(">>>>>>>>>>>>>  扩展资料");
+							setMainComponent(this.getMemberAddressListView());
 							break;
 						case 2:
 							// 会员等级
-							log.info("会员等级");
+							log.info(">>>>>>>>>>>>>  会员等级");
+							setMainComponent(this.getMemberLevelListLayout());
 							break;
 						case 3:
 							// 会员活动
