@@ -8,6 +8,8 @@ import com.seaway.liufuya.LiufuyaUI;
 import com.seaway.liufuya.common.Constants;
 import com.seaway.liufuya.mvc.crm.memberaddressinfo.dao.MemberAddressBeanDao;
 import com.seaway.liufuya.mvc.crm.memberaddressinfo.layout.MemberAddressListLayout;
+import com.seaway.liufuya.mvc.crm.memberdelete.dao.impl.MemberDeleteInfoManagerImpl;
+import com.seaway.liufuya.mvc.crm.memberdelete.layout.MemberDeleteInfoListView;
 import com.seaway.liufuya.mvc.crm.memberinfo.dao.impl.MemberInfoMemberBean;
 import com.seaway.liufuya.mvc.crm.memberinfo.layout.MemberInfoListView;
 import com.seaway.liufuya.mvc.crm.memberlevel.dao.MemberLevelDao;
@@ -61,7 +63,7 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 	private static final Log log = Logs.get();
 	public PersonManagerBean personManager;
 	private PersonReferenceContainer dataSource;
-	
+
 	private Dao nutzDao = null;
 
 	// --------------顶部工具栏组件-----------------------------
@@ -84,20 +86,22 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 	private SharingOptions sharingOptions = null;
 
 	// 会员资料组件
-	private MemberInfoListView memberListView = null;             //会员资料
-	private MemberAddressListLayout memberAddressListView = null; //会员扩展资料
-	public MemberLevelListLayout memberLevelView = null;          //会员等级管理
-	//数据库对象
-	public MemberInfoMemberBean memberManager;      //会员管理
-	public MemberAddressBeanDao memberAddressDao;   //会员扩展资料
-	private MemberLevelDao memberLevelManager ;     //会员等级
-	
-	
+	private MemberInfoListView memberListView = null; // 会员资料
+	private MemberAddressListLayout memberAddressListView = null; // 会员扩展资料
+	public MemberLevelListLayout memberLevelView = null; // 会员等级管理
+	private MemberDeleteInfoListView mdInfoListView = null;   //会员黑名单
+	// 数据库对象
+	public MemberInfoMemberBean memberManager; // 会员管理
+	public MemberAddressBeanDao memberAddressDao; // 会员扩展资料
+	private MemberLevelDao memberLevelManager; // 会员等级
+	private MemberDeleteInfoManagerImpl mdInfoManager;//会员黑名单
+
 	/**
 	 * 构造函数，初始化界面
 	 */
-	public CrmManageScreen() {}
-	
+	public CrmManageScreen() {
+	}
+
 	public CrmManageScreen(String itemId) {
 		log.info("---------init()--------");
 		try {
@@ -107,21 +111,24 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 			e.printStackTrace();
 		}
 		log.info("-----------------nutzDao =" + nutzDao);
-		//----------------------------------------------------------
-		
-		buildMainLayout();    //创建空白的启动页面
-		//这个是 用 Person 对象做增删改查的 Demo  getListView()
-		//setMainComponent(this.getListView());  //往启动页面右侧添加默认会员管理页面列表
-		
+		// ----------------------------------------------------------
+
+		buildMainLayout(); // 创建空白的启动页面
+		// 这个是 用 Person 对象做增删改查的 Demo getListView()
+		// setMainComponent(this.getListView()); //往启动页面右侧添加默认会员管理页面列表
+
 		if ("会员资料".equals(itemId)) {
 			Notification.show("会员资料");
-			setMainComponent(this.getMemberInfoListView());  //往启动页面右侧添加默认会员管理页面列表
+			setMainComponent(this.getMemberInfoListView()); // 往启动页面右侧添加默认会员管理页面列表
 		} else if ("扩展资料".equals(itemId)) {
 			Notification.show("扩展资料");
 			setMainComponent(this.getMemberAddressListView());
 		} else if ("会员等级".equals(itemId)) {
 			Notification.show("会员等级");
 			setMainComponent(this.getMemberLevelListLayout());
+		} else if ("会员黑名单".equals(itemId)) {
+			Notification.show("会员黑名单");
+			setMainComponent(this.getmdInfoListView());
 		}
 	}
 
@@ -140,7 +147,7 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		VerticalLayout root = new VerticalLayout();
 		root.setStyleName(Reindeer.LAYOUT_BLUE);
 		root.setSizeFull(); // 满屏
-		
+
 		// 头部
 		root.addComponent(createTopToolbar()); // 工具栏
 		root.addComponent(horizontalSplit); // 中间为左右分割
@@ -186,7 +193,7 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		search.addClickListener(this);// .addListener((ClickListener) this);
 		user.addClickListener(this);
 		logout.addClickListener(this);
-	
+
 		backToMenu.setIcon(new ThemeResource("icons/19/home.png"));
 		search.setIcon(new ThemeResource("icons/19/Search.png"));
 		user.setIcon(new ThemeResource("icons/19/my-account.png"));
@@ -230,8 +237,7 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		horizontalSplit.setSecondComponent(c); // 添加到第二个分割面板中
 	}
 
-	
-	//---------------------Demo------------------------------------
+	// ---------------------Demo------------------------------------
 	/*
 	 * 这个是获取案例的的两个视图组件 Table 和 From
 	 */
@@ -241,7 +247,7 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		}
 		dataSource = new PersonReferenceContainer(personManager);
 		dataSource.refresh(); // Load initial data
-		
+
 		if (listView == null) {
 			personList = new PersonList(this);
 			personForm = new PersonForm(this);
@@ -254,9 +260,8 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 
 	// --------------------------------------------------------------
 	/**
-	 * 进入页面默认显示 会员资料界面，可以通过 左侧菜单控制
-	 * 会员资料页面
-	 *
+	 * 进入页面默认显示 会员资料界面，可以通过 左侧菜单控制 会员资料页面
+	 * 
 	 * @return
 	 */
 	private MemberInfoListView getMemberInfoListView() {
@@ -264,18 +269,19 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		if (memberManager == null) {
 			this.memberManager = new MemberInfoMemberBean(nutzDao);
 		}
-		
+
 		if (memberListView == null) {
-			//所有的表格和表单，都在一个类中控制
+			// 所有的表格和表单，都在一个类中控制
 			memberListView = new MemberInfoListView(memberManager);
 		}
-		log.info("MemberInfoListView ="+memberListView);
+		log.info("MemberInfoListView =" + memberListView);
 		return memberListView;
 	}
 
 	// --------------------------------------------------------------
 	/**
 	 * 会员扩展信息列表
+	 * 
 	 * @return
 	 */
 	private MemberAddressListLayout getMemberAddressListView() {
@@ -283,33 +289,53 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		if (memberAddressDao == null) {
 			this.memberAddressDao = new MemberAddressBeanDao(nutzDao);
 		}
-		
+
 		if (memberAddressListView == null) {
-			//所有的表格和表单，都在一个类中控制
-			memberAddressListView = new MemberAddressListLayout(memberAddressDao);
+			// 所有的表格和表单，都在一个类中控制
+			memberAddressListView = new MemberAddressListLayout(
+					memberAddressDao);
 		}
 		return memberAddressListView;
 	}
-	
-	
+
 	// --------------------------------------------------------------
-		/**
-		 * 会员等级管理列表
-		 * @return
-		 */
-		private MemberLevelListLayout getMemberLevelListLayout() {
-			log.info(">>>>>>>>>>>>>>>创建会员等级 扩展信息列表");
-			if (memberLevelManager == null) {
-				this.memberLevelManager = new MemberLevelDao(nutzDao);
-			}
-			
-			if (memberLevelView == null) {
-				//所有的表格和表单，都在一个类中控制
-				memberLevelView = new MemberLevelListLayout(memberLevelManager);
-			}
-			return memberLevelView;
+	/**
+	 * 会员等级管理列表
+	 * 
+	 * @return
+	 */
+	private MemberLevelListLayout getMemberLevelListLayout() {
+		log.info(">>>>>>>>>>>>>>>创建会员等级 扩展信息列表");
+		if (memberLevelManager == null) {
+			this.memberLevelManager = new MemberLevelDao(nutzDao);
 		}
-	
+
+		if (memberLevelView == null) {
+			// 所有的表格和表单，都在一个类中控制
+			memberLevelView = new MemberLevelListLayout(memberLevelManager);
+		}
+		return memberLevelView;
+	}
+
+	// --------------------------------------------------------------
+	/**
+	 * 会员黑名单管理信息列表
+	 * 
+	 * @return
+	 */
+	private MemberDeleteInfoListView getmdInfoListView() {
+		log.info(">>>>>>>>>>>>>>>会员黑名单管理");
+		if (mdInfoManager == null) {
+			this.mdInfoManager = new MemberDeleteInfoManagerImpl(nutzDao);
+		}
+
+		if (mdInfoListView == null) {
+			// 所有的表格和表单，都在一个类中控制
+			mdInfoListView = new MemberDeleteInfoListView(mdInfoManager);
+		}
+		return mdInfoListView;
+	}
+
 	// ----------------------------------------------------------------
 	private SearchView getSearchView() {
 		if (searchView == null) {
@@ -332,7 +358,7 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		return sharingOptions;
 	}
 
-	//----------------------获取数据源------------------------------
+	// ----------------------获取数据源------------------------------
 	public PersonReferenceContainer getDataSource() {
 		return dataSource;
 	}
@@ -340,14 +366,12 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 	public PersonManager getPersonManager() {
 		return personManager;
 	}
-	
 
 	public MemberInfoMemberBean getMemberManager() {
 		return memberManager;
 	}
-	
-	//----------------------获取数据源------------------------------
 
+	// ----------------------获取数据源------------------------------
 
 	private void showHelpWindow() {
 		// getMainWindow().addWindow(getHelpWindow());
@@ -358,11 +382,12 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		UI.getCurrent().addWindow(getSharingOptions());
 	}
 
-	//--------------------------Demo----------------------
+	// --------------------------Demo----------------------
 	private void showListView() {
 		setMainComponent(this.getListView());
 	}
-	//--------------------------会员页面--------------------
+
+	// --------------------------会员页面--------------------
 	private void showMemberListView() {
 		setMainComponent(getMemberInfoListView());
 	}
@@ -393,7 +418,7 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 			if (itemId != null) {
 				for (int i = 0; i < Constants.CRM_MENUS_TREE1.length; i++) {
 					String node = Constants.CRM_MENUS_TREE1[i];
-					log.info(">>>>>>>>>>node = "+node);
+					log.info(">>>>>>>>>>node = " + node);
 					if (itemId.equals(node)) {
 						switch (i) {
 						case 0:
@@ -416,6 +441,8 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 							break;
 						case 4:
 							// 会员黑名单
+							log.info(">>>>>>>>>>>>>  会员黑名单");
+							setMainComponent(this.getmdInfoListView());
 							break;
 						case 5:
 							// 会员诉求
