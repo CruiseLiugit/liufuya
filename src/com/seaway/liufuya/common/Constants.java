@@ -1,5 +1,7 @@
 package com.seaway.liufuya.common;
 
+import com.vaadin.event.ItemClickEvent;
+
 public class Constants {
 
 	// 页面字符串
@@ -36,6 +38,11 @@ public class Constants {
 	// 积分管理
 	public static final String[] CRM_MENUS_TREE2 = { "兑奖规则信息管理", "兑换奖品资料管理", "消费积分规则管理",
 			"会员积分兑换管理", "会员积分调整", "会员积分清除", "会员积分补录" };
+	
+	//所有将会被点击到的 菜单值数组，用于在 CrmManageScreen.java 中 itemClick(ItemClickEvent event) 方法中调用
+	public static final String[] CRM_MENUS_ITEMCLICK = { "会员资料", "扩展资料", "会员等级",
+		"会员活动", "会员黑名单", "诉求类别","会员诉求","短信发送","兑奖规则信息管理", "兑换奖品资料管理", "消费积分规则管理",
+		"会员积分兑换管理", "会员积分调整", "会员积分清除", "会员积分补录"};  
 
 	public static final Object[][] CRM_MENUS_TREE = new Object[][] {
 			new Object[] { "会员管理", "会员资料", "扩展资料", "会员等级", "会员活动", "会员黑名单",
@@ -109,5 +116,13 @@ public class Constants {
 			"起始积分", "结束积分", "创建时间", "创建人"};
 
 	// ---------------------------------------------------------------------------
+	 // 会员扩展资料，
+	public static final Object[] EXCHANGE_RULE_TABLE_COL = new String[] {
+	"ruleCode", "ruleName", "ruleNumberBegin", "ruleNumberEnd", "remark", "startDate","createPerson","status" };
 
+	public static final String[] EXCHANGE_RULE_TABLE_COL_HEADERS_CHINESE = new String[] {
+	"规则代码", "规则名称", "规则起始", "规则结束", "备注", "开始时间","创建人","状态"};
+	
+	
+	
 }

@@ -651,18 +651,20 @@ CREATE TABLE IF NOT EXISTS `crm_consume_exchange` (
 -- 奖品如果是优惠券，修改 会员优惠券表，增加一条优惠券领取记录。
 --
 CREATE TABLE IF NOT EXISTS `lfywx_campaign` (
-   `id` bigint(10) NOT NULL AUTO_INCREMENT,
+  `id` bigint(10) NOT NULL AUTO_INCREMENT,
   `campaignCode` varchar(50) NOT NULL COMMENT '活动编码，随机数',
   `campaignName` varchar(100) NOT NULL COMMENT '活动名称',
   `campaignImage` varchar(100) NOT NULL COMMENT '活动图片路径',
-  `startDate` datetime DEFAULT NULL  COMMENT '活动开始时间',
-  `endDate` datetime DEFAULT NULL  COMMENT '活动截止时间',
-  `takePartin` varchar(100) DEFAULT NULL COMMENT '参与方式',
+  `startDate` datetime DEFAULT NULL COMMENT '活动开始时间',
+  `endDate` datetime DEFAULT NULL COMMENT '活动截止时间',
+  `takePartin` varchar(100) DEFAULT NULL COMMENT '参与方式，如留夫鸭上海区域所有门店',
   `campaignDesc` varchar(50) DEFAULT NULL COMMENT '活动详情',
-  `campaignPrize` varchar(50) DEFAULT NULL COMMENT '活动奖品，可以是积分、优惠券',
+  `campaignToalPrize` int(11) DEFAULT NULL COMMENT '活动奖品总额，如 50000，如果不设置，认为总额无限',
+  `campaignPrize` int(11) DEFAULT NULL COMMENT '活动奖品单份，可以是积分、优惠券',
+  `prizeType` varchar(255) DEFAULT NULL COMMENT '活动奖品类型    1是 送积分 2 表示送优惠券',
   `isNew` varchar(255) DEFAULT NULL COMMENT '是否最新   0否 1是 最近 10条为最新',
   `createPerson` varchar(50) DEFAULT NULL COMMENT '发布人姓名',
-  `status` varchar(255) DEFAULT NULL  COMMENT '0 表示删除, 1 表示正常',
+  `status` varchar(255) DEFAULT NULL COMMENT '0 表示删除, 1 表示积分  2 表示优惠券',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=20 ;
 

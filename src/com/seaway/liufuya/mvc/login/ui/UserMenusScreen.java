@@ -1,10 +1,6 @@
 package com.seaway.liufuya.mvc.login.ui;
 
-import static com.vaadin.server.Sizeable.Unit.PERCENTAGE;
-import static com.vaadin.server.Sizeable.Unit.PIXELS;
-import static com.vaadin.ui.Alignment.MIDDLE_CENTER;
 
-import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -13,28 +9,18 @@ import com.seaway.liufuya.mvc.login.ui.views.PanelCRM;
 import com.seaway.liufuya.mvc.login.ui.views.PanelReport;
 import com.seaway.liufuya.mvc.login.ui.views.PanelSale;
 import com.seaway.liufuya.mvc.login.ui.views.PanelSystemManager;
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.navigator.Navigator;
-import com.vaadin.navigator.View;
-import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ThemeResource;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.Tree;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.Reindeer;
-import com.vaadin.ui.themes.Runo;
 
 
 /**
@@ -43,7 +29,7 @@ import com.vaadin.ui.themes.Runo;
  * @author lililiu
  * CustomComponent
  */
-public class UserMenusScreen extends CustomComponent implements ClickListener,View  {
+public class UserMenusScreen extends CustomComponent implements ClickListener {
 
 	private static final Log log = Logs.get();
 
@@ -52,9 +38,6 @@ public class UserMenusScreen extends CustomComponent implements ClickListener,Vi
 	private Button logout = new Button("退出");
 	private Button help = new Button("帮助");
 	
-	//----------------导航页面---------------------------------
-	private Navigator navigator = null;
-	private String toview  = null;
  	
 	/**
 	 * 构造函数，初始化界面
@@ -63,12 +46,7 @@ public class UserMenusScreen extends CustomComponent implements ClickListener,Vi
 		buildMenuView();
 	}
 	
-	public UserMenusScreen(Navigator navigator,String toview){
-		this.navigator = navigator;
-		this.toview = toview;
-		buildMenuView();
-	}
-
+	
 	/**
 	 * 登录成功后，显示的多系统菜单项目
 	 */
@@ -184,18 +162,6 @@ public class UserMenusScreen extends CustomComponent implements ClickListener,Vi
 			//showShareWindow();
 		} 
 	}
-	
-	
-	/**
-	 * View 接口方法,进入导航控制器时的操作。
-	 * 备选页面跳转方案
-	 */
-	@Override
-	public void enter(ViewChangeEvent event) {
-		// TODO Auto-generated method stub
-		Notification.show("欢迎你使用留夫鸭 O2O 核心管理后台");
-	}
-
 	
 
 }

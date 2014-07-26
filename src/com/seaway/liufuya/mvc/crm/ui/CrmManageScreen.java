@@ -27,6 +27,8 @@ import com.seaway.liufuya.mvc.crm.ui.layout.PersonForm;
 import com.seaway.liufuya.mvc.crm.ui.layout.PersonList;
 import com.seaway.liufuya.mvc.crm.ui.layout.SearchView;
 import com.seaway.liufuya.mvc.crm.ui.layout.SharingOptions;
+import com.seaway.liufuya.mvc.crm.xchangerule.dao.ExchangeRuleBeanDao;
+import com.seaway.liufuya.mvc.crm.xchangerule.layout.ExchangeRuleListLayout;
 import com.seaway.liufuya.mvc.login.ui.LoginScreen;
 import com.seaway.liufuya.mvc.login.ui.UserMenusScreen;
 import com.vaadin.data.Property;
@@ -90,11 +92,13 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 	private MemberAddressListLayout memberAddressListView = null; // 会员扩展资料
 	public MemberLevelListLayout memberLevelView = null; // 会员等级管理
 	private MemberDeleteInfoListView mdInfoListView = null;   //会员黑名单
+	private ExchangeRuleListLayout exchangeRuleListView = null; //兑奖规则信息管理
 	// 数据库对象
 	public MemberInfoMemberBean memberManager; // 会员管理
 	public MemberAddressBeanDao memberAddressDao; // 会员扩展资料
 	private MemberLevelDao memberLevelManager; // 会员等级
 	private MemberDeleteInfoManagerImpl mdInfoManager;//会员黑名单
+	private ExchangeRuleBeanDao exchangeRuleDao; //兑奖规则信息管理
 
 	/**
 	 * 构造函数，初始化界面
@@ -129,7 +133,11 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		} else if ("会员黑名单".equals(itemId)) {
 			Notification.show("会员黑名单");
 			setMainComponent(this.getmdInfoListView());
+		}else if ("兑奖规则信息管理".equals(itemId)) {
+			Notification.show("兑奖规则信息管理");
+			setMainComponent(this.getExchangeRuleListView()); 
 		}
+		
 	}
 
 	/**
@@ -336,6 +344,22 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		return mdInfoListView;
 	}
 
+	// --------------------------------------------------------------
+	/**
+	* 兑奖规则信息管理
+	* @return
+	*/
+	private ExchangeRuleListLayout getExchangeRuleListView() {
+	if (exchangeRuleDao == null) {
+	this.exchangeRuleDao = new ExchangeRuleBeanDao(nutzDao);
+	}
+
+	if (exchangeRuleListView == null) {
+	//所有的表格和表单，都在一个类中控制
+	exchangeRuleListView = new ExchangeRuleListLayout(exchangeRuleDao);
+	}
+	return exchangeRuleListView;
+	}
 	// ----------------------------------------------------------------
 	private SearchView getSearchView() {
 		if (searchView == null) {
@@ -416,42 +440,74 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 			Object itemId = event.getItemId();
 			log.info(">>>>>>>>>>>>>> 所选中的菜单 :" + itemId);
 			if (itemId != null) {
-				for (int i = 0; i < Constants.CRM_MENUS_TREE1.length; i++) {
-					String node = Constants.CRM_MENUS_TREE1[i];
-					log.info(">>>>>>>>>>node = " + node);
+				for (int i = 0; i < Constants.CRM_MENUS_ITEMCLICK.length; i++) {
+					String node = Constants.CRM_MENUS_ITEMCLICK[i];
 					if (itemId.equals(node)) {
 						switch (i) {
 						case 0:
-							log.info(">>>>>>>>>>>>> 会员界面");
-							// 会员资料
+							log.info(">>>>>>>>>>>>> 会员资料");
+							Notification.show("会员资料");
 							setMainComponent(this.getMemberInfoListView());
 							break;
 						case 1:
-							// 扩展资料
 							log.info(">>>>>>>>>>>>>  扩展资料");
+							Notification.show("扩展资料");
 							setMainComponent(this.getMemberAddressListView());
 							break;
 						case 2:
-							// 会员等级
 							log.info(">>>>>>>>>>>>>  会员等级");
+							Notification.show("会员等级");
 							setMainComponent(this.getMemberLevelListLayout());
 							break;
 						case 3:
-							// 会员活动
+							log.info(">>>>>>>>>>>>>  会员活动");
+							Notification.show("会员活动");
 							break;
 						case 4:
-							// 会员黑名单
 							log.info(">>>>>>>>>>>>>  会员黑名单");
+							Notification.show("会员黑名单");
 							setMainComponent(this.getmdInfoListView());
 							break;
 						case 5:
-							// 会员诉求
+							log.info(">>>>>>>>>>>>>  诉求类别");
+							Notification.show("诉求类别");
 							break;
 						case 6:
-							// 诉求类别
+							log.info(">>>>>>>>>>>>>  会员诉求");
+							Notification.show("会员诉求");
 							break;
 						case 7:
-							// 短信发送
+							log.info(">>>>>>>>>>>>>  短信发送");
+							Notification.show("短信发送");
+							break;
+						case 8:
+							log.info(">>>>>>>>>>>>> 兑奖规则信息管理");
+							Notification.show("兑奖规则信息管理");
+							setMainComponent(this.getExchangeRuleListView()); 
+							break;
+						case 9:
+							log.info(">>>>>>>>>>>>>  兑换奖品资料管理");
+							Notification.show("兑换奖品资料管理");
+							break;
+						case 10:
+							log.info(">>>>>>>>>>>>>  消费积分规则管理");
+							Notification.show("消费积分规则管理");
+							break;
+						case 11:
+							log.info(">>>>>>>>>>>>>  会员积分兑换管理");
+							Notification.show("会员积分兑换管理");
+							break;
+						case 12:
+							log.info(">>>>>>>>>>>>>  会员积分调整");
+							Notification.show("会员积分调整");
+							break;
+						case 13:
+							log.info(">>>>>>>>>>>>>  会员积分清除");
+							Notification.show("会员积分清除");
+							break;
+						case 14:
+							log.info(">>>>>>>>>>>>>  会员积分补录");
+							Notification.show("会员积分补录");
 							break;
 						default:
 							break;

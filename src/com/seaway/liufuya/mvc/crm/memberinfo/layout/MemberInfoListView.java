@@ -1,33 +1,24 @@
 package com.seaway.liufuya.mvc.crm.memberinfo.layout;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import org.nutz.dao.entity.annotation.Column;
-import org.nutz.ioc.loader.annotation.Inject;
-import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
 import com.seaway.liufuya.common.Constants;
-import com.seaway.liufuya.common.HttpRequestBiz;
-import com.seaway.liufuya.common.HttpService;
-import com.seaway.liufuya.common.util.DateUtil;
 import com.seaway.liufuya.mvc.crm.memberinfo.dao.impl.MemberInfoMemberBean;
 import com.seaway.liufuya.mvc.crm.memberinfo.data.Citypart;
 import com.seaway.liufuya.mvc.crm.memberinfo.data.Member;
 import com.seaway.liufuya.mvc.crm.memberinfo.data.MemberBean;
-import com.seaway.liufuya.mvc.crm.memberinfo.module.Ovip;
-import com.seaway.liufuya.mvc.crm.memberlevel.pojo.MemberLevel;
-import com.seaway.liufuya.mvc.crm.ui.CrmManageScreen;
-import com.seaway.liufuya.mvc.crm.ui.data.Person;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Container.Filter;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
@@ -36,24 +27,20 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.filter.Compare.Greater;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.RegexpValidator;
-import com.vaadin.event.Action;
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.Action.Handler;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.server.ThemeResource;
-import com.vaadin.server.Sizeable.Unit;
-import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
+import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.PopupDateField;
@@ -99,7 +86,7 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 	private Button cancel = new Button("取消", (ClickListener) this);
 	private Button edit = new Button("编辑", (ClickListener) this);
 
-	private final ComboBox cities = new ComboBox("城市");
+	private final NativeSelect cities = new NativeSelect("城市");
 	private HorizontalLayout footer; // 底部
 	// Member that will bind to the "name" property
 	// TextField 对象名称与传递进来的 PropertyId 数据名称一致，就不用
@@ -108,16 +95,16 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 	// 1.实体卡 2.网站注册 3.微信注册 4.后台注册
 	TextField telphone = null;// 整个作为登录账户
 	TextField realName = null;// 真实姓名
-	OptionGroup sex = null; // // 1.男 0女
+	NativeSelect sex = null; // // 1.男 0女
 	PopupDateField birthday = null; // 生日
 	TextField card_number = null; // 身份证号
 	TextField email = null;
-	ComboBox work_type = null; // 工作类型
-	ComboBox family_money = null; // 家庭收入
-	ComboBox age_area = null; // 年龄段
+	NativeSelect work_type = null; // 工作类型
+	NativeSelect family_money = null; // 家庭收入
+	NativeSelect age_area = null; // 年龄段
 	TextField entityCardNumber = null; // 实体卡卡号
 	// 1 已开卡 2 已使用 3 已作废
-	ComboBox entityCardStatus = null; // 实体卡状态
+	NativeSelect entityCardStatus = null; // 实体卡状态
 	// 余额、积分 实体卡从 crds 表获取，根据 关联 id 一一获取
 	TextField memberCard_balance = null; // 会员卡余额
 	TextField memberCard_score = null; // 会员卡积分
@@ -202,38 +189,44 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 	private void init() {
 		telphone = new TextField("手机号码"); // 整个作为登录账户
 		realName = new TextField("真实姓名");// 真实姓名
-		sex = new OptionGroup("性别"); // // 1.男 0女
+		sex = new NativeSelect("性别"); // // 1.男 0女
 		birthday = new PopupDateField("会员生日"); // 生日
 		card_number = new TextField("身份证号"); // 身份证号
 		email = new TextField("邮箱");
-		work_type = new ComboBox("工作类型"); // 工作类型
-		family_money = new ComboBox("家庭收入"); // 家庭收入
-		age_area = new ComboBox("年龄段"); // 年龄段
+		work_type = new NativeSelect("工作类型"); // 工作类型
+		family_money = new NativeSelect("家庭收入"); // 家庭收入
+		age_area = new NativeSelect("年龄段"); // 年龄段
 		entityCardNumber = new TextField("实体卡卡号"); // 实体卡卡号
 		// 1 已开卡 2 已使用 3 已作废
-		entityCardStatus = new ComboBox("实体卡状态"); // 实体卡状态
+		entityCardStatus = new NativeSelect("实体卡状态"); // 实体卡状态
 		// 余额、积分 实体卡从 crds 表获取，根据 关联 id 一一获取
 		memberCard_balance = new TextField("会员卡余额"); // 会员卡余额
 		memberCard_score = new TextField("会员卡积分"); // 会员卡积分
 
+		
 		// 允许用户输入新的城市
 		// cities.setNewItemsAllowed(true);
 		// 不允许输入空值
 		cities.setNullSelectionAllowed(false);
 		// 从数据库 获取所有的城市
 		List<Citypart> citylist = memberManager.getTopCityList();
-		for (Citypart citypart : citylist) {
-			cities.addItem(citypart.getAddress_name());
+		for (int j = 0; j < citylist.size(); j++) {
+			Citypart citypart = citylist.get(j);
+			cities.addItem(j);
+			cities.setItemCaption(j, citypart.getAddress_name());
 		}
+		cities.setNullSelectionAllowed(false); 
+		cities.setValue(0);
+		cities.setImmediate(true);
+		
 		// 性别
+		sex.addItem(0);
+        sex.setItemCaption(0, "男");
 		sex.addItem(1);
-		sex.setItemCaption(1, "先生");
-		sex.addItem(2);
-		sex.setItemCaption(2, "女士");
-		//sex.select(0); // 默认选中男性
+		sex.setItemCaption(1,"女");
+		sex.setValue(0);  //默认选择 男
 		sex.setNullSelectionAllowed(false);
-		//sex.setImmediate(true);
-		//sex.setHtmlContentAllowed(true);
+		sex.setImmediate(true);
 
 		// 生日
 		birthday.setImmediate(true);
@@ -241,30 +234,49 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 		birthday.setLocale(Locale.CHINA);
 		birthday.setResolution(Resolution.DAY);
 		// 工作类型
-		for (String type : Constants.MEMBER_WORK_TYPES) {
-			work_type.addItem(type);
+		for (int i = 0; i < Constants.MEMBER_WORK_TYPES.length; i++) {
+			String type= Constants.MEMBER_WORK_TYPES[i];
+			work_type.addItem(i);
+			work_type.setItemCaption(i, type);
 		}
-
+		work_type.setNullSelectionAllowed(false); 
+		work_type.setValue(0);
+		work_type.setImmediate(true);
+		
 		// 家庭收入
-		for (String money : Constants.MEMBER_FAMILY_MONEY) {
-			family_money.addItem(money);
+		for (int i = 0; i < Constants.MEMBER_FAMILY_MONEY.length; i++) {
+			String type= Constants.MEMBER_FAMILY_MONEY[i];
+			family_money.addItem(i);
+			family_money.setItemCaption(i, type);
 		}
+		family_money.setNullSelectionAllowed(false); 
+		family_money.setValue(0);
+		family_money.setImmediate(true);
 
 		// 年龄段
-		for (String age : Constants.MEMBER_AGE_AREAS) {
-			age_area.addItem(age);
+		for (int i = 0; i < Constants.MEMBER_AGE_AREAS.length; i++) {
+			String type= Constants.MEMBER_AGE_AREAS[i];
+			age_area.addItem(i);
+			age_area.setItemCaption(i, type);
 		}
+		age_area.setNullSelectionAllowed(false); 
+		age_area.setValue(0);
+		age_area.setImmediate(true);
 
 		// 实体卡状态
-		for (String statu : Constants.MEMBER_ENTITY_CARD_STATUS) {
-			entityCardStatus.addItem(statu);
+		for (int i = 0; i < Constants.MEMBER_ENTITY_CARD_STATUS.length; i++) {
+			String type= Constants.MEMBER_ENTITY_CARD_STATUS[i];
+			entityCardStatus.addItem(i);
+			entityCardStatus.setItemCaption(i, type);
 		}
+		entityCardStatus.setNullSelectionAllowed(false); 
+		entityCardStatus.setValue(0);
+		entityCardStatus.setImmediate(true);
 
 		// 必填项
 		telphone.setRequired(true);
 		realName.setRequired(true);
-//		telphone.setImmediate(true);
-//		realName.setImmediate(true);
+		sex.setRequired(true);
 
 		// placeHolder提示
 		telphone.setInputPrompt("手机号码作为登录名");
@@ -405,7 +417,7 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 
 		addFormlayout.addComponent(telphone);
 		addFormlayout.addComponent(realName);
-		addFormlayout.addComponent(sex);
+		//addFormlayout.addComponent(sex);
 		addFormlayout.addComponent(birthday);
 		addFormlayout.addComponent(card_number);
 		addFormlayout.addComponent(email);
@@ -428,9 +440,10 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 			@Override
 			public void buttonClick(ClickEvent event) {
 				try {
-					boolean flag = addFormbinder.isValid();
-					log.info(">>>>>>>>>>>>>> 验证结果 :"+flag);
-					if (!flag) {
+					//boolean flag = addFormbinder.isValid();
+					boolean flag = false;
+					log.info(">>>>>>>>>>>>>> 表单验证结果 :"+flag);
+					if (flag) {
 						Notification.show("带 * 字段不能为空，请填写完成再提交");
 						//验证电话重复
 						String loginname = telphone.getValue();
@@ -442,8 +455,8 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 						addFormbinder.commit();
 						// 提交到数据库
 						Member ml = new Member();
-						ml.setTelphone(telphone.getValue());
-						ml.setLoginName(telphone.getValue()); //这里要验证重名
+						ml.setTelphone(telphone.getValue());  
+						ml.setLoginName(telphone.getValue()); //登录名就是手机号码
 						ml.setRealName(realName.getValue());
 						ml.setBirthday(birthday.getValue());
 						ml.setCard_number(card_number.getValue());
@@ -451,13 +464,28 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 						ml.setEntityCardNumber(entityCardNumber.getValue());
 						ml.setMemberCard_balance(new Integer(memberCard_balance.getValue()));
 						ml.setMemberCard_score(new Integer(memberCard_score.getValue()));
+												
+						final String[] objs = new String[5]; 
+//						sex.addValueChangeListener(new ValueChangeListener() {
+//				            @Override
+//				            public void valueChange(final ValueChangeEvent event) {
+//				            		objs[0] = String.valueOf(event.getProperty()
+//				                        .getValue());
+//				            }
+//				        });
 						
-						
-						//ml.setCity(cities.getValue());
-						Object sess = sex.getValue();
-						Object citt = cities.getValue();
-						log.info(">>>>>>>>>>>>>>>>>  选中性别 :"+sess+"   ,  city :"+citt);
-						
+						//获取 下拉选项框中的值
+						cities.addValueChangeListener(new ValueChangeListener() {
+							@Override
+							public void valueChange(final ValueChangeEvent event) {
+								final String valueString = String.valueOf(event.getProperty()
+				                        .getValue());
+								objs[1] = valueString;
+				                Notification.show("城市:", valueString,
+				                        Type.TRAY_NOTIFICATION);
+							}
+				        });
+						log.info(">>>>>>>>>>>>>>>>>  选中性别 :"+objs[0]+"   ,  city :"+objs[1]);
 						
 						//memberManager.saveMember(ml);
 						
