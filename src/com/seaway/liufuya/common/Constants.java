@@ -133,5 +133,12 @@ public class Constants {
 	// 表明列头
 	public static final String[] COMPLAIN_TYPE_COL_HEADERS_CHINESE = new String[] {
 			"诉求类型", "创建时间", "创建人", "状态", "备注" };
+	
+	// ----------------------------------------------------------------------------
+	// 诉求
+	// 诉求
+	public static final Object[] COMPLAIN_COL = new String[] { "complainCode","typeName", "relName", "telPhone", "createTime","adminPerson","isOk","remark","complainContent","updateDate" };
+	// 表明列头
+	public static final String[] COMPLAIN_COL_HEADERS_CHINESE = new String[] {"诉求编码", "诉求类型", "会员", "会员电话", "投诉时间","处理人","诉求状态","处理意见","投诉内容","回复时间" };
 
 }

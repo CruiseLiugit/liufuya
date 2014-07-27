@@ -38,7 +38,7 @@ public class ComplainTypeManagerImpl extends BasicDao implements Serializable,Co
 	
 	@Override
 	public List<String> getComplainType() {
-		Sql sqls = Sqls.create("select ct.typeName as typeName from lfy_member_complain_type ct where ct.status='1' ");
+		Sql sqls = Sqls.create("select ct.typeName as typeName from lfy_member_complain_type ct");
 		sqls.setCallback(new SqlCallback() {
 			@Override
 			public Object invoke(Connection conn, ResultSet rs, Sql sql)throws SQLException {
@@ -88,7 +88,7 @@ public class ComplainTypeManagerImpl extends BasicDao implements Serializable,Co
 	public String save(String[] args) {
 		String reback = null;
 		//先验证  是否存在相同诉求类型名
-		Sql sql = Sqls.create("select ct.typeName from lfy_member_complain_type ct "+"where ct.typeName= '"+args[0]+"' and  ct.status='1' ");
+		Sql sql = Sqls.create("select ct.typeName from lfy_member_complain_type ct "+"where ct.typeName= '"+args[0]+"'");
 		sql.setCallback(new SqlCallback() {
 			
 			@Override

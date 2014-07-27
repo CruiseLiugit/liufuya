@@ -6,6 +6,9 @@ import org.nutz.log.Logs;
 
 import com.seaway.liufuya.LiufuyaUI;
 import com.seaway.liufuya.common.Constants;
+import com.seaway.liufuya.mvc.crm.complain.dao.ComplainManager;
+import com.seaway.liufuya.mvc.crm.complain.dao.impl.ComplainManagerImpl;
+import com.seaway.liufuya.mvc.crm.complain.layout.ComplainListView;
 import com.seaway.liufuya.mvc.crm.complaintype.dao.ComplainTypeManager;
 import com.seaway.liufuya.mvc.crm.complaintype.dao.impl.ComplainTypeManagerImpl;
 import com.seaway.liufuya.mvc.crm.complaintype.layout.ComplainTypeListView;
@@ -97,6 +100,7 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 	private MemberDeleteInfoListView mdInfoListView = null; // 会员黑名单
 	private ExchangeRuleListLayout exchangeRuleListView = null; // 兑奖规则信息管理
 	private ComplainTypeListView complainTypeListView = null; // 诉求类别
+	private ComplainListView complainListView = null;//诉求管理
 	// 数据库对象
 	public MemberInfoMemberBean memberManager; // 会员管理
 	public MemberAddressBeanDao memberAddressDao; // 会员扩展资料
@@ -104,6 +108,7 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 	private MemberDeleteInfoManagerImpl mdInfoManager;// 会员黑名单
 	private ExchangeRuleBeanDao exchangeRuleDao; // 兑奖规则信息管理
 	private ComplainTypeManager complainTypeManager;// 诉求类别
+	private ComplainManager complainManager;//诉求管理
 
 	/**
 	 * 构造函数，初始化界面
@@ -144,6 +149,9 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		} else if ("诉求类别".equals(itemId)) {
 			Notification.show("诉求类别");
 			setMainComponent(this.getcomplainTypeListView());
+		}else if("会员诉求".equals(itemId)){
+			Notification.show("会员诉求");
+			setMainComponent(this.getComplainListView());
 		}
 
 	}
@@ -368,6 +376,26 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		return complainTypeListView;
 	}
 
+	//---------------------------------------------会员诉求
+	/**
+	 * 会员诉求管理
+	 * 
+	 * @author zg
+	 * **/
+	private ComplainListView getComplainListView(){
+		if (complainManager == null) {
+			this.complainManager = new ComplainManagerImpl(nutzDao);
+		}
+
+		if (complainListView == null) {
+			// 所有的表格和表单，都在一个类中控制
+			complainListView = new ComplainListView(complainManager);
+		}
+		return complainListView;
+	}
+	
+	
+	
 	// --------------------------------------------------------------
 	/**
 	 * 兑奖规则信息管理
@@ -502,6 +530,7 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 						case 6:
 							log.info(">>>>>>>>>>>>>  会员诉求");
 							Notification.show("会员诉求");
+							setMainComponent(this.getComplainListView());
 							break;
 						case 7:
 							log.info(">>>>>>>>>>>>>  短信发送");

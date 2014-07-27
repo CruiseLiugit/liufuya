@@ -135,8 +135,7 @@ public class ComplainTypeListView extends VerticalLayout implements
 	 * 初始化表格容器
 	 * **/
 	private void initContainer(BeanItemContainer container, String itemName) {
-		List<ComplainTypeDtilBean> complainTypeDtilList = this.complainTypeManager
-				.getComplainTypeDtil(itemName);
+		List<ComplainTypeDtilBean> complainTypeDtilList = this.complainTypeManager.getComplainTypeDtil(itemName);
 		container.removeAllItems();
 		for (ComplainTypeDtilBean complainTypeDtil : complainTypeDtilList) {
 			container.addItem(complainTypeDtil);
