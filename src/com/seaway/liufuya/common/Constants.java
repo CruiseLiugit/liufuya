@@ -34,20 +34,21 @@ public class Constants {
 	// ---------------------------------------------------------------------------
 	// 会员管理界面，左侧树状菜单 节点值
 	public static final String[] CRM_MENUS_TREE1 = { "会员资料", "扩展资料", "会员等级",
-			"会员活动", "会员黑名单", "诉求类别","会员诉求","短信发送"}; //
+			"会员活动", "会员黑名单", "诉求类别", "会员诉求", "短信发送" }; //
 	// 积分管理
-	public static final String[] CRM_MENUS_TREE2 = { "兑奖规则信息管理", "兑换奖品资料管理", "消费积分规则管理",
-			"会员积分兑换管理", "会员积分调整", "会员积分清除", "会员积分补录" };
-	
-	//所有将会被点击到的 菜单值数组，用于在 CrmManageScreen.java 中 itemClick(ItemClickEvent event) 方法中调用
-	public static final String[] CRM_MENUS_ITEMCLICK = { "会员资料", "扩展资料", "会员等级",
-		"会员活动", "会员黑名单", "诉求类别","会员诉求","短信发送","兑奖规则信息管理", "兑换奖品资料管理", "消费积分规则管理",
-		"会员积分兑换管理", "会员积分调整", "会员积分清除", "会员积分补录"};  
+	public static final String[] CRM_MENUS_TREE2 = { "兑奖规则信息管理", "兑换奖品资料管理",
+			"消费积分规则管理", "会员积分兑换管理", "会员积分调整", "会员积分清除", "会员积分补录" };
+
+	// 所有将会被点击到的 菜单值数组，用于在 CrmManageScreen.java 中 itemClick(ItemClickEvent
+	// event) 方法中调用
+	public static final String[] CRM_MENUS_ITEMCLICK = { "会员资料", "扩展资料",
+			"会员等级", "会员活动", "会员黑名单", "诉求类别", "会员诉求", "短信发送", "兑奖规则信息管理",
+			"兑换奖品资料管理", "消费积分规则管理", "会员积分兑换管理", "会员积分调整", "会员积分清除", "会员积分补录" };
 
 	public static final Object[][] CRM_MENUS_TREE = new Object[][] {
 			new Object[] { "会员管理", "会员资料", "扩展资料", "会员等级", "会员活动", "会员黑名单",
-					"诉求类别","会员诉求","短信发送"}, 
-			new Object[] { "积分管理", "兑奖规则信息管理","兑换奖品资料管理", "消费积分规则管理", 
+					"诉求类别", "会员诉求", "短信发送" },
+			new Object[] { "积分管理", "兑奖规则信息管理", "兑换奖品资料管理", "消费积分规则管理",
 					"会员积分兑换管理", "会员积分调整", "会员积分清除", "会员积分补录" } };
 
 	// ---------------------------------------------------------------------------
@@ -110,19 +111,27 @@ public class Constants {
 	// ---------------------------------------------------------------------------
 	// 会员等级列表
 	public static final Object[] MEMEBER_LEVEL_ORDER = new String[] {
-			"levelName", "levelBegin", "levelEnd", "createTime", "createPerson"};
+			"levelName", "levelBegin", "levelEnd", "createTime", "createPerson" };
 	// "表头列名" captions for properties in same order as in NATURAL_COL_ORDER.
 	public static final String[] MEMEBER_LEVEL_CHINESE = new String[] { "等级名称",
-			"起始积分", "结束积分", "创建时间", "创建人"};
+			"起始积分", "结束积分", "创建时间", "创建人" };
 
 	// ---------------------------------------------------------------------------
-	 // 会员扩展资料，
+	// 会员扩展资料，
 	public static final Object[] EXCHANGE_RULE_TABLE_COL = new String[] {
-	"ruleCode", "ruleName", "ruleNumberBegin", "ruleNumberEnd", "remark", "startDate","createPerson","status" };
+			"ruleCode", "ruleName", "ruleNumberBegin", "ruleNumberEnd",
+			"remark", "startDate", "createPerson", "status" };
 
 	public static final String[] EXCHANGE_RULE_TABLE_COL_HEADERS_CHINESE = new String[] {
-	"规则代码", "规则名称", "规则起始", "规则结束", "备注", "开始时间","创建人","状态"};
-	
-	
-	
+			"规则代码", "规则名称", "规则起始", "规则结束", "备注", "开始时间", "创建人", "状态" };
+
+	// ----------------------------------------------------------------------------
+	// 诉求类别
+	// 诉求类型
+	public static final Object[] COMPLAIN_TYPE_COL = new String[] { "typeName",
+			"createDate", "createPerson", "status", "remark" };
+	// 表明列头
+	public static final String[] COMPLAIN_TYPE_COL_HEADERS_CHINESE = new String[] {
+			"诉求类型", "创建时间", "创建人", "状态", "备注" };
+
 }

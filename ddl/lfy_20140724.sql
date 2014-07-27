@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS `lfy_member_complain_type` (
 
 CREATE TABLE IF NOT EXISTS `lfy_member_complain` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `complainCode`  varchar(100) DEFAULT NULL COMMENT '投诉编号 cp+随机数编码',
   `typeCode`  varchar(50) DEFAULT NULL COMMENT '诉求类别编码',
   `userCode` varchar(50) NOT NULL COMMENT '会员编码，谁投诉了',
   `complainContent` varchar(500) DEFAULT NULL COMMENT '投诉内容',
