@@ -37,7 +37,7 @@ public class Constants {
 			"会员活动", "会员黑名单", "诉求类别", "会员诉求", "短信发送" }; //
 	// 积分管理
 	public static final String[] CRM_MENUS_TREE2 = { "兑奖规则信息管理", "兑换奖品资料管理",
-			"消费积分规则管理", "会员积分兑换管理", "会员积分调整", "会员积分清除", "会员积分补录" };
+			"消费积分规则管理", "会员积分兑换管理"}; //"会员积分调整", "会员积分清除", "会员积分补录"
 
 	// 所有将会被点击到的 菜单值数组，用于在 CrmManageScreen.java 中 itemClick(ItemClickEvent
 	// event) 方法中调用
