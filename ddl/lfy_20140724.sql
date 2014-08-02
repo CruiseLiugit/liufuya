@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS `lfy_member_complain_type` (
 --
 -- 会员投诉信息表 表的结构 `lfy_member_complain`
 --
+drop table 'lfy_member_complain'
 
 CREATE TABLE IF NOT EXISTS `lfy_member_complain` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -38,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `lfy_member_complain` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=20 ;
 
-
+insert into lfy_member_complain(complainCode,typeCode,userCode,complainContent,createDate,adminPerson,remark,updateDate,isOk,status) values('add787232989','',);
 
 --
 -- 系统短信 内容 表的结构 `lfy_member_sms`
@@ -129,6 +130,7 @@ CREATE TABLE IF NOT EXISTS `crm_consume_rule` (
 
 CREATE TABLE IF NOT EXISTS `crm_consume_exchange` (
    `id` bigint(10) NOT NULL AUTO_INCREMENT,
+  `exchangeCode` varchar(50) NOT NULL COMMENT '兑换记录编码，当前表用', 
   `userCode` varchar(50) NOT NULL COMMENT '会员编码，谁做了兑换',
   `productCode` varchar(50) NOT NULL COMMENT '产品编码，兑换了什么东西，关联crm_exchange_product',
   `exchangeDate` datetime DEFAULT NULL  COMMENT '兑换时间，什么时间兑换的',

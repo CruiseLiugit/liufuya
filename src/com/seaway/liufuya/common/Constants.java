@@ -2,6 +2,7 @@ package com.seaway.liufuya.common;
 
 import com.vaadin.event.ItemClickEvent;
 
+
 public class Constants {
 
 	// 页面字符串
