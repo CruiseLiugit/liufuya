@@ -8,7 +8,6 @@ import com.seaway.liufuya.BasicDao;
 import com.seaway.liufuya.LiufuyaUI;
 import com.seaway.liufuya.common.Constants;
 import com.seaway.liufuya.mvc.crm.memberinfo.dao.impl.MemberInfoMemberBean;
-import com.seaway.liufuya.mvc.crm.memberinfo.layout.MemberInfoForm;
 import com.seaway.liufuya.mvc.crm.memberinfo.layout.MemberInfoListView;
 import com.seaway.liufuya.mvc.crm.ui.dao.PersonManager;
 import com.seaway.liufuya.mvc.crm.ui.dao.impl.PersonManagerBean;
@@ -25,10 +24,6 @@ import com.seaway.liufuya.mvc.crm.ui.layout.SearchView;
 import com.seaway.liufuya.mvc.crm.ui.layout.SharingOptions;
 import com.seaway.liufuya.mvc.login.ui.LoginScreen;
 import com.seaway.liufuya.mvc.login.ui.UserMenusScreen;
-import com.seaway.liufuya.mvc.login.ui.views.PanelCRM;
-import com.seaway.liufuya.mvc.login.ui.views.PanelReport;
-import com.seaway.liufuya.mvc.login.ui.views.PanelSale;
-import com.seaway.liufuya.mvc.login.ui.views.PanelSystemManager;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -38,20 +33,18 @@ import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ThemeResource;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.Reindeer;
 
 /**
@@ -95,7 +88,6 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 	// 会员资料组件
 	private MemberInfoListView memberListView = null;
 	//private MemberInfoList memberList = null;
-	private MemberInfoForm memberForm = null;
 	public MemberInfoMemberBean memberManager;
 	
 	/**

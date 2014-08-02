@@ -1,5 +1,7 @@
 package com.seaway.liufuya.mvc.login.ui.views;
 
+import com.seaway.liufuya.mvc.crm.ui.CrmManageScreen;
+import com.seaway.liufuya.mvc.report.ui.ReportScreen;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.ui.Accordion;
@@ -7,6 +9,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Tree;
+import com.vaadin.ui.UI;
 
 /**
  * 报表系统
@@ -110,16 +113,13 @@ public class PanelReport extends Panel {
 				tree3.addItemClickListener(new ItemClickListener() {
 					@Override
 					public void itemClick(ItemClickEvent event) {
-						// System.out.println("tree1 itemClick button Name="+event.getButtonName());
-						// System.out.println("tree1 itemClick item :"+event.getItem()+" , itemid :"+event.getItemId()+"  , PropertyId :"+event.getPropertyId());
-						String id = (String) event.getItemId();
-						if ("会员资料".equals(id)) {
-							// 切换到新页面
-							// UI.getCurrent().setContent(new LoginScreen());
+						String itemId = (String) event.getItemId();
+						if (itemId != null) {
+							//在 ReportScreen 类中，根据 itemId 进行判断显示哪个模块
+							UI.getCurrent().setContent(new ReportScreen(itemId));
 						}
 					}
 				});
-
 				// 添加 手风琴 header 标题
 				accordion.addTab(tree3, "会员报表", null);
 				accordion.addTab(tree1, "门店报表", null);
@@ -128,6 +128,7 @@ public class PanelReport extends Panel {
 				this.setContent(accordion);
 	}
 
+	
 	public PanelReport(String caption, Component content) {
 		super(caption, content);
 		// TODO Auto-generated constructor stub

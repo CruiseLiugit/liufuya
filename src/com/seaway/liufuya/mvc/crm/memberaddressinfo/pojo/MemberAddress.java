@@ -1,14 +1,10 @@
-package com.seaway.liufuya.mvc.crm.memberinfo.data;
+package com.seaway.liufuya.mvc.crm.memberaddressinfo.pojo;
 
 import java.io.Serializable;
 import java.util.Date;
 
 import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.Id;
-import org.nutz.dao.entity.annotation.Many;
-import org.nutz.dao.entity.annotation.ManyMany;
-import org.nutz.dao.entity.annotation.Name;
-import org.nutz.dao.entity.annotation.One;
 import org.nutz.dao.entity.annotation.Table;
 
 /**
