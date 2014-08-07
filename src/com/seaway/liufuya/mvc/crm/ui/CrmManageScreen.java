@@ -12,6 +12,8 @@ import com.seaway.liufuya.mvc.crm.complain.layout.ComplainListView;
 import com.seaway.liufuya.mvc.crm.complaintype.dao.ComplainTypeManager;
 import com.seaway.liufuya.mvc.crm.complaintype.dao.impl.ComplainTypeManagerImpl;
 import com.seaway.liufuya.mvc.crm.complaintype.layout.ComplainTypeListView;
+import com.seaway.liufuya.mvc.crm.exchangeproduct.dao.EXProductManager;
+import com.seaway.liufuya.mvc.crm.exchangeproduct.layout.EXProductListView;
 import com.seaway.liufuya.mvc.crm.memberaddressinfo.dao.MemberAddressBeanDao;
 import com.seaway.liufuya.mvc.crm.memberaddressinfo.layout.MemberAddressListLayout;
 import com.seaway.liufuya.mvc.crm.memberdelete.dao.impl.MemberDeleteInfoManagerImpl;
@@ -20,6 +22,8 @@ import com.seaway.liufuya.mvc.crm.memberinfo.dao.impl.MemberInfoMemberBean;
 import com.seaway.liufuya.mvc.crm.memberinfo.layout.MemberInfoListView;
 import com.seaway.liufuya.mvc.crm.memberlevel.dao.MemberLevelDao;
 import com.seaway.liufuya.mvc.crm.memberlevel.layout.MemberLevelListLayout;
+import com.seaway.liufuya.mvc.crm.sms.dao.impl.SMSManagerImpl;
+import com.seaway.liufuya.mvc.crm.sms.layout.SMSListView;
 import com.seaway.liufuya.mvc.crm.ui.dao.PersonManager;
 import com.seaway.liufuya.mvc.crm.ui.dao.impl.PersonManagerBean;
 import com.seaway.liufuya.mvc.crm.ui.data.Person;
@@ -101,6 +105,8 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 	private ExchangeRuleListLayout exchangeRuleListView = null; // 兑奖规则信息管理
 	private ComplainTypeListView complainTypeListView = null; // 诉求类别
 	private ComplainListView complainListView = null;//诉求管理
+	private SMSListView smsListView = null ;     //短信设置
+	private EXProductListView exProductListView = null; //兑换奖品资料管理
 	// 数据库对象
 	public MemberInfoMemberBean memberManager; // 会员管理
 	public MemberAddressBeanDao memberAddressDao; // 会员扩展资料
@@ -109,6 +115,8 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 	private ExchangeRuleBeanDao exchangeRuleDao; // 兑奖规则信息管理
 	private ComplainTypeManager complainTypeManager;// 诉求类别
 	private ComplainManager complainManager;//诉求管理
+	private SMSManagerImpl smsManager = null; //短信设置
+	private EXProductManager exproductManager; //兑换奖品资料管理
 
 	/**
 	 * 构造函数，初始化界面
@@ -143,16 +151,30 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		} else if ("会员黑名单".equals(itemId)) {
 			Notification.show("会员黑名单");
 			setMainComponent(this.getmdInfoListView());
-		} else if ("兑奖规则信息管理".equals(itemId)) {
-			Notification.show("兑奖规则信息管理");
-			setMainComponent(this.getExchangeRuleListView());
 		} else if ("诉求类别".equals(itemId)) {
 			Notification.show("诉求类别");
 			setMainComponent(this.getcomplainTypeListView());
 		}else if("会员诉求".equals(itemId)){
 			Notification.show("会员诉求");
 			setMainComponent(this.getComplainListView());
+		}else if("短信发送".equals(itemId)){
+			Notification.show("短信发送");
+			setMainComponent(this.getSMSListView());
+		}else if ("积分商品类别管理".equals(itemId)) {
+			Notification.show("积分商品类别管理");
+			setMainComponent(this.getExchangeRuleListView());
+		} else if("积分商品明细管理".equals(itemId)){
+			Notification.show("积分商品明细管理");
+			setMainComponent(this.getEXProductListView());
+		}else if("积分兑换比例管理".equals(itemId)){
+			Notification.show("积分兑换比例管理");
+			//
+		}else if("会员积分兑换明细".equals(itemId)){
+			Notification.show("会员积分兑换明细");
+			//
 		}
+		
+		
 
 	}
 
@@ -393,7 +415,23 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		}
 		return complainListView;
 	}
-	
+	//-------------------------------------------
+	/**
+	 * 短信发送管理
+	 * 
+	 * @author zg
+	 * **/
+	private SMSListView getSMSListView(){
+		if (smsManager == null) {
+			this.smsManager = new SMSManagerImpl(nutzDao);
+		}
+
+		if (smsListView == null) {
+			// 所有的表格和表单，都在一个类中控制
+			smsListView = new SMSListView(smsManager);
+		}
+		return smsListView;
+	}
 	
 	
 	// --------------------------------------------------------------
@@ -412,6 +450,24 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 			exchangeRuleListView = new ExchangeRuleListLayout(exchangeRuleDao);
 		}
 		return exchangeRuleListView;
+	}
+	
+	//---------------------------------------------兑换奖品资料管理
+	/**
+	 * 兑换奖品资料管理
+	 * 
+	 * @author zg
+	 * **/
+	private EXProductListView getEXProductListView(){
+		if (exproductManager == null) {
+			this.exproductManager = new EXProductManager(nutzDao);
+		}
+
+		if (exProductListView == null) {
+			// 所有的表格和表单，都在一个类中控制
+			exProductListView = new EXProductListView(exproductManager);
+		}
+		return exProductListView;
 	}
 
 	// ----------------------------------------------------------------
@@ -535,24 +591,27 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 						case 7:
 							log.info(">>>>>>>>>>>>>  短信发送");
 							Notification.show("短信发送");
+							setMainComponent(this.getSMSListView());
 							break;
 						case 8:
-							log.info(">>>>>>>>>>>>> 兑奖规则信息管理");
-							Notification.show("兑奖规则信息管理");
+							log.info(">>>>>>>>>>>>> 积分商品类别管理");
+							Notification.show("积分商品类别管理");
 							setMainComponent(this.getExchangeRuleListView());
 							break;
 						case 9:
-							log.info(">>>>>>>>>>>>>  兑换奖品资料管理");
-							Notification.show("兑换奖品资料管理");
+							log.info(">>>>>>>>>>>>>  积分商品明细管理");
+							Notification.show("积分商品明细管理");
+							setMainComponent(this.getEXProductListView());
 							break;
 						case 10:
-							log.info(">>>>>>>>>>>>>  消费积分规则管理");
-							Notification.show("消费积分规则管理");
+							log.info(">>>>>>>>>>>>>  积分兑换比例管理");
+							Notification.show("积分兑换比例管理");
 							break;
 						case 11:
-							log.info(">>>>>>>>>>>>>  会员积分兑换管理");
-							Notification.show("会员积分兑换管理");
+							log.info(">>>>>>>>>>>>>  会员积分兑换明细");
+							Notification.show("会员积分兑换明细");
 							break;
+						/*	
 						case 12:
 							log.info(">>>>>>>>>>>>>  会员积分调整");
 							Notification.show("会员积分调整");
@@ -565,11 +624,9 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 							log.info(">>>>>>>>>>>>>  会员积分补录");
 							Notification.show("会员积分补录");
 							break;
+						*/	
 						default:
 							break;
-						}
-						if (i == 0) {
-
 						}
 					}
 				}

@@ -27,7 +27,6 @@ import com.seaway.liufuya.mvc.crm.memberinfo.dao.MemberInfoManager;
 import com.seaway.liufuya.mvc.crm.memberinfo.data.Citypart;
 import com.seaway.liufuya.mvc.crm.memberinfo.data.Member;
 import com.seaway.liufuya.mvc.crm.memberinfo.data.MemberBean;
-import com.seaway.liufuya.mvc.crm.memberlevel.pojo.MemberLevel;
 import com.vaadin.data.util.BeanItemContainer;
 
 @IocBean
@@ -171,4 +170,53 @@ public class MemberInfoMemberBean extends BasicDao implements
 		this.save(ml);
 	}
 
+	@Override
+	public List<Member> getMemberList() {
+		List<Member> list=this.dao.query(Member.class, null);
+		return list;
+	}
+
+	public List<Member> getMemberByNameOrPhoneNo(String value) {
+		Cnd condition = Cnd.where("realName", "like", "%"+value+"%")
+				.or("loginName", "like", "%"+value+"%" );
+		List<Member> list=this.dao.query(Member.class, condition);
+		return list;
+	}
+
+
+	public List<Member> getMemberByUserType(String value) {
+		Cnd condition = Cnd.where("user_type", "=", value);
+		List<Member> list=this.dao.query(Member.class, condition);
+		return list;
+	}
+
+	public List<Member> getMemberBySex(String value) {
+		Cnd condition = Cnd.where("sex", "=", value);
+		List<Member> list=this.dao.query(Member.class, condition);
+		return list;
+	}
+
+	public List<Member> getMemberByStatus(String value) {
+		Cnd condition = Cnd.where("status", "=", value);
+		List<Member> list=this.dao.query(Member.class, condition);
+		return list;
+	}
+
+	public List<Member> getMemberByCity(String value) {
+		Cnd condition = Cnd.where("city", "=", value);
+		List<Member> list=this.dao.query(Member.class, condition);
+		return list;
+	}
+
+	public List<Member> getMemberByWork(String value) {
+		Cnd condition = Cnd.where("work_type", "=", value);
+		List<Member> list=this.dao.query(Member.class, condition);
+		return list;
+	}
+
+	public List<Member> getMemberByCreateDate(Date value) {
+		Cnd condition = Cnd.where("create_date", "=", value);
+		List<Member> list=this.dao.query(Member.class, condition);
+		return list;
+	}
 }

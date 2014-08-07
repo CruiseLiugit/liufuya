@@ -2,7 +2,6 @@ package com.seaway.liufuya.common;
 
 import com.vaadin.event.ItemClickEvent;
 
-
 public class Constants {
 
 	// 页面字符串
@@ -37,20 +36,22 @@ public class Constants {
 	public static final String[] CRM_MENUS_TREE1 = { "会员资料", "扩展资料", "会员等级",
 			"会员活动", "会员黑名单", "诉求类别", "会员诉求", "短信发送" }; //
 	// 积分管理
-	public static final String[] CRM_MENUS_TREE2 = { "兑奖规则信息管理", "兑换奖品资料管理",
-			"消费积分规则管理", "会员积分兑换管理"}; //"会员积分调整", "会员积分清除", "会员积分补录"
+//	public static final String[] CRM_MENUS_TREE2 = { "兑奖规则信息管理", "兑换奖品资料管理",
+//			"消费积分规则管理", "会员积分兑换管理" }; // "会员积分调整", "会员积分清除", "会员积分补录"
+	public static final String[] CRM_MENUS_TREE2 = { "积分商品类别管理", "积分商品明细管理",
+		"积分兑换比例管理", "会员积分兑换明细" }; // "会员积分调整", "会员积分清除", "会员积分补录"
 
 	// 所有将会被点击到的 菜单值数组，用于在 CrmManageScreen.java 中 itemClick(ItemClickEvent
 	// event) 方法中调用
 	public static final String[] CRM_MENUS_ITEMCLICK = { "会员资料", "扩展资料",
-			"会员等级", "会员活动", "会员黑名单", "诉求类别", "会员诉求", "短信发送", "兑奖规则信息管理",
-			"兑换奖品资料管理", "消费积分规则管理", "会员积分兑换管理", "会员积分调整", "会员积分清除", "会员积分补录" };
+			"会员等级", "会员活动", "会员黑名单", "诉求类别", "会员诉求", "短信发送",  "积分商品类别管理", "积分商品明细管理",
+			"积分兑换比例管理", "会员积分兑换明细" }; //, "会员积分调整", "会员积分清除", "会员积分补录"
 
 	public static final Object[][] CRM_MENUS_TREE = new Object[][] {
 			new Object[] { "会员管理", "会员资料", "扩展资料", "会员等级", "会员活动", "会员黑名单",
 					"诉求类别", "会员诉求", "短信发送" },
-			new Object[] { "积分管理", "兑奖规则信息管理", "兑换奖品资料管理", "消费积分规则管理",
-					"会员积分兑换管理", "会员积分调整", "会员积分清除", "会员积分补录" } };
+			new Object[] { "积分管理",  "积分商品类别管理", "积分商品明细管理",
+					"积分兑换比例管理", "会员积分兑换明细" } };//, "会员积分调整", "会员积分清除", "会员积分补录"
 
 	// ---------------------------------------------------------------------------
 	// 从留夫鸭现有 POS 数据库中获取会员信息、门店信息的接口
@@ -134,12 +135,73 @@ public class Constants {
 	// 表明列头
 	public static final String[] COMPLAIN_TYPE_COL_HEADERS_CHINESE = new String[] {
 			"诉求类型", "创建时间", "创建人", "状态", "备注" };
-	
+
 	// ----------------------------------------------------------------------------
 	// 诉求
 	// 诉求
-	public static final Object[] COMPLAIN_COL = new String[] { "complainCode","typeName", "relName", "telPhone", "createTime","adminPerson","isOk","remark","complainContent","updateDate" };
+	public static final Object[] COMPLAIN_COL = new String[] { "complainCode",
+			"typeName", "relName", "telPhone", "createTime", "adminPerson",
+			"isOk", "remark", "complainContent", "updateDate" };
 	// 表明列头
-	public static final String[] COMPLAIN_COL_HEADERS_CHINESE = new String[] {"诉求编码", "诉求类型", "会员", "会员电话", "投诉时间","处理人","诉求状态","处理意见","投诉内容","回复时间" };
+	public static final String[] COMPLAIN_COL_HEADERS_CHINESE = new String[] {
+			"诉求编码", "诉求类型", "会员", "会员电话", "投诉时间", "处理人", "诉求状态", "处理意见",
+			"投诉内容", "回复时间" };
+
+	// --------------------------------------------------------------------------
+	// 短信模块
+	public static final Object[] SMS_COL = new String[] { "smsCode", "smsType",
+			"smsFor", "smsContent", "createDate", "createPerson", "remark",
+			"status" };
+	// 表明列头
+	public static final String[] SMS_COL_HEADERS_CHINESE = new String[] {
+			"短信编码", "短信类型", "订单系统", "短信内容", "创建时间", "创建人", "备注", "状态" };
+	// ----------------------------------------------------------------------------
+	// 积分兑换商品
+	// 积分兑换商品
+	public static final Object[] EXPRODUCT_COL = new String[] { "productCode",
+			"exchangeRuleCode", "productName", "productDesc", "exchangeNumber",
+			"stockNumber", "isNew", "status", "update_date", "is_recommend" };
+	// 表明列头
+	public static final String[] EXPRODUCT_COL_HEADERS_CHINESE = new String[] {
+			"产品编码", "兑换类别", "产品名称", "产品描述", "兑换积分", "库存数目", "新品", "状态", "更新时间",
+			"推荐" };
+
+	// ---------------------------------------------------------------------------
+	// 报表模块，主界面 树状菜单 值
+	public static final String REPORT_TREE3_T1[] = { "会员诉求情况查询报表",
+			"会员诉求情况汇总查询(类别)报表", "会员诉求情况汇总查询(项目)报表" };
+	public static final String REPORT_TREE3_T2[] = { "会员积分查询报表",
+			"会员积分兑奖汇总查询报表", "会员积分兑奖明晰查询报表" };
+	public static final String REPORT_TREE3_T3[] = { "会员积分报表", "会员清单报表",
+			"会员消费报表", "会员月消费报表", "会员积分兑奖详情报表", "会员消费汇总查询报表", "会员消耗积分分析报表",
+			"会员卡总积分分析报表", "会员来源情况分析报表", "消费会员数情况分析", "会员每日卡内总积分分析",
+			"会员年龄端消费情况分析", "会员消费单数情况分析", "会员消费金额情况分析", "会员分时段消费情况分析",
+			"会员来源区域消费情况分析" };
+
+	// 会员管理模块，第一个子菜单选中后，右侧表格显示数据的条数
+	// com.seaway.liufuya.mvc.crm.memberinfo.layout.MemberInfoListView
+	/**
+	 * Natural property order for Person bean. Used in tables and forms.
+	 */
+	public static final String[] MEMEBER_COL_REPORT = new String[] {
+			"realName", "user_type", "loginName", "sex", "birthday",
+			"work_type", "city", "entityCardNumber", "memberCard_score",
+			"memberCard_balance", "create_date", "status" };
+	/**
+	 * "表头列名" captions for properties in same order as in NATURAL_COL_ORDER.
+	 */
+	public static final String[] MEMEBER_COL_REPORT_CHINESE = new String[] {
+			"用户名", "用户类型", "手机号", "性别", "生日", "工作", "城市", "实体卡号", "积分", "余额",
+			"注册日期", "状态" };
+
+	// 报表模块，界面左侧菜单，可点击 菜单项
+	public static final String[] CRM_REPORT_ITEMCLICK = { "会员查询报表", "会员诉求报表",
+			"门店统计报表", "门店销量报表", "当天销售情况报表", "历史销售情况报表", "自定义格式报表" };
+
+	// 报表模块，界面左侧菜单，全部选项值
+	public static final Object[][] CRM_REPORT_TREE = new Object[][] {
+			new Object[] { "会员报表", "会员查询报表", "会员诉求报表" },
+			new Object[] { "门店报表", "门店统计报表", "门店销量报表" },
+			new Object[] { "销售报表", "当天销售情况报表", "历史销售情况报表", "自定义格式报表" } };
 
 }

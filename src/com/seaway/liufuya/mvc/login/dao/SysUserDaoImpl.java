@@ -1,42 +1,47 @@
 package com.seaway.liufuya.mvc.login.dao;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 import org.nutz.dao.Cnd;
+import org.nutz.dao.Dao;
 import org.nutz.dao.pager.Pager;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
 import com.seaway.liufuya.BasicDao;
+import com.seaway.liufuya.mvc.crm.memberinfo.dao.MemberInfoManager;
 import com.seaway.liufuya.mvc.login.model.SysUser;
 
 
 @IocBean
-public class SysUserDaoImpl extends BasicDao {
+public class SysUserDaoImpl extends BasicDao  implements Serializable{
 	private static final Log log = Logs.get();
 	
-	/**
-	 * 根据id删除用户
-	 * 
-	 * @param sysUser
-	 * @return
-	 */
-	public boolean deleteSysUserById(String sysUserId) {
-		return super.delById(new Integer(sysUserId.trim()).intValue(),
-				SysUser.class);
-	}
+	private Dao dao = null;
 
+	private static final long serialVersionUID = 1L;
+	
+	public SysUserDaoImpl(){}
+	
+	public SysUserDaoImpl(Dao dao) {
+		this.dao = dao;
+		super.dao = dao;
+	}
+	
+	
 	/**
 	 * 根据登陆名和密码查当前用户
 	 * 
-	 * @param map
+	 * @param login_name  用户输入用户名
+	 * @param log_pwd     用户输入密码，没有做 MD5 加密
 	 * @return
 	 */
-	public SysUser findSysUser(Map<String, Object> map) {
-		Cnd condition = Cnd.where("loginName", "=", map.get("loginName"))
-				.and("logPwd", "=", map.get("loginPwd"))
+	public SysUser findSysUser(String login_name,String log_pwd) {
+		Cnd condition = Cnd.where("loginName", "=", login_name)
+				.and("logPwd", "=", log_pwd)
 				.and("status", "=", "1");
 
 		return findByCondition(SysUser.class, condition);

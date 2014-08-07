@@ -55,8 +55,8 @@ public class SysUserServiceImpl{
 	 * @param map
 	 * @return
 	 */
-	public SysUser findSysUser(Map<String, Object> map) {
-		return sysUserDao.findSysUser(map);
+	public SysUser findSysUser(String login_name,String log_pwd) {
+		return sysUserDao.findSysUser(login_name,log_pwd);
 	}
 	
 	/**

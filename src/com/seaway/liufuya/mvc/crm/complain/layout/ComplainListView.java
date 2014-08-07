@@ -239,7 +239,9 @@ public class ComplainListView extends VerticalLayout implements ClickListener {
 		bindingFiles.setItemDataSource(item);
 		bindingFiles.setBuffered(true);
 		bindingFiles.bindMemberFields(this); 
-        
+        //设置不可编辑
+		complainCode.setEnabled(false);
+		
 		return form;
 	}
 

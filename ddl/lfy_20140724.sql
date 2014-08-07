@@ -65,6 +65,7 @@ CREATE TABLE IF NOT EXISTS `lfy_member_sms` (
 
 --
 -- 兑奖规则信息表的结构 `crm_exchange_rule`
+-- 20140807 这里修改一下名称，积分商品类别。专门为积分兑换商城提供类别设置的
 --
 
 CREATE TABLE IF NOT EXISTS `crm_exchange_rule` (
@@ -83,6 +84,7 @@ CREATE TABLE IF NOT EXISTS `crm_exchange_rule` (
 
 --
 -- 兑奖奖品资料管理 的结构 `crm_exchange_product`
+-- 20140807 这里修改一下名称 , 积分商品明细。专门为积分兑换商城提供每条兑换商品的信息
 --
 
 CREATE TABLE IF NOT EXISTS `crm_exchange_product` (

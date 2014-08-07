@@ -105,7 +105,7 @@ public class ComplainTypeManagerImpl extends BasicDao implements Serializable,Co
 		if(sql.getList(String.class).size() !=0){
 			reback="保存失败   诉求类型名称已经存在！";
 		}else{
-			String uuid = UUID.randomUUID().toString();
+			String uuid = "CPT"+UUID.randomUUID().toString();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			
 			Sql sql2 = Sqls.create("insert into lfy_member_complain_type (typecode,typename,remark,createdate,createperson,status) values( '"

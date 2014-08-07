@@ -31,6 +31,7 @@ public interface MemberInfoManager {
 	//根据会员登录名(手机号码)查询所有信息
 	public Member getMemeberByLoginname(String loginname);
 	
-	
+	//报表模块使用
+	public List<Member> getMemberList();
 
 }

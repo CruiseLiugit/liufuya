@@ -112,7 +112,7 @@ public class ExchangeRuleListLayout extends VerticalLayout implements
 		navBar.setStyleName(Reindeer.LAYOUT_BLACK);
 		navBar.setWidth(100, Unit.PERCENTAGE);
 		navBar.setHeight(29, Unit.PIXELS);
-		Label lblNav = new Label("CRM系统 / 兑奖规则信息管理"); // 导航
+		Label lblNav = new Label("CRM系统 / 积分商品类别管理"); // 导航
 
 		HorizontalLayout navBarButtons = new HorizontalLayout();
 		Button btnAdd = new Button("新增"); // 增加 按钮

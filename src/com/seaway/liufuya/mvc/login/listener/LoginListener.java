@@ -1,8 +1,13 @@
 package com.seaway.liufuya.mvc.login.listener;
 
+import org.nutz.dao.Dao;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
+import com.seaway.liufuya.LiufuyaUI;
+import com.seaway.liufuya.common.base.MD5;
+import com.seaway.liufuya.mvc.login.dao.SysUserDaoImpl;
+import com.seaway.liufuya.mvc.login.model.SysUser;
 import com.vaadin.data.Property;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Button;
@@ -11,47 +16,70 @@ import com.vaadin.ui.Layout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 
-public class LoginListener implements Button.ClickListener{
+public class LoginListener implements Button.ClickListener {
 	private static final Log log = Logs.get();
 
+	// ------------------------------------------------
+	// 登录，访问数据库
+	private Dao nutzDao = null;
+
+	// -------------------------------------------------
 	private static final long serialVersionUID = 1L;
 	private CustomComponent newScreen;
-    private Property<String> loginNameHolder;
-    private Property<String> loginPwdHolder;
-    
-    public LoginListener(CustomComponent newScreen, Property<String> nameHolder, Property<String> pwdHolder) {
+	private Property<String> loginNameHolder;
+	private Property<String> loginPwdHolder;
 
-        this.loginNameHolder = nameHolder;
-        this.loginPwdHolder = pwdHolder;
-        this.newScreen = newScreen;
-    }
+	/**
+	 * 登录界面监听器
+	 * 
+	 * @param newScreen
+	 * @param nameHolder
+	 * @param pwdHolder
+	 */
+	public LoginListener(CustomComponent newScreen,
+			Property<String> nameHolder, Property<String> pwdHolder) {
+		log.info("---------init()--------");
+		try {
+			this.nutzDao = LiufuyaUI.getCurrent().initNutzDao();
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-    /**
-     * 按钮点击后的  操作
-     */
-    @Override
-    public void buttonClick(Button.ClickEvent event) {
-    		//获取登录文本框中的内容
-        String name = loginNameHolder.getValue();
-        String pwd = loginPwdHolder.getValue();
-        
-        if (name.equals("liu") && pwd.equals("liu")) {
-			
+		this.loginNameHolder = nameHolder;
+		this.loginPwdHolder = pwdHolder;
+		this.newScreen = newScreen;
+	}
+
+	/**
+	 * 按钮点击后的 操作
+	 */
+	@Override
+	public void buttonClick(Button.ClickEvent event) {
+		// 获取登录文本框中的内容
+		String name = loginNameHolder.getValue();
+		String pwd = loginPwdHolder.getValue();
+		
+		SysUserDaoImpl userDao = new SysUserDaoImpl(this.nutzDao);
+		MD5 md5 = new MD5();
+		String mde5_pwd = md5.getMD5ofStr(pwd);
+		SysUser sysUser = userDao.findSysUser(name, mde5_pwd);
+		
+		
+		//if (name.equals("liu") && pwd.equals("liu")) {
+		if(sysUser != null){
 			log.info("登录成功.........");
 			// 创建登录成功，选择菜单界面
 			// 根据用户角色 显示不同的菜单项目
-			//通知
-	        Notification.show("欢迎你: " + name);
-	        //吧当前用户名，存入  session 中
-	       // VaadinSession.getCurrent().setAttribute(String.class, name);
-	        //创建一个新的 屏幕对象,new ChatScreen()
-	        //当前UI 对象只有一个，显示什么内容，要看往里面放入什么内容
-	        //可以放入的有 Layout
-	        UI.getCurrent().setContent(newScreen);
+			Notification.show("欢迎你: " + sysUser.getUserName());
+			// 把当前用户名，存入 session 中
+			//VaadinSession.getCurrent().setAttribute(String.class, name);
+			UI.getCurrent().setContent(newScreen);
+			//当前登录用户数据保存到  session 对象中
+			UI.getCurrent().getSession().setAttribute("loginUser", sysUser);
 		} else {
 			Notification.show("用户名或密码错误，请重新输入.");
 		}
-        
-        
-    }
+
+	}
 }

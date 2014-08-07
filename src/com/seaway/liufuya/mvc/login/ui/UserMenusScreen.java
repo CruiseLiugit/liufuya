@@ -5,6 +5,7 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
 import com.seaway.liufuya.LiufuyaUI;
+import com.seaway.liufuya.mvc.login.ui.views.LoginUserInfo;
 import com.seaway.liufuya.mvc.login.ui.views.PanelCRM;
 import com.seaway.liufuya.mvc.login.ui.views.PanelReport;
 import com.seaway.liufuya.mvc.login.ui.views.PanelSale;
@@ -38,6 +39,8 @@ public class UserMenusScreen extends CustomComponent implements ClickListener {
 	private Button logout = new Button("退出");
 	private Button help = new Button("帮助");
 	
+	//顶部 菜单，查看用户信息窗口
+	private LoginUserInfo loginUser = null;
  	
 	/**
 	 * 构造函数，初始化界面
@@ -130,7 +133,7 @@ public class UserMenusScreen extends CustomComponent implements ClickListener {
 		middleLayout.addComponent(panel1);
 		middleLayout.setComponentAlignment(panel1, Alignment.MIDDLE_RIGHT);
 
-		PanelSale panel2 = new PanelSale("在线销售管理系统");
+		PanelSale panel2 = new PanelSale("微信销售管理系统");
 		middleLayout.addComponent(panel2);
 		middleLayout.setComponentAlignment(panel2, Alignment.MIDDLE_RIGHT);
 
@@ -151,8 +154,7 @@ public class UserMenusScreen extends CustomComponent implements ClickListener {
 		final Button source = event.getButton();
 
 		if (source == user) {
-			Notification.show("search 按钮");
-			//showSearchView();
+			showLoginUserInfoWindow();
 		} else if (source == help) {
 			Notification.show("help 按钮");
 			//showHelpWindow();
@@ -160,8 +162,23 @@ public class UserMenusScreen extends CustomComponent implements ClickListener {
 			Notification.show("您已安全退出系统!");
 			UI.getCurrent().setContent(new LoginScreen());
 			//showShareWindow();
+			UI.getCurrent().getSession().close();
 		} 
 	}
 	
+	
+	//---------------------------------------------
+	//懒加载，创建新的窗口对象
+	private LoginUserInfo getLoginUserInfoWindow(){
+		if (loginUser == null) {
+			loginUser = new LoginUserInfo();
+		}
+		return loginUser;
+	}
+	
+	//显示窗口
+	private void showLoginUserInfoWindow() {
+		UI.getCurrent().addWindow(getLoginUserInfoWindow());
+	}
 
 }
