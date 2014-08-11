@@ -143,8 +143,8 @@ public class MemberDeleteInfoListView extends VerticalLayout implements
 		table.setHeight(490, Unit.PERCENTAGE);
 		table.setContainerDataSource(container); // 这里数据源要切换
 
-		table.setVisibleColumns(Constants.MEMEBER_COL_ORDER);
-		table.setColumnHeaders(Constants.MEMEBER_COL_HEADERS_CHINESE);
+		table.setVisibleColumns(Constants.MEMEBER_DEL_COL_ORDER);
+		table.setColumnHeaders(Constants.MEMEBER_DEL_COL_HEADERS_CHINESE);
 
 		table.setColumnCollapsingAllowed(true);
 		table.setColumnReorderingAllowed(true);
@@ -194,7 +194,8 @@ public class MemberDeleteInfoListView extends VerticalLayout implements
 	 * **/
 	private FormLayout createAddForm(final Item itemBean, final Window window) {
 		FormLayout form = new FormLayout();
-		Label label = new Label("确认移除黑名单么？");
+		Label label = new Label("是否确认恢复该账户？");
+		HorizontalLayout hLayout = new HorizontalLayout();
 		Button okButton = new Button("是");
 		// 确认移除操作
 		okButton.addClickListener(new ClickListener() {
@@ -220,8 +221,9 @@ public class MemberDeleteInfoListView extends VerticalLayout implements
 			}
 		});
 		form.addComponent(label);
-		form.addComponent(okButton);
-		form.addComponent(cancelButton);
+		hLayout.addComponent(okButton);
+		hLayout.addComponent(cancelButton);
+		form.addComponent(hLayout);
 		return form;
 	}
 

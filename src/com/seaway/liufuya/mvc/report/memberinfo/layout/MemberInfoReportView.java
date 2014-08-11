@@ -3,6 +3,7 @@ package com.seaway.liufuya.mvc.report.memberinfo.layout;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -39,6 +41,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.DateField;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
@@ -90,11 +93,6 @@ public class MemberInfoReportView extends VerticalLayout  implements ClickListen
 	private final HorizontalSplitPanel hsPanel=new HorizontalSplitPanel();
 	
 	private Table tb = null;   //页面显示数据表格
-	// ---------下面表单 查询，修改需要
-	private VerticalLayout buttonVLayout = new VerticalLayout();
-	private Button save = new Button("保存", (ClickListener) this);
-	private Button cancel = new Button("取消", (ClickListener) this);
-	private Button edit = new Button("编辑", (ClickListener) this);
 
 	private final NativeSelect cities = new NativeSelect("城市");
 	private HorizontalLayout footer; // 底部
@@ -134,6 +132,42 @@ public class MemberInfoReportView extends VerticalLayout  implements ClickListen
 		this.memberManager = memberManager;
 		this.init();
 
+		HorizontalLayout topLayOut = new HorizontalLayout();
+		topLayOut.setStyleName(Reindeer.LAYOUT_BLUE);
+		topLayOut.setWidth(100, Unit.PERCENTAGE);
+		topLayOut.setHeight(35, Unit.PIXELS);
+		HorizontalLayout searchBar = new HorizontalLayout();
+		final TextField searchText=new TextField();
+		searchText.setStyleName(Reindeer.LAYOUT_WHITE);
+		Button search = new Button("用户名、手机号查询"); // 增加 按钮
+		search.setIcon(new ThemeResource("icons/16/search.png"));
+		search.setDescription("根据用户名和手机查询");
+		searchBar.addComponent(searchText);
+		searchBar.addComponent(search);
+		
+		HorizontalLayout timeBar = new HorizontalLayout();
+		Label  fromText= new Label();
+		final DateField from=new DateField();
+		from.setDateFormat("yyyy-MM-dd");
+//		from.setReadOnly(true);
+		Label  toText= new Label("--");
+		final DateField to=new DateField();
+		to.setDateFormat("yyyy-MM-dd");
+//		to.setReadOnly(true);
+		Button timeSearch = new Button("注册时间查询"); // 增加 按钮
+		timeSearch.setIcon(new ThemeResource("icons/16/search.png"));
+		
+		
+		timeBar.addComponent(fromText);
+		timeBar.addComponent(from);
+		timeBar.addComponent(toText);
+		timeBar.addComponent(to);
+		timeBar.addComponent(timeSearch);
+		
+		topLayOut.addComponent(searchBar);
+		topLayOut.setComponentAlignment(searchBar,  Alignment.MIDDLE_LEFT);
+		topLayOut.addComponent(timeBar);
+		topLayOut.setComponentAlignment(timeBar,  Alignment.MIDDLE_RIGHT);
 		// 右侧创建一个导航工具条,水平布局
 		HorizontalLayout navBar = new HorizontalLayout();
 		navBar.setStyleName(Reindeer.LAYOUT_BLACK);
@@ -147,15 +181,26 @@ public class MemberInfoReportView extends VerticalLayout  implements ClickListen
 		btnExport.setDescription("导出列表");
 		
 		
-		Button search = new Button("查询"); // 增加 按钮
-		search.setIcon(new ThemeResource("icons/16/search.png"));
-		search.setDescription("根据用户名和手机查询");
-		final TextField searchText=new TextField();
-		searchText.setStyleName(Reindeer.LAYOUT_WHITE);
-	    navBarButtons.addComponent(searchText);
-	    navBarButtons.addComponent(search);
+		
 		navBarButtons.addComponent(btnExport);
 		
+		timeSearch.addClickListener(new ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				Date fromDate=from.getValue();
+				Date toDate=to.getValue();
+				fillContainer(container,fromDate,toDate);
+				VerticalLayout tablelayout = new VerticalLayout();
+				tablelayout.setStyleName(Reindeer.LAYOUT_WHITE); // 右侧样式
+				tablelayout.setHeight(470, Unit.PIXELS);
+				tablelayout.setWidth("100%");
+				//tablelayout.setHeight("100%");
+				tb = createTable(container);
+				tablelayout.addComponent(tb); // 表格
+				hsPanel.setSecondComponent(tablelayout);
+			}
+		});
 		
 		search.addClickListener(new ClickListener() {
 			@Override
@@ -285,6 +330,7 @@ public class MemberInfoReportView extends VerticalLayout  implements ClickListen
 		hsPanel.setSizeFull();
 		hsPanel.setSplitPosition(10, Unit.PERCENTAGE);
 		// /////////////////////////////////////////////////////////////////
+		this.addComponent(topLayOut);
 		this.addComponent(navBar); // 导航栏
 		this.addComponent(hsPanel); // 上下分割面板
 	}
@@ -540,25 +586,25 @@ public class MemberInfoReportView extends VerticalLayout  implements ClickListen
 				VerticalLayout tablelayout = new VerticalLayout();
 				Member member =(Member)event.getItemId();
 				if("user_type".equals(event.getPropertyId())){
-					String value=member.getUser_type();
+					String value=member.getUser_typeCode();
 					fillContainerByUserType(container, value);
 				}else if("sex".equals(event.getPropertyId())){
-					String value=member.getSex();
+					String value=member.getSexCode();
 					fillContainerBySex(container, value);
 				}else if("work_type".equals(event.getPropertyId())){
 					String value=member.getWork_type();
 					fillContainerByWork(container, value);
 				}else if("status".equals(event.getPropertyId())){
-					String value=member.getStatus();
+					String value=member.getStatusCode();
 					fillContainerByStatus(container, value);
 				}else if("city".equals(event.getPropertyId())){
+					
 					String value=member.getCity();
 					fillContainerByCity(container, value);
+				}else if("birthday".equals(event.getPropertyId())){
+					Date value=DateUtils.truncate(member.getCreate_date(), Calendar.DATE);
+					fillContainer(container, value);
 				}
-//				else if("create_date".equals(event.getPropertyId())){
-//					Date value=member.getCreate_date();
-//					fillContainer(container, value);
-//				}
 			    else{
 					fillContainer(container);
 				}
@@ -626,6 +672,19 @@ public class MemberInfoReportView extends VerticalLayout  implements ClickListen
 	private void fillContainer(Container container,Date value) {
 		container.removeAllItems();
 		List<Member> list = memberManager.getMemberByCreateDate(value);
+		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+			Member member = (Member) iterator.next();
+			container.addItem(member);
+		}
+	}
+	/**
+	 * 获取表格的 容器对象
+	 * 
+	 * @param container
+	 */
+	private void fillContainer(Container container,Date from,Date to) {
+		container.removeAllItems();
+		List<Member> list = memberManager.getMemberByCreateDate(from,to);
 		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
 			Member member = (Member) iterator.next();
 			container.addItem(member);

@@ -147,6 +147,18 @@ public class Member implements Serializable {
 	}
 
 	public String getUser_type() {
+		if("1".equals(user_type)){
+			return "实体卡";
+		}else if("2".equals(user_type)){
+			return "网站注册";
+		}else if("3".equals(user_type)){
+			return "微信注册";
+		}else if("4".equals(user_type)){
+			return "app注册";
+		}
+		return user_type;
+	}
+	public String getUser_typeCode() {
 		return user_type;
 	}
 
@@ -179,6 +191,14 @@ public class Member implements Serializable {
 	}
 
 	public String getSex() {
+		if("1".equals(sex)){
+			return "男";
+		}else if ("0".equals(sex)){
+			return "女";
+		}
+		return sex;
+	}
+	public String getSexCode() {
 		return sex;
 	}
 
@@ -267,6 +287,16 @@ public class Member implements Serializable {
 	}
 
 	public String getStatus() {
+		if("1".equals(status)){
+			return "正常";
+		}else if ("2".equals(status)){
+			return "拉黑";
+		}else if("0".equals(status)){
+			return "删除";
+		}
+		return status;
+	}
+	public String getStatusCode() {
 		return status;
 	}
 

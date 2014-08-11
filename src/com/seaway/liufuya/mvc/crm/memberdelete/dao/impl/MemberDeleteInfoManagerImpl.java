@@ -43,7 +43,7 @@ public class MemberDeleteInfoManagerImpl extends BasicDao implements Serializabl
 	@Override
 	public List<MemberDeleteInfoBean> getMemberDeleteInfoBeanList() {
 		Sql sql = Sqls
-				.create("select m.id as mid,m.user_type as user_type,m.loginName as loginName,m.realName as realName,m.sex as sex,m.city as city,m.age_area as area ,m.regDate as regDate,m.memberCard_balance as memberCard_balance,m.memberCard_score as memberCard_score,m.entityCardNumber as entityCardNumber,m.create_date as create_date  "
+				.create("select m.id as mid,m.user_type as user_type,m.loginName as loginName,m.realName as realName,m.sex as sex,m.city as city,m.age_area as area ,m.regDate as regDate,m.memberCard_balance as memberCard_balance,m.memberCard_score as memberCard_score,m.entityCardNumber as entityCardNumber,m.create_date as create_date,m.status as status  "
 						+"from lfy_member m  "
 						+"where  m.status='2'  order by m.create_date desc");
 		//设置回调函数  解析返回结果
@@ -59,6 +59,7 @@ public class MemberDeleteInfoManagerImpl extends BasicDao implements Serializabl
 					menu.setLoginname(rs.getString("loginName")); // 手机号码
 					menu.setRealname(rs.getString("realName")); // 真实名称
 					menu.setUsersex((rs.getString("sex")).equals("1") ? "男": "女"); // 性别
+					menu.setStatus(rs.getString("status").equals("1")?"启用":"禁用");
 					String type = rs.getString("user_type");
 					switch (Integer.parseInt(type.trim())) {
 					case 1:

@@ -18,6 +18,8 @@ import org.nutz.log.Logs;
 import com.seaway.liufuya.BasicDao;
 import com.seaway.liufuya.mvc.crm.complain.dao.ComplainManager;
 import com.seaway.liufuya.mvc.crm.complain.data.ComplainBean;
+import com.seaway.liufuya.mvc.login.model.SysUser;
+import com.vaadin.ui.UI;
 
 public class ComplainManagerImpl extends BasicDao implements ComplainManager {
 	
@@ -94,9 +96,10 @@ public class ComplainManagerImpl extends BasicDao implements ComplainManager {
 
 	@Override
 	public void isOk(String[] args) {
+		SysUser user=(SysUser) UI.getCurrent().getSession().getAttribute("loginUser");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		sdf.format(new Date());
-		Sql sql = Sqls.create("UPDATE lfy_member_complain SET isOk='0'"+",remark='"+args[3]+"',adminPerson='管理员',updateDate='"+sdf.format(new Date())+"' where complainCode='"+args[0]+"'");
+		Sql sql = Sqls.create("UPDATE lfy_member_complain SET isOk='0'"+",remark='"+args[3]+"',adminPerson='"+user.getUserName()+"',updateDate='"+sdf.format(new Date())+"' where complainCode='"+args[0]+"'");
 		dao.execute(sql);
 	}
 

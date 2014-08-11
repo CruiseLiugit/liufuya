@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
 import org.nutz.dao.Sqls;
@@ -215,7 +216,13 @@ public class MemberInfoMemberBean extends BasicDao implements
 	}
 
 	public List<Member> getMemberByCreateDate(Date value) {
-		Cnd condition = Cnd.where("create_date", "=", value);
+		Cnd condition = Cnd.where("birthday", ">", value).and("birthday", "<", DateUtils.addDays(value, 1));
+		List<Member> list=this.dao.query(Member.class, condition);
+		return list;
+	}
+
+	public List<Member> getMemberByCreateDate(Date from, Date to) {
+		Cnd condition = Cnd.where("create_date", ">", from).and("create_date", "<", to);
 		List<Member> list=this.dao.query(Member.class, condition);
 		return list;
 	}

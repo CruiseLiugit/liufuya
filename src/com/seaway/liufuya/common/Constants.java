@@ -36,22 +36,23 @@ public class Constants {
 	public static final String[] CRM_MENUS_TREE1 = { "会员资料", "扩展资料", "会员等级",
 			"会员活动", "会员黑名单", "诉求类别", "会员诉求", "短信发送" }; //
 	// 积分管理
-//	public static final String[] CRM_MENUS_TREE2 = { "兑奖规则信息管理", "兑换奖品资料管理",
-//			"消费积分规则管理", "会员积分兑换管理" }; // "会员积分调整", "会员积分清除", "会员积分补录"
+	// public static final String[] CRM_MENUS_TREE2 = { "兑奖规则信息管理", "兑换奖品资料管理",
+	// "消费积分规则管理", "会员积分兑换管理" }; // "会员积分调整", "会员积分清除", "会员积分补录"
 	public static final String[] CRM_MENUS_TREE2 = { "积分商品类别管理", "积分商品明细管理",
-		"积分兑换比例管理", "会员积分兑换明细" }; // "会员积分调整", "会员积分清除", "会员积分补录"
+			"积分兑换比例管理", "会员积分兑换明细" }; // "会员积分调整", "会员积分清除", "会员积分补录"
 
 	// 所有将会被点击到的 菜单值数组，用于在 CrmManageScreen.java 中 itemClick(ItemClickEvent
 	// event) 方法中调用
 	public static final String[] CRM_MENUS_ITEMCLICK = { "会员资料", "扩展资料",
-			"会员等级", "会员活动", "会员黑名单", "诉求类别", "会员诉求", "短信发送",  "积分商品类别管理", "积分商品明细管理",
-			"积分兑换比例管理", "会员积分兑换明细" }; //, "会员积分调整", "会员积分清除", "会员积分补录"
+			"会员等级", "会员活动", "会员黑名单", "诉求类别", "会员诉求", "短信发送", "积分商品类别管理",
+			"积分商品明细管理", "积分兑换比例管理", "会员积分兑换明细" }; // , "会员积分调整", "会员积分清除",
+													// "会员积分补录"
 
 	public static final Object[][] CRM_MENUS_TREE = new Object[][] {
 			new Object[] { "会员管理", "会员资料", "扩展资料", "会员等级", "会员活动", "会员黑名单",
 					"诉求类别", "会员诉求", "短信发送" },
-			new Object[] { "积分管理",  "积分商品类别管理", "积分商品明细管理",
-					"积分兑换比例管理", "会员积分兑换明细" } };//, "会员积分调整", "会员积分清除", "会员积分补录"
+			new Object[] { "积分管理", "积分商品类别管理", "积分商品明细管理", "积分兑换比例管理",
+					"会员积分兑换明细" } };// , "会员积分调整", "会员积分清除", "会员积分补录"
 
 	// ---------------------------------------------------------------------------
 	// 从留夫鸭现有 POS 数据库中获取会员信息、门店信息的接口
@@ -94,6 +95,21 @@ public class Constants {
 			"已开卡", "已使用", "已作废" }; // 实体卡状态
 	public static final String[] MEMBER_REG_TYPES = new String[] { "实体卡注册",
 			"网站注册", "微信注册", "后台注册" }; // 会员注册类型
+
+	// ---------------------------------------------------------------------------
+	// 会员黑名单管理模块，第一个子菜单选中后，右侧表格显示数据的条数
+	// com.seaway.liufuya.mvc.crm.memberinfo.layout.MemberInfoListView
+	/**
+	 * Natural property order for Person bean. Used in tables and forms.
+	 */
+	public static final Object[] MEMEBER_DEL_COL_ORDER = new String[] {
+			"loginname", "realname", "usersex", "usertype", "city", "cardid",
+			"cardscore", "cardbalance", "createdate", "status" };
+	/**
+	 * "表头列名" captions for properties in same order as in NATURAL_COL_ORDER.
+	 */
+	public static final String[] MEMEBER_DEL_COL_HEADERS_CHINESE = new String[] {
+			"手机号码", "名称", "性别", "类型", "城市", "实体卡号", "积分", "余额", "注册日期", "状态" };
 
 	// ---------------------------------------------------------------------------
 	// 会员扩展资料，
@@ -204,4 +220,11 @@ public class Constants {
 			new Object[] { "门店报表", "门店统计报表", "门店销量报表" },
 			new Object[] { "销售报表", "当天销售情况报表", "历史销售情况报表", "自定义格式报表" } };
 
+	// -----------------------------------------------积分对话规则
+	// 积分规则类型
+	public static final String[] CONSUMERULE_COL_HEADERS = { "规则代码", "规则名称",
+			"积分类型", "兑换比例", "备注", "创建时间", "创建人", "状态" };
+	public static final String[] CONSUMERULE_COL = { "ruleCode", "ruleName",
+			"ruleType", "rulePercent", "remark", "startDate", "createPerson",
+			"status" };
 }

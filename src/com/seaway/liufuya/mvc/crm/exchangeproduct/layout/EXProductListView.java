@@ -267,6 +267,7 @@ public class EXProductListView extends VerticalLayout implements ClickListener,I
 				if(event.getButton().getCaption().equals("保存")){
 					product.setProductCode(productCode.getValue());
 					manager.updateEXProduct(product);
+					Notification.show("成功");
 				  }else if (event.getButton().getCaption().equals("添加")){
 					  manager.addEXProduct(product);
 					  Notification.show("新增数据成功");

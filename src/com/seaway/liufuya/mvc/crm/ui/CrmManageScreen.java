@@ -12,6 +12,8 @@ import com.seaway.liufuya.mvc.crm.complain.layout.ComplainListView;
 import com.seaway.liufuya.mvc.crm.complaintype.dao.ComplainTypeManager;
 import com.seaway.liufuya.mvc.crm.complaintype.dao.impl.ComplainTypeManagerImpl;
 import com.seaway.liufuya.mvc.crm.complaintype.layout.ComplainTypeListView;
+import com.seaway.liufuya.mvc.crm.consumerule.dao.ConsumeRuleManager;
+import com.seaway.liufuya.mvc.crm.consumerule.layout.ConsumeRuleListView;
 import com.seaway.liufuya.mvc.crm.exchangeproduct.dao.EXProductManager;
 import com.seaway.liufuya.mvc.crm.exchangeproduct.layout.EXProductListView;
 import com.seaway.liufuya.mvc.crm.memberaddressinfo.dao.MemberAddressBeanDao;
@@ -104,9 +106,11 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 	private MemberDeleteInfoListView mdInfoListView = null; // 会员黑名单
 	private ExchangeRuleListLayout exchangeRuleListView = null; // 兑奖规则信息管理
 	private ComplainTypeListView complainTypeListView = null; // 诉求类别
-	private ComplainListView complainListView = null;//诉求管理
-	private SMSListView smsListView = null ;     //短信设置
-	private EXProductListView exProductListView = null; //兑换奖品资料管理
+	private ComplainListView complainListView = null;// 诉求管理
+	private SMSListView smsListView = null; // 短信设置
+	private EXProductListView exProductListView = null; // 兑换奖品资料管理
+	private ConsumeRuleListView consumeRuleListView = null;// 积分兑换比例规则
+
 	// 数据库对象
 	public MemberInfoMemberBean memberManager; // 会员管理
 	public MemberAddressBeanDao memberAddressDao; // 会员扩展资料
@@ -114,9 +118,10 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 	private MemberDeleteInfoManagerImpl mdInfoManager;// 会员黑名单
 	private ExchangeRuleBeanDao exchangeRuleDao; // 兑奖规则信息管理
 	private ComplainTypeManager complainTypeManager;// 诉求类别
-	private ComplainManager complainManager;//诉求管理
-	private SMSManagerImpl smsManager = null; //短信设置
-	private EXProductManager exproductManager; //兑换奖品资料管理
+	private ComplainManager complainManager;// 诉求管理
+	private SMSManagerImpl smsManager = null; // 短信设置
+	private EXProductManager exproductManager; // 兑换奖品资料管理
+	private ConsumeRuleManager consumeRuleManager = null;// 积分兑换比例规则
 
 	/**
 	 * 构造函数，初始化界面
@@ -154,27 +159,25 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		} else if ("诉求类别".equals(itemId)) {
 			Notification.show("诉求类别");
 			setMainComponent(this.getcomplainTypeListView());
-		}else if("会员诉求".equals(itemId)){
+		} else if ("会员诉求".equals(itemId)) {
 			Notification.show("会员诉求");
 			setMainComponent(this.getComplainListView());
-		}else if("短信发送".equals(itemId)){
+		} else if ("短信发送".equals(itemId)) {
 			Notification.show("短信发送");
 			setMainComponent(this.getSMSListView());
-		}else if ("积分商品类别管理".equals(itemId)) {
+		} else if ("积分商品类别管理".equals(itemId)) {
 			Notification.show("积分商品类别管理");
 			setMainComponent(this.getExchangeRuleListView());
-		} else if("积分商品明细管理".equals(itemId)){
+		} else if ("积分商品明细管理".equals(itemId)) {
 			Notification.show("积分商品明细管理");
 			setMainComponent(this.getEXProductListView());
-		}else if("积分兑换比例管理".equals(itemId)){
+		} else if ("积分兑换比例管理".equals(itemId)) {
 			Notification.show("积分兑换比例管理");
-			//
-		}else if("会员积分兑换明细".equals(itemId)){
+			setMainComponent(this.getconsumeRuleListView());
+		} else if ("会员积分兑换明细".equals(itemId)) {
 			Notification.show("会员积分兑换明细");
 			//
 		}
-		
-		
 
 	}
 
@@ -398,13 +401,13 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		return complainTypeListView;
 	}
 
-	//---------------------------------------------会员诉求
+	// ---------------------------------------------会员诉求
 	/**
 	 * 会员诉求管理
 	 * 
 	 * @author zg
 	 * **/
-	private ComplainListView getComplainListView(){
+	private ComplainListView getComplainListView() {
 		if (complainManager == null) {
 			this.complainManager = new ComplainManagerImpl(nutzDao);
 		}
@@ -415,13 +418,14 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		}
 		return complainListView;
 	}
-	//-------------------------------------------
+
+	// -------------------------------------------
 	/**
 	 * 短信发送管理
 	 * 
 	 * @author zg
 	 * **/
-	private SMSListView getSMSListView(){
+	private SMSListView getSMSListView() {
 		if (smsManager == null) {
 			this.smsManager = new SMSManagerImpl(nutzDao);
 		}
@@ -432,8 +436,7 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		}
 		return smsListView;
 	}
-	
-	
+
 	// --------------------------------------------------------------
 	/**
 	 * 兑奖规则信息管理
@@ -451,14 +454,14 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		}
 		return exchangeRuleListView;
 	}
-	
-	//---------------------------------------------兑换奖品资料管理
+
+	// ---------------------------------------------兑换奖品资料管理
 	/**
 	 * 兑换奖品资料管理
 	 * 
 	 * @author zg
 	 * **/
-	private EXProductListView getEXProductListView(){
+	private EXProductListView getEXProductListView() {
 		if (exproductManager == null) {
 			this.exproductManager = new EXProductManager(nutzDao);
 		}
@@ -468,6 +471,24 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 			exProductListView = new EXProductListView(exproductManager);
 		}
 		return exProductListView;
+	}
+
+	// ---------------------------------------------积分兑换比例管理
+	/**
+	 * 积分兑换比例管理
+	 * 
+	 * @author zg
+	 * **/
+	private ConsumeRuleListView getconsumeRuleListView() {
+		if (consumeRuleManager == null) {
+			this.consumeRuleManager = new ConsumeRuleManager(nutzDao);
+		}
+
+		if (consumeRuleListView == null) {
+			// 所有的表格和表单，都在一个类中控制
+			consumeRuleListView = new ConsumeRuleListView(consumeRuleManager);
+		}
+		return consumeRuleListView;
 	}
 
 	// ----------------------------------------------------------------
@@ -606,25 +627,20 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 						case 10:
 							log.info(">>>>>>>>>>>>>  积分兑换比例管理");
 							Notification.show("积分兑换比例管理");
+							setMainComponent(this.getconsumeRuleListView());
 							break;
 						case 11:
 							log.info(">>>>>>>>>>>>>  会员积分兑换明细");
 							Notification.show("会员积分兑换明细");
 							break;
-						/*	
-						case 12:
-							log.info(">>>>>>>>>>>>>  会员积分调整");
-							Notification.show("会员积分调整");
-							break;
-						case 13:
-							log.info(">>>>>>>>>>>>>  会员积分清除");
-							Notification.show("会员积分清除");
-							break;
-						case 14:
-							log.info(">>>>>>>>>>>>>  会员积分补录");
-							Notification.show("会员积分补录");
-							break;
-						*/	
+						/*
+						 * case 12: log.info(">>>>>>>>>>>>>  会员积分调整");
+						 * Notification.show("会员积分调整"); break; case 13:
+						 * log.info(">>>>>>>>>>>>>  会员积分清除");
+						 * Notification.show("会员积分清除"); break; case 14:
+						 * log.info(">>>>>>>>>>>>>  会员积分补录");
+						 * Notification.show("会员积分补录"); break;
+						 */
 						default:
 							break;
 						}

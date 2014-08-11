@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
@@ -19,8 +18,9 @@ import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
-import com.google.gwt.dev.util.collect.HashMap;
+import com.ibm.icu.text.SimpleDateFormat;
 import com.seaway.liufuya.BasicDao;
+import com.seaway.liufuya.common.util.DateUtil;
 import com.seaway.liufuya.mvc.crm.exchangeproduct.data.EXProduct;
 import com.seaway.liufuya.mvc.crm.exchangeproduct.data.EXProductBean;
 
@@ -101,12 +101,15 @@ public class EXProductManager  extends BasicDao implements Serializable {
 	 * 
 	 * @author zg
 	 * **/
-	public int updateEXProduct(EXProduct product){
-		product.setUpdate_date(new Date());
+	public void updateEXProduct(EXProduct product){
+		//SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss");
+		//这里调用工具类 把时间转换一下格式
+		product.setUpdate_date(DateUtil.getDateTime("yyyy-MM-dd HH:mm:ss", new Date()));
+		//product.setUpdate_date(new Date());
 		EXProduct [] products = new EXProduct[]{product};
-		int num=dao.update(products);
-		//再次判断是否更新了一条语句   是否可以主动回滚事务
-		return num;
+		Sql sql =Sqls.create("update crm_exchange_product set productName='"+product.getProductName()+"',productDesc ='"+product.getProductDesc()+"', exchangeNumber='"+product.getExchangeNumber()+"', stockNumber='"+product.getStockNumber()+"',status ='"+product.getStatus()+"' ,isNew ='"+product.getIsNew()+"' ,is_recommend ='"+product.getIs_recommend()+"' ,update_date='"+product.getUpdate_date()
+				+"' where productCode='"+product.getProductCode()+"'");
+		dao.execute(sql);
 	}
 	
 	
@@ -116,7 +119,8 @@ public class EXProductManager  extends BasicDao implements Serializable {
 	 * @author zg
 	 * **/
 	public  void addEXProduct(EXProduct product){
-		product.setCreate_date(new Date());
+		//product.setCreate_date(new Date());
+		product.setCreate_date(DateUtil.getDateTime("yyyy-MM-dd HH:mm:ss", new Date()));
 		product.setProductCode("12124234323");
 	     dao.insert(product);
 	}
@@ -209,7 +213,7 @@ public class EXProductManager  extends BasicDao implements Serializable {
 		bean.setProductCode(product.getProductCode());
 		bean.setProductDesc(product.getProductDesc());
 		bean.setProductName(product.getProductName());
-		bean.setStockNumber(product.getStockNumber());	
+		bean.setStockNumber(String.valueOf(product.getStockNumber()));	
 		bean.setExchangeRuleCode(this.findAllExRuleNameByCode(product.getExchangeRuleCode()).get(0));
 		return bean;
 	} 

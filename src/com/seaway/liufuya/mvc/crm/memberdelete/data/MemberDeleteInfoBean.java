@@ -21,6 +21,7 @@ public class MemberDeleteInfoBean {
 	private int cardbalance; // 会员卡余额
 	private int cardscore; // 会员卡总积分
 	private String memberStat;//黑名单
+	private String status;//状态
 	
 	
 	public int getId() {
@@ -95,4 +96,11 @@ public class MemberDeleteInfoBean {
 	public void setMemberStat(String memberStat) {
 		this.memberStat = memberStat;
 	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
 }
