@@ -12,6 +12,8 @@ import com.seaway.liufuya.mvc.crm.complain.layout.ComplainListView;
 import com.seaway.liufuya.mvc.crm.complaintype.dao.ComplainTypeManager;
 import com.seaway.liufuya.mvc.crm.complaintype.dao.impl.ComplainTypeManagerImpl;
 import com.seaway.liufuya.mvc.crm.complaintype.layout.ComplainTypeListView;
+import com.seaway.liufuya.mvc.crm.consumeexchange.dao.ConsumeExchangeManager;
+import com.seaway.liufuya.mvc.crm.consumeexchange.layout.ConsumeExchangeListView;
 import com.seaway.liufuya.mvc.crm.consumerule.dao.ConsumeRuleManager;
 import com.seaway.liufuya.mvc.crm.consumerule.layout.ConsumeRuleListView;
 import com.seaway.liufuya.mvc.crm.exchangeproduct.dao.EXProductManager;
@@ -115,6 +117,7 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 	private SMSListView smsListView = null; // 短信设置
 	private EXProductListView exProductListView = null; // 兑换奖品资料管理
 	private ConsumeRuleListView consumeRuleListView = null;// 积分兑换比例规则
+	private ConsumeExchangeListView consumeExchangeListView = null;// 积分兑换交易记录
 
 	// 数据库对象
 	public MemberInfoMemberBean memberManager; // 会员管理
@@ -127,6 +130,7 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 	private SMSManagerImpl smsManager = null; // 短信设置
 	private EXProductManager exproductManager; // 兑换奖品资料管理
 	private ConsumeRuleManager consumeRuleManager = null;// 积分兑换比例规则
+	private ConsumeExchangeManager consumeExchangeManager = null; // 会员兑换交易记录
 
 	/**
 	 * 构造函数，初始化界面
@@ -181,7 +185,7 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 			setMainComponent(this.getconsumeRuleListView());
 		} else if ("会员积分兑换明细".equals(itemId)) {
 			Notification.show("会员积分兑换明细");
-			//
+			setMainComponent(this.getconsumeExchange());
 		}
 
 	}
@@ -270,7 +274,7 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		} else if (source == logout) {
 			Notification.show("您已安全退出系统!");
 			UI.getCurrent().setContent(new LoginScreen());
-			//showShareWindow();
+			// showShareWindow();
 			UI.getCurrent().getSession().close();
 		} else if (source == backToMenu) {
 			// addNewContanct();
@@ -496,27 +500,26 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		return consumeRuleListView;
 	}
 
-	// ----------------------------------------------------------------
-	private SearchView getSearchView() {
-		if (searchView == null) {
-			searchView = new SearchView(this);
+	// ---------------------------------------------积分兑换交易记录
+	/**
+	 * 积分兑换交易记录
+	 * 
+	 * @author zg
+	 * **/
+	private ConsumeExchangeListView getconsumeExchange() {
+		if (consumeExchangeManager == null) {
+			this.consumeExchangeManager = new ConsumeExchangeManager(nutzDao);
 		}
-		return searchView;
+
+		if (consumeExchangeListView == null) {
+			// 所有的表格和表单，都在一个类中控制
+			consumeExchangeListView = new ConsumeExchangeListView(
+					consumeExchangeManager);
+		}
+		return consumeExchangeListView;
 	}
 
-	private HelpWindow getHelpWindow() {
-		if (helpWindow == null) {
-			helpWindow = new HelpWindow();
-		}
-		return helpWindow;
-	}
-
-	private SharingOptions getSharingOptions() {
-		if (sharingOptions == null) {
-			sharingOptions = new SharingOptions();
-		}
-		return sharingOptions;
-	}
+	
 
 	// ----------------------获取数据源------------------------------
 	public PersonReferenceContainer getDataSource() {
@@ -530,18 +533,6 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 	public MemberInfoMemberBean getMemberManager() {
 		return memberManager;
 	}
-
-	// ----------------------获取数据源------------------------------
-
-	private void showHelpWindow() {
-		// getMainWindow().addWindow(getHelpWindow());
-		UI.getCurrent().addWindow(getHelpWindow());
-	}
-
-	private void showShareWindow() {
-		UI.getCurrent().addWindow(getSharingOptions());
-	}
-
 	// --------------------------Demo----------------------
 	private void showListView() {
 		setMainComponent(this.getListView());
@@ -552,9 +543,6 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		setMainComponent(getMemberInfoListView());
 	}
 
-	private void showSearchView() {
-		setMainComponent(getSearchView());
-	}
 
 	/**
 	 * 表格中选中某一行后，跳转到 personForm 表单
@@ -637,6 +625,7 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 						case 10:
 							log.info(">>>>>>>>>>>>>  会员积分兑换明细");
 							Notification.show("会员积分兑换明细");
+							setMainComponent(this.getconsumeExchange());
 							break;
 						/*
 						 * case 12: log.info(">>>>>>>>>>>>>  会员积分调整");

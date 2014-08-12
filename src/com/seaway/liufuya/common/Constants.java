@@ -33,7 +33,8 @@ public class Constants {
 
 	// ---------------------------------------------------------------------------
 	// 会员管理界面，左侧树状菜单 节点值
-	public static final String[] CRM_MENUS_TREE1 = { "会员资料", "扩展资料", "会员等级","会员黑名单", "诉求类别", "会员诉求", "短信发送" }; //
+	public static final String[] CRM_MENUS_TREE1 = { "会员资料", "扩展资料", "会员等级",
+			"会员黑名单", "诉求类别", "会员诉求", "短信发送" }; //
 	// 积分管理
 	// public static final String[] CRM_MENUS_TREE2 = { "兑奖规则信息管理", "兑换奖品资料管理",
 	// "消费积分规则管理", "会员积分兑换管理" }; // "会员积分调整", "会员积分清除", "会员积分补录"
@@ -43,31 +44,33 @@ public class Constants {
 	// 所有将会被点击到的 菜单值数组，用于在 CrmManageScreen.java 中 itemClick(ItemClickEvent
 	// event) 方法中调用
 	public static final String[] CRM_MENUS_ITEMCLICK = { "会员资料", "扩展资料",
-			"会员等级","会员黑名单", "诉求类别", "会员诉求", "短信发送", "积分商品类别管理",
-			"积分商品明细管理", "积分兑换比例管理", "会员积分兑换明细" }; // , "会员积分调整", "会员积分清除",
-													// "会员积分补录"
+			"会员等级", "会员黑名单", "诉求类别", "会员诉求", "短信发送", "积分商品类别管理", "积分商品明细管理",
+			"积分兑换比例管理", "会员积分兑换明细" }; // , "会员积分调整", "会员积分清除",
+										// "会员积分补录"
 
 	public static final Object[][] CRM_MENUS_TREE = new Object[][] {
-			new Object[] { "会员管理", "会员资料", "扩展资料", "会员等级","会员黑名单",
-					"诉求类别", "会员诉求", "短信发送" },
+			new Object[] { "会员管理", "会员资料", "扩展资料", "会员等级", "会员黑名单", "诉求类别",
+					"会员诉求", "短信发送" },
 			new Object[] { "积分管理", "积分商品类别管理", "积分商品明细管理", "积分兑换比例管理",
 					"会员积分兑换明细" } };// , "会员积分调整", "会员积分清除", "会员积分补录"
 
 	// -----------------------------------20140812----------------------------------------
 	// 微信商店界面，左侧树状菜单 节点值
-	//PanelWeixinStore.java 中三个 Tree 中的节点名称
-	public static final String[] WEIXIN_MENUS_TREE1 = { "商品类目管理", "商品资料管理"};
-	public static final String[] WEIXIN_MENUS_TREE2 = { "当天订单管理", "历史订单查询"};
-	public static final String[] WEIXIN_MENUS_TREE3 = { "优惠券生成", "会员优惠券查询", "历史优惠券核实"};
-	
-	//WeixinStoreScreen.java 中，左侧菜单，二位数组
+	// PanelWeixinStore.java 中三个 Tree 中的节点名称
+	public static final String[] WEIXIN_MENUS_TREE1 = { "商品类目管理", "商品资料管理" };
+	public static final String[] WEIXIN_MENUS_TREE2 = { "当天订单管理", "历史订单查询" };
+	public static final String[] WEIXIN_MENUS_TREE3 = { "优惠券生成", "会员优惠券查询",
+			"历史优惠券核实" };
+
+	// WeixinStoreScreen.java 中，左侧菜单，二位数组
 	public static final Object[][] WEIXIN_MENUS_TREE = new Object[][] {
-		new Object[] { "商品管理", "商品类目管理", "商品资料管理"},
-		new Object[] { "订单管理", "当天订单管理", "历史订单查询"},
-		new Object[] { "电子优惠券管理", "优惠券生成", "会员优惠券查询","历史优惠券核实"}};
-	//WeixinStoreScreen.java  中，左侧菜单，选中的节点名称
-	public static final String[] WEIXIN_MENUS_ITEMCLICK = { "商品类目管理", "商品资料管理", "当天订单管理", "历史订单查询", "优惠券生成", "会员优惠券查询","历史优惠券核实" };
-	
+			new Object[] { "商品管理", "商品类目管理", "商品资料管理" },
+			new Object[] { "订单管理", "当天订单管理", "历史订单查询" },
+			new Object[] { "电子优惠券管理", "优惠券生成", "会员优惠券查询", "历史优惠券核实" } };
+	// WeixinStoreScreen.java 中，左侧菜单，选中的节点名称
+	public static final String[] WEIXIN_MENUS_ITEMCLICK = { "商品类目管理", "商品资料管理",
+			"当天订单管理", "历史订单查询", "优惠券生成", "会员优惠券查询", "历史优惠券核实" };
+
 	// ---------------------------------------------------------------------------
 	// 从留夫鸭现有 POS 数据库中获取会员信息、门店信息的接口
 	// 根 URL
@@ -241,4 +244,16 @@ public class Constants {
 	public static final String[] CONSUMERULE_COL = { "ruleCode", "ruleName",
 			"ruleType", "rulePercent", "remark", "startDate", "createPerson",
 			"status" };
+
+	// ----------------------------------------------- 积分兑换记录类型
+	// 会员
+	public static final String[] CONSUME_MEMBER_COL_HEADERS = { "会员代码", "会员名",
+			"实体卡号", "会员卡余额", "总积分" };
+	public static final String[] CONSUME_MEMBER_COL = { "userCode", "realname",
+			"cardid", "cardbalance", "cardscore" };
+	// 记录
+	public static final String[] CONSUME_COL_HEADERS = { "兑换日期", "兑换产品",
+			"消费积分", "发货状态", "发货人", "创建人" };
+	public static final String[] CONSUME_COL = { "exchangeDate", "productName",
+			"exchangeNumber", "isSend", "sendPerson", "createPerson" };
 }
