@@ -30,7 +30,6 @@ public class LazyLoadMemberContainer extends BeanContainer {
 	
 	public LazyLoadMemberContainer(Class<? super MemberBean> type,MemberAddressBeanDao memberManager) {
 		super(type);
-		// TODO Auto-generated constructor stub
 		service = new MemberAddressService(memberManager);
 	}
 

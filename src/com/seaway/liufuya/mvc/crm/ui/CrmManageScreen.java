@@ -590,46 +590,46 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 							Notification.show("会员等级");
 							setMainComponent(this.getMemberLevelListLayout());
 							break;
+						//case 3:
+						//	log.info(">>>>>>>>>>>>>  会员活动");
+						//	Notification.show("会员活动");
+						//	break;
 						case 3:
-							log.info(">>>>>>>>>>>>>  会员活动");
-							Notification.show("会员活动");
-							break;
-						case 4:
 							log.info(">>>>>>>>>>>>>  会员黑名单");
 							Notification.show("会员黑名单");
 							setMainComponent(this.getmdInfoListView());
 							break;
-						case 5:
+						case 4:
 							log.info(">>>>>>>>>>>>>  诉求类别");
 							Notification.show("诉求类别");
 							setMainComponent(this.getcomplainTypeListView());
 							break;
-						case 6:
+						case 5:
 							log.info(">>>>>>>>>>>>>  会员诉求");
 							Notification.show("会员诉求");
 							setMainComponent(this.getComplainListView());
 							break;
-						case 7:
+						case 6:
 							log.info(">>>>>>>>>>>>>  短信发送");
 							Notification.show("短信发送");
 							setMainComponent(this.getSMSListView());
 							break;
-						case 8:
+						case 7:
 							log.info(">>>>>>>>>>>>> 积分商品类别管理");
 							Notification.show("积分商品类别管理");
 							setMainComponent(this.getExchangeRuleListView());
 							break;
-						case 9:
+						case 8:
 							log.info(">>>>>>>>>>>>>  积分商品明细管理");
 							Notification.show("积分商品明细管理");
 							setMainComponent(this.getEXProductListView());
 							break;
-						case 10:
+						case 9:
 							log.info(">>>>>>>>>>>>>  积分兑换比例管理");
 							Notification.show("积分兑换比例管理");
 							setMainComponent(this.getconsumeRuleListView());
 							break;
-						case 11:
+						case 10:
 							log.info(">>>>>>>>>>>>>  会员积分兑换明细");
 							Notification.show("会员积分兑换明细");
 							break;

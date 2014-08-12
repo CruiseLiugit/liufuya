@@ -32,7 +32,7 @@ import com.vaadin.data.util.BeanItemContainer;
 
 @IocBean
 public class MemberInfoMemberBean extends BasicDao implements
-		MemberInfoManager, Serializable {
+		MemberInfoManager,Serializable {
 	private static final Log log = Logs.get();
 	private Dao dao = null;
 

@@ -1,14 +1,16 @@
 package com.seaway.liufuya.mvc.login.ui;
 
 
+import org.nutz.dao.Dao;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
 import com.seaway.liufuya.LiufuyaUI;
+import com.seaway.liufuya.mvc.login.dao.SysUserDaoImpl;
 import com.seaway.liufuya.mvc.login.ui.views.LoginUserInfo;
 import com.seaway.liufuya.mvc.login.ui.views.PanelCRM;
 import com.seaway.liufuya.mvc.login.ui.views.PanelReport;
-import com.seaway.liufuya.mvc.login.ui.views.PanelSale;
+import com.seaway.liufuya.mvc.login.ui.views.PanelWeixinStore;
 import com.seaway.liufuya.mvc.login.ui.views.PanelSystemManager;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
@@ -41,11 +43,22 @@ public class UserMenusScreen extends CustomComponent implements ClickListener {
 	
 	//顶部 菜单，查看用户信息窗口
 	private LoginUserInfo loginUser = null;
+	private SysUserDaoImpl sysUserDao = null;  //访问用户登录表的数据库操作类
+	
+	//--------------数据库访问-----------------------------------
+	private Dao nutzDao = null;
  	
 	/**
 	 * 构造函数，初始化界面
 	 */
 	public UserMenusScreen() {
+		try {
+			this.nutzDao = LiufuyaUI.getCurrent().initNutzDao();
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		buildMenuView();
 	}
 	
@@ -133,7 +146,7 @@ public class UserMenusScreen extends CustomComponent implements ClickListener {
 		middleLayout.addComponent(panel1);
 		middleLayout.setComponentAlignment(panel1, Alignment.MIDDLE_RIGHT);
 
-		PanelSale panel2 = new PanelSale("微信销售管理系统");
+		PanelWeixinStore panel2 = new PanelWeixinStore("微信销售管理系统");
 		middleLayout.addComponent(panel2);
 		middleLayout.setComponentAlignment(panel2, Alignment.MIDDLE_RIGHT);
 
@@ -171,7 +184,8 @@ public class UserMenusScreen extends CustomComponent implements ClickListener {
 	//懒加载，创建新的窗口对象
 	private LoginUserInfo getLoginUserInfoWindow(){
 		if (loginUser == null) {
-			loginUser = new LoginUserInfo();
+			sysUserDao = new SysUserDaoImpl(nutzDao);
+			loginUser = new LoginUserInfo(sysUserDao);
 		}
 		return loginUser;
 	}

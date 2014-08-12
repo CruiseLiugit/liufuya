@@ -1,5 +1,6 @@
 package com.seaway.liufuya.mvc.crm.memberaddressinfo.service;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,9 +15,9 @@ import com.seaway.liufuya.mvc.crm.memberinfo.data.MemberBean;
  * @author lililiu
  *
  */
-public class MemberAddressService {
+public class MemberAddressService  implements Serializable  {
 
-
+	private static final long serialVersionUID = 1L;
     private MemberAddressBeanDao addressDao = null;
 	
 	public MemberAddressService() {

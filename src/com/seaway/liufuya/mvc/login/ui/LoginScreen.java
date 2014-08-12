@@ -118,8 +118,9 @@ public class LoginScreen extends VerticalLayout {
 		passwordField.setRequired(true);
 		passwordField.setRequiredError("请输入登录密码");
 
-		userNameField.setValue("admin");
-		passwordField.setValue("admin");
+		//设置默认密码
+		//userNameField.setValue("admin");
+		//passwordField.setValue("admin");
 
 		panelLayout.addComponent(captain);
 		panelLayout.addComponent(userNameField);

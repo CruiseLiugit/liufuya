@@ -1,9 +1,12 @@
 package com.seaway.liufuya.mvc.login.ui.views;
 
+import org.nutz.dao.Dao;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
+import com.seaway.liufuya.common.base.MD5;
+import com.seaway.liufuya.mvc.login.dao.SysUserDaoImpl;
 import com.seaway.liufuya.mvc.login.model.SysUser;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
@@ -27,13 +30,19 @@ public class LoginUserInfo extends Window {
 	
 	private static final Log log = Logs.get();
 	
+	private Dao dao = null;
+	
 	private SysUser sysUser =null ;   //当前登录的用户对象
+	private final SysUserDaoImpl sysUserDao = null;  //访问数据库的类
 	private Label userLab = new Label("");
 	private PasswordField pwa = new PasswordField("新密码");
 	private PasswordField pwb = new PasswordField("确认密码");
 
+	//不带参数构造
+	public LoginUserInfo(){}
+	
 	// final User user, final UserService us
-	public LoginUserInfo() {
+	public LoginUserInfo(final SysUserDaoImpl dao) {
 		/*
 		 * Make the window modal, which will disable all other components while
 		 * it is visible
@@ -90,11 +99,22 @@ public class LoginUserInfo extends Window {
 					error.setValue("<div style='color:red'>两次输入不一致</div>");
 					error.setVisible(true);
 				} else {
-					// user.setPassword(pwa.getValue());
-					// us.changePassword(user);
-					error.setVisible(false);
-					Notification.show("密码修改成功");
-					LoginUserInfo.this.close();
+					MD5 md5 = new MD5();
+					sysUser.setLogPwd(md5.getMD5ofStr(pwa.getValue()));
+					try {
+						boolean flag = dao.updateLoginPwd(sysUser);
+						if (flag) {
+							error.setVisible(false);
+							Notification.show("密码修改成功");
+							LoginUserInfo.this.close();
+						}
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						Notification.show("密码修改失败，请重新修改");
+						LoginUserInfo.this.close();
+					}
+					
 				}
 			}
 		});

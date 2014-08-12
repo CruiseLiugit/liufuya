@@ -14,6 +14,7 @@ import com.vaadin.data.fieldgroup.Caption;
  * @author lililiu
  * 
  */
+@SuppressWarnings("serial")
 public class MemberBean {
 
 	// "手机号码","名称", "性别", "类型","城市","实体卡号","积分","余额","注册日期"

@@ -1,5 +1,6 @@
 package com.seaway.liufuya.mvc.crm.consumerule.dao;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.nutz.dao.Cnd;
@@ -7,6 +8,7 @@ import org.nutz.dao.Dao;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Sql;
+import org.nutz.ioc.loader.annotation.IocBean;
 
 import com.seaway.liufuya.BasicDao;
 import com.seaway.liufuya.mvc.crm.consumerule.data.ConsumeRule;
@@ -16,9 +18,9 @@ import com.seaway.liufuya.mvc.crm.consumerule.data.ConsumeRule;
  * 
  *  @author zg
  * **/
-
-public class ConsumeRuleManager extends BasicDao {
-	
+@IocBean
+public class ConsumeRuleManager extends BasicDao implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private Dao dao = null;
 	
 	public ConsumeRuleManager(Dao dao){

@@ -78,22 +78,32 @@ public class MemberAddressBeanDao extends BasicDao implements Serializable {
 			menu.setRealname(member.getRealName()); // 真实名称
 			menu.setUsersex(member.getSex().equals("1") ? "男" : "女"); // 性别
 			String type = member.getUser_type();
-			switch (Integer.parseInt(type.trim())) {
-			case 1:
-				menu.setUsertype("实体卡"); // 类型
-				break;
-			case 2:
-				menu.setUsertype("网站注册"); // 类型
-				break;
-			case 3:
-				menu.setUsertype("微信注册"); // 类型
-				break;
-			case 4:
-				menu.setUsertype("后台注册"); // 类型
-				break;
-			default:
-				menu.setUsertype("其他注册"); // 类型
-				break;
+			log.info("---------user_name =" + member.getRealName());
+			log.info("---------user_type =" + type);
+			int typevalue = 0;
+			try {
+				typevalue = Integer.parseInt(type.trim());
+				switch (typevalue) {
+				case 1:
+					menu.setUsertype("实体卡"); // 类型
+					break;
+				case 2:
+					menu.setUsertype("网站注册"); // 类型
+					break;
+				case 3:
+					menu.setUsertype("微信注册"); // 类型
+					break;
+				case 4:
+					menu.setUsertype("后台注册"); // 类型
+					break;
+				default:
+					menu.setUsertype("其他注册"); // 类型
+					break;
+				}
+			} catch (Exception e) {
+				// TODO: handle exception
+				log.info("用户类型数据库存储值，无法转换为 int");
+				menu.setUsertype(type);
 			}
 
 			menu.setCity(member.getCity()); // 城市
