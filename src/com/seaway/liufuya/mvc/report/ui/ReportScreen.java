@@ -14,8 +14,10 @@ import com.seaway.liufuya.mvc.crm.ui.layout.PersonForm;
 import com.seaway.liufuya.mvc.crm.ui.layout.PersonList;
 import com.seaway.liufuya.mvc.crm.ui.layout.SearchView;
 import com.seaway.liufuya.mvc.crm.ui.layout.SharingOptions;
+import com.seaway.liufuya.mvc.login.dao.SysUserDaoImpl;
 import com.seaway.liufuya.mvc.login.ui.LoginScreen;
 import com.seaway.liufuya.mvc.login.ui.UserMenusScreen;
+import com.seaway.liufuya.mvc.login.ui.views.LoginUserInfo;
 import com.seaway.liufuya.mvc.report.memberinfo.layout.MemberInfoReportView;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -50,16 +52,16 @@ public class ReportScreen extends CustomComponent implements ClickListener,
 	private static final Log log = Logs.get();
 
 	private Dao nutzDao = null;
-	
-	private SearchView searchView = null;  //顶部搜索按钮对应窗口
-	private HelpWindow helpWindow = null;  //帮助界面按钮对应窗口
-	private SharingOptions sharingOptions = null; //
 
 	// --------------顶部工具栏组件-----------------------------
 	private Button backToMenu = new Button("首页");
 	private Button search = new Button("搜索");
 	private Button user = new Button("用户");
 	private Button logout = new Button("退出");
+	// 顶部 菜单，查看用户信息窗口
+	private LoginUserInfo loginUser = null;
+	private SysUserDaoImpl sysUserDao = null; // 访问用户登录表的数据库操作类
+
 	private NavigationTree tree = new NavigationTree(this,
 			Constants.CRM_REPORT_TREE);
 
@@ -139,7 +141,7 @@ public class ReportScreen extends CustomComponent implements ClickListener,
 		root.addComponent(createTopToolbar()); // 工具栏
 		root.addComponent(horizontalSplit); // 中间为左右分割
 		root.setExpandRatio(horizontalSplit, 1);
-		
+
 		horizontalSplit.setHeight(500, Unit.PIXELS);
 		horizontalSplit.setSplitPosition(200, Unit.PIXELS);
 		horizontalSplit.setStyleName(Reindeer.SPLITPANEL_SMALL); // 分割线变细线
@@ -199,19 +201,17 @@ public class ReportScreen extends CustomComponent implements ClickListener,
 	public void buttonClick(ClickEvent event) {
 		final Button source = event.getButton();
 
-		if (source == search) {
-			//showSearchView();
+		if (source == user) {
+			showLoginUserInfoWindow();
 		} else if (source == logout) {
-			// showHelpWindow();
+			Notification.show("您已安全退出系统!");
 			UI.getCurrent().setContent(new LoginScreen());
-		} else if (source == user) {
-			//showShareWindow(); // 当前用户信息页面
+			UI.getCurrent().getSession().close();
 		} else if (source == backToMenu) {
-			// addNewContanct();
+			//切换到首页主菜单面板
 			UI.getCurrent().setContent(new UserMenusScreen());
 		}
 	}
-
 
 	/**
 	 * 当前页面，左侧菜单，点击后的 事件响应
@@ -234,12 +234,12 @@ public class ReportScreen extends CustomComponent implements ClickListener,
 						case 1:
 							log.info(">>>>>>>>>>>>>  会员诉求报表");
 							Notification.show("会员诉求报表");
-							//setMainComponent(this.getMemberAddressListView());
+							// setMainComponent(this.getMemberAddressListView());
 							break;
 						case 2:
 							log.info(">>>>>>>>>>>>>  门店统计报表");
 							Notification.show("门店统计报表");
-							//setMainComponent(this.getMemberLevelListLayout());
+							// setMainComponent(this.getMemberLevelListLayout());
 							break;
 						case 3:
 							log.info(">>>>>>>>>>>>>  当天销售情况报表");
@@ -248,12 +248,12 @@ public class ReportScreen extends CustomComponent implements ClickListener,
 						case 4:
 							log.info(">>>>>>>>>>>>>  历史销售情况报表");
 							Notification.show("历史销售情况报表");
-							//setMainComponent(this.getmdInfoListView());
+							// setMainComponent(this.getmdInfoListView());
 							break;
 						case 5:
 							log.info(">>>>>>>>>>>>>  自定义格式报表");
 							Notification.show("自定义格式报表");
-							//setMainComponent(this.getcomplainTypeListView());
+							// setMainComponent(this.getcomplainTypeListView());
 							break;
 						default:
 							break;
@@ -273,31 +273,19 @@ public class ReportScreen extends CustomComponent implements ClickListener,
 
 	}
 
-	// --------------------------------------------------------
-//	private void showSearchView() {
-//		setMainComponent(getSearchView());
-//	}
-
-	// ----------------------------------------------------------------
-//	private SearchView getSearchView() {
-//		if (searchView == null) {
-//			searchView = new SearchView(this);
-//		}
-//		return searchView;
-//	}
-
-	private HelpWindow getHelpWindow() {
-		if (helpWindow == null) {
-			helpWindow = new HelpWindow();
+	// ---------------------------------------------
+	// 懒加载，创建新的窗口对象
+	private LoginUserInfo getLoginUserInfoWindow() {
+		if (loginUser == null) {
+			sysUserDao = new SysUserDaoImpl(nutzDao);
+			loginUser = new LoginUserInfo(sysUserDao);
 		}
-		return helpWindow;
+		return loginUser;
 	}
 
-	private SharingOptions getSharingOptions() {
-		if (sharingOptions == null) {
-			sharingOptions = new SharingOptions();
-		}
-		return sharingOptions;
+	// 显示窗口
+	private void showLoginUserInfoWindow() {
+		UI.getCurrent().addWindow(getLoginUserInfoWindow());
 	}
 
 }

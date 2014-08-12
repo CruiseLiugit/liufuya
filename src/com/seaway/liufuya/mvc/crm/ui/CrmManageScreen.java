@@ -41,8 +41,10 @@ import com.seaway.liufuya.mvc.crm.ui.layout.SearchView;
 import com.seaway.liufuya.mvc.crm.ui.layout.SharingOptions;
 import com.seaway.liufuya.mvc.crm.xchangerule.dao.ExchangeRuleBeanDao;
 import com.seaway.liufuya.mvc.crm.xchangerule.layout.ExchangeRuleListLayout;
+import com.seaway.liufuya.mvc.login.dao.SysUserDaoImpl;
 import com.seaway.liufuya.mvc.login.ui.LoginScreen;
 import com.seaway.liufuya.mvc.login.ui.UserMenusScreen;
+import com.seaway.liufuya.mvc.login.ui.views.LoginUserInfo;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -87,6 +89,9 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 	private Button logout = new Button("退出");
 	private NavigationTree tree = new NavigationTree(this,
 			Constants.CRM_MENUS_TREE);
+	// 查询当前用户信息
+	private LoginUserInfo loginUser = null;
+	private SysUserDaoImpl sysUserDao = null; // 访问用户登录表的数据库操作类
 
 	// ----------------主界面内容-------------------------------
 	private HorizontalSplitPanel horizontalSplit = new HorizontalSplitPanel();
@@ -260,13 +265,13 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 	public void buttonClick(ClickEvent event) {
 		final Button source = event.getButton();
 
-		if (source == search) {
-			showSearchView();
+		if (source == user) {
+			showLoginUserInfoWindow();
 		} else if (source == logout) {
-			// showHelpWindow();
+			Notification.show("您已安全退出系统!");
 			UI.getCurrent().setContent(new LoginScreen());
-		} else if (source == user) {
-			showShareWindow(); // 当前用户信息页面
+			//showShareWindow();
+			UI.getCurrent().getSession().close();
 		} else if (source == backToMenu) {
 			// addNewContanct();
 			UI.getCurrent().setContent(new UserMenusScreen());
@@ -590,10 +595,10 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 							Notification.show("会员等级");
 							setMainComponent(this.getMemberLevelListLayout());
 							break;
-						//case 3:
-						//	log.info(">>>>>>>>>>>>>  会员活动");
-						//	Notification.show("会员活动");
-						//	break;
+						// case 3:
+						// log.info(">>>>>>>>>>>>>  会员活动");
+						// Notification.show("会员活动");
+						// break;
 						case 3:
 							log.info(">>>>>>>>>>>>>  会员黑名单");
 							Notification.show("会员黑名单");
@@ -680,4 +685,18 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 		tree.setValue(searchFilter);
 	}
 
+	// ---------------------------------------------
+	// 懒加载，创建新的窗口对象
+	private LoginUserInfo getLoginUserInfoWindow() {
+		if (loginUser == null) {
+			sysUserDao = new SysUserDaoImpl(nutzDao);
+			loginUser = new LoginUserInfo(sysUserDao);
+		}
+		return loginUser;
+	}
+
+	// 显示窗口
+	private void showLoginUserInfoWindow() {
+		UI.getCurrent().addWindow(getLoginUserInfoWindow());
+	}
 }
