@@ -22,39 +22,39 @@ public class Category implements Serializable {
 	private long id;
 
 	@Column("category_code")
-	private String category_code = ""; // 类别编码
+	private String category_code = ""; // 类别编码，界面显示
 
 	@Column("category_name")
-	private String category_name = "";// 类别名称
+	private String category_name = "";// 类别名称，界面显示
 
 	// 父节点.订餐网站，所有父节点为 -1。微信父节点 -2
 	@Column("category_pcode")
 	private String category_pcode = "";// 类别父节点编码
 
 	@Column("create_date")
-	private String create_date = ""; // 创建时间
+	private String create_date = ""; // 创建时间，界面显示
 
 	@Column("create_opid")
-	private String create_opid = ""; // 创建人姓名
+	private String create_opid = ""; // 创建人姓名，界面显示
 
 	// 按照数组下标索引，从 0 开始排序
 	@Column("categoryOrder")
 	private String categoryOrder = "";// 分类排序字段
 
 	@Column("show_name")
-	private String show_name = ""; // 显示的名称，子名称
+	private String show_name = ""; // 显示的名称，子名称，界面显示
 
 	@Column("categoryType")
-	private String categoryType = ""; // 备用字段，不用
+	private String categoryType = ""; // 备用字段，目前不用
 
 	@Column("category_rootcode")
-	private String category_rootcode = "";// 根节点
+	private String category_rootcode = "";// 根节点，暂时不用
 
 	@Column("image")
 	private String image = ""; // 产品图片路径，目前暂时不做。
 
 	@Column("status")
-	private String status = "";
+	private String status = "";  //界面显示
 
 	public long getId() {
 		return id;

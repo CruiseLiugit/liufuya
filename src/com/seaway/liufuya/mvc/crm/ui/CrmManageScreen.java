@@ -1,5 +1,7 @@
 package com.seaway.liufuya.mvc.crm.ui;
 
+import java.io.Serializable;
+
 import org.nutz.dao.Dao;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -76,8 +78,8 @@ import com.vaadin.ui.themes.Reindeer;
  * 
  */
 public class CrmManageScreen extends CustomComponent implements ClickListener,
-		ValueChangeListener, ItemClickListener, View {
-
+		ValueChangeListener, ItemClickListener, View,Serializable {
+	private static final long serialVersionUID = 1L;
 	private static final Log log = Logs.get();
 	public PersonManagerBean personManager;
 	private PersonReferenceContainer dataSource;

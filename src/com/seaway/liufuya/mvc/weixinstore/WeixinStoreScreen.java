@@ -1,5 +1,7 @@
 package com.seaway.liufuya.mvc.weixinstore;
 
+import java.io.Serializable;
+
 import org.nutz.dao.Dao;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -36,8 +38,8 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.Reindeer;
 
 public class WeixinStoreScreen extends CustomComponent implements
-		ClickListener, ValueChangeListener, ItemClickListener {
-
+		ClickListener, ValueChangeListener, ItemClickListener,Serializable {
+	private static final long serialVersionUID = 1L;
 	private static final Log log = Logs.get();
 	private Dao nutzDao = null;
 

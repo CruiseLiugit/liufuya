@@ -29,7 +29,6 @@ import com.seaway.liufuya.mvc.crm.exchangeproduct.data.EXProductBean;
  * 
  * @author zg
  * **/
-
 @IocBean
 public class EXProductManager  extends BasicDao implements Serializable {
 
@@ -42,6 +41,7 @@ public class EXProductManager  extends BasicDao implements Serializable {
 		this.dao = dao;
 		super.dao = dao;
 	}
+	
 	/**
 	 * 获得所有总数目
 	 * 

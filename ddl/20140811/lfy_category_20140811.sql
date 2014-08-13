@@ -28,17 +28,17 @@ SET time_zone = "+00:00";
 
 CREATE TABLE IF NOT EXISTS `lfy_category` (
   `id` bigint(10) NOT NULL AUTO_INCREMENT,
-  `category_code` varchar(50) NOT NULL,
-  `category_name` varchar(100) DEFAULT NULL,
-  `category_pcode` varchar(50) NOT NULL DEFAULT '0' COMMENT '节点父',
-  `create_date` datetime DEFAULT NULL,
-  `create_opid` varchar(50) DEFAULT NULL,
-  `status` varchar(10) DEFAULT NULL,
-  `categoryOrder` int(10) DEFAULT NULL,
-  `show_name` varchar(100) DEFAULT NULL,
+  `category_code` varchar(50) NOT NULL COMMENT '随机数编码CA时间戳4位数字',
+  `category_name` varchar(100) DEFAULT NULL COMMENT '类别名称',
+  `category_pcode` varchar(50) NOT NULL DEFAULT '0' COMMENT '节点父,订餐网站默认-1,微信默认-2',
+  `create_date` datetime DEFAULT NULL COMMENT '创建时间,修改时，更新时间',
+  `create_opid` varchar(50) DEFAULT NULL COMMENT '创建人 id，为了方便，这里存放创建人姓名',
+  `status` varchar(10) DEFAULT NULL COMMENT '状态0被删除,1正常',
+  `categoryOrder` int(10) DEFAULT NULL COMMENT '排序,修改这里的值可以控制页面显示顺序',
+  `show_name` varchar(100) DEFAULT NULL COMMENT '子标题名称',
   `categoryType` varchar(10) DEFAULT '备留字段',
-  `category_rootcode` varchar(50) DEFAULT NULL,
-  `image` varchar(50) DEFAULT NULL,
+  `category_rootcode` varchar(50) DEFAULT NULL COMMENT '根节点，备留字段',
+  `image` varchar(50) DEFAULT NULL COMMENT '图片路径',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
