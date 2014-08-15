@@ -8,7 +8,6 @@ import org.nutz.log.Logs;
 
 import com.seaway.liufuya.LiufuyaUI;
 import com.seaway.liufuya.common.Constants;
-import com.seaway.liufuya.mvc.crm.memberinfo.dao.impl.MemberInfoMemberBean;
 import com.seaway.liufuya.mvc.crm.ui.layout.NavigationTree;
 import com.seaway.liufuya.mvc.login.dao.SysUserDaoImpl;
 import com.seaway.liufuya.mvc.login.ui.LoginScreen;
@@ -45,7 +44,7 @@ public class WeixinStoreScreen extends CustomComponent implements
 
 	// --------------顶部工具栏组件-----------------------------
 	private Button backToMenu = new Button("首页");
-	private Button search = new Button("搜索");
+	//private Button search = new Button("搜索");
 	private Button user = new Button("用户");
 	private Button logout = new Button("退出");
 	// 顶部 菜单，查看用户信息窗口
@@ -153,26 +152,26 @@ public class WeixinStoreScreen extends CustomComponent implements
 		lo.setExpandRatio(em, 1);
 
 		backToMenu.setDescription("返回系统管理菜单");
-		search.setDescription("全局搜索");
+		//search.setDescription("全局搜索");
 		user.setDescription("当前用户信息");
 		logout.setDescription("退出系统");
 
 		lo.addComponent(backToMenu);
-		lo.addComponent(search);
+		//lo.addComponent(search);
 		lo.addComponent(user);
 		lo.addComponent(logout);
 		lo.setComponentAlignment(backToMenu, Alignment.MIDDLE_RIGHT);
-		lo.setComponentAlignment(search, Alignment.MIDDLE_RIGHT);
+		//lo.setComponentAlignment(search, Alignment.MIDDLE_RIGHT);
 		lo.setComponentAlignment(user, Alignment.MIDDLE_RIGHT);
 		lo.setComponentAlignment(logout, Alignment.MIDDLE_RIGHT);
 
 		backToMenu.addClickListener(this);
-		search.addClickListener(this);// .addListener((ClickListener) this);
+		//search.addClickListener(this);// .addListener((ClickListener) this);
 		user.addClickListener(this);
 		logout.addClickListener(this);
 
 		backToMenu.setIcon(new ThemeResource("icons/19/home.png"));
-		search.setIcon(new ThemeResource("icons/19/Search.png"));
+		//search.setIcon(new ThemeResource("icons/19/Search.png"));
 		user.setIcon(new ThemeResource("icons/19/my-account.png"));
 		logout.setIcon(new ThemeResource("icons/19/logout.png"));
 

@@ -134,8 +134,12 @@ public class DateUtil {
 		if (aDate == null) {
 			log.error("aDate is null!");
 		} else {
-			df = new SimpleDateFormat(aMask);
-			returnValue = df.format(aDate);
+			try {
+				df = new SimpleDateFormat(aMask);
+				returnValue = df.format(aDate);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
 		}
 
 		return (returnValue);

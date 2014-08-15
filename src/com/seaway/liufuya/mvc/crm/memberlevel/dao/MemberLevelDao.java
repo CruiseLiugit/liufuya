@@ -21,9 +21,12 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
 import com.seaway.liufuya.BasicDao;
+import com.seaway.liufuya.common.Constants;
 import com.seaway.liufuya.common.util.DateUtil;
+import com.seaway.liufuya.common.util.Page;
 import com.seaway.liufuya.mvc.crm.memberinfo.dao.MemberInfoManager;
 import com.seaway.liufuya.mvc.crm.memberlevel.pojo.MemberLevel;
+import com.seaway.liufuya.mvc.system.storeaddress.data.StoreAddress;
 import com.vaadin.data.util.BeanItemContainer;
 
 @IocBean
@@ -91,7 +94,13 @@ public class MemberLevelDao extends BasicDao implements Serializable {
 	public List<MemberLevel> getAllMemberLevelPageList(int startNum, int rows) {
 		Pager pager = null;
 		if (rows != 0) {
-			pager = dao.createPager(startNum, rows);
+			//根据条件  查询出总共条数   并且赋值给Pager
+			int totalCount = this.dao.count(StoreAddress.class);
+			//根据 startNum 判断出当前是第几页
+			Page pageTool = new Page(totalCount,startNum);
+			int pageNumber = pageTool.getNowpage();
+			
+			pager = dao.createPager(pageNumber, Constants.PAGE_SIZE);
 			// 设置一共可以查询的条数
 			pager.setRecordCount(dao.count(MemberLevel.class,
 					Cnd.where("status", "=", 1)));

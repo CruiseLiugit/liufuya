@@ -22,13 +22,16 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
 import com.seaway.liufuya.BasicDao;
+import com.seaway.liufuya.common.Constants;
 import com.seaway.liufuya.common.util.DateUtil;
+import com.seaway.liufuya.common.util.Page;
 import com.seaway.liufuya.mvc.crm.memberaddressinfo.pojo.MemberAddress;
 import com.seaway.liufuya.mvc.crm.memberaddressinfo.pojo.MemberAddressBean;
 import com.seaway.liufuya.mvc.crm.memberinfo.dao.MemberInfoManager;
 import com.seaway.liufuya.mvc.crm.memberinfo.data.Citypart;
 import com.seaway.liufuya.mvc.crm.memberinfo.data.Member;
 import com.seaway.liufuya.mvc.crm.memberinfo.data.MemberBean;
+import com.seaway.liufuya.mvc.system.storeaddress.data.StoreAddress;
 import com.vaadin.data.util.BeanItemContainer;
 
 @IocBean
@@ -65,7 +68,13 @@ public class MemberAddressBeanDao extends BasicDao implements Serializable {
 	public List<MemberBean> getMemberByPager(int startNum, int pageRows) {
 		// select * from lfy_member_address where status='1'
 		Cnd condition = Cnd.where("status", "=", 1); // 只查正常的会员
-		Pager pager = dao.createPager(startNum, pageRows);
+		// 根据条件 查询出总共条数 并且赋值给Pager
+		int totalCount = this.dao.count(StoreAddress.class);
+		// 根据 startNum 判断出当前是第几页
+		Page pageTool = new Page(totalCount, startNum);
+		int pageNumber = pageTool.getNowpage();
+
+		Pager pager = dao.createPager(pageNumber, Constants.PAGE_SIZE);
 		// 设置可以查询的总条数
 		pager.setRecordCount(dao.count(Member.class, condition));
 		List<Member> menus = dao.query(Member.class, condition, pager);
