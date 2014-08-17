@@ -20,7 +20,6 @@ import org.nutz.log.Logs;
 
 import com.seaway.liufuya.BasicDao;
 import com.seaway.liufuya.common.util.DateUtil;
-import com.seaway.liufuya.mvc.weixinstore.category.data.Category;
 import com.seaway.liufuya.mvc.weixinstore.product.data.CategoryBean;
 import com.seaway.liufuya.mvc.weixinstore.product.data.WXProduct;
 import com.seaway.liufuya.mvc.weixinstore.product.data.WXProductBean;
@@ -77,17 +76,10 @@ public class WXProductManager extends BasicDao implements Serializable {
 	/**
 	 * 获取所有的产品记录
 	 */
-	public List<WXProductBean> getAllProduct() {
+	public List<WXProduct> getAllProduct() {
 		Cnd condtion = Cnd.where("status", "=", 1);
 		List<WXProduct> list = dao.query(WXProduct.class, condtion);
-
-		// 转换为需要显示的bean
-		List<WXProductBean> beanList = new LinkedList<WXProductBean>();
-		for (WXProduct product : list) {
-			WXProductBean bean = ex(product);
-			beanList.add(bean);
-		}
-		return beanList;
+		return list;
 	}
 
 	/**
@@ -211,7 +203,7 @@ public class WXProductManager extends BasicDao implements Serializable {
 		bean.setProductDesc(product.getProductDesc());
 		bean.setProductName(product.getProductName());
 		bean.setCategory_code(this.findAllCategoryNameByCode(
-				product.getCategory_code()).get(0));
+		product.getCategory_code()).get(0));
 		bean.setPic(product.getPic());
 		bean.setPrice(product.getPrice());
 		bean.setCreate_date(product.getCreate_date());
@@ -249,5 +241,53 @@ public class WXProductManager extends BasicDao implements Serializable {
 
 		return bean;
 	}
+	
+	
+	/**
+	 * 通过产品类型code获得产品名
+	 * 
+	 * @author zg
+	 * **/
+	public List<String> getCategoryName(String code){
+		Sql sqls = Sqls.create("select category_name from lfy_category where category_code = '"+code+"'");
 
+		sqls.setCallback(new SqlCallback() {
+			
+			@Override
+			public Object invoke(Connection conn, ResultSet rs, Sql sql)
+					throws SQLException {
+				List<String> list = new LinkedList<String>();
+				while (rs.next()) {
+					list.add(rs.getString("category_name"));
+				}
+				return list;
+			}
+		});
+		dao.execute(sqls);
+		return sqls.getList(String.class);
+	}
+	
+	/**
+	 * 通过产品类型名获得产品code
+	 * 
+	 * @author zg
+	 * **/
+	public List<String> getCategoryCode(String name){
+		Sql sqls = Sqls.create("select category_code from lfy_category where category_name = '"+name+"'");
+
+		sqls.setCallback(new SqlCallback() {
+			
+			@Override
+			public Object invoke(Connection conn, ResultSet rs, Sql sql)
+					throws SQLException {
+				List<String> list = new LinkedList<String>();
+				while (rs.next()) {
+					list.add(rs.getString("category_code"));
+				}
+				return list;
+			}
+		});
+		dao.execute(sqls);
+		return sqls.getList(String.class);
+	}
 }

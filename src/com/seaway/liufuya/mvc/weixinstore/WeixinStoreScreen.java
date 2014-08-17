@@ -8,11 +8,16 @@ import org.nutz.log.Logs;
 
 import com.seaway.liufuya.LiufuyaUI;
 import com.seaway.liufuya.common.Constants;
+import com.seaway.liufuya.mvc.crm.memberinfo.dao.impl.MemberInfoMemberBean;
 import com.seaway.liufuya.mvc.crm.ui.layout.NavigationTree;
 import com.seaway.liufuya.mvc.login.dao.SysUserDaoImpl;
 import com.seaway.liufuya.mvc.login.ui.LoginScreen;
 import com.seaway.liufuya.mvc.login.ui.UserMenusScreen;
 import com.seaway.liufuya.mvc.login.ui.views.LoginUserInfo;
+import com.seaway.liufuya.mvc.weixinstore.category.dao.CategoryManager;
+import com.seaway.liufuya.mvc.weixinstore.category.layout.CategoryListView;
+import com.seaway.liufuya.mvc.weixinstore.product.dao.WXProductManager;
+import com.seaway.liufuya.mvc.weixinstore.product.layout.WXProductListView;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -44,7 +49,7 @@ public class WeixinStoreScreen extends CustomComponent implements
 
 	// --------------顶部工具栏组件-----------------------------
 	private Button backToMenu = new Button("首页");
-	//private Button search = new Button("搜索");
+	private Button search = new Button("搜索");
 	private Button user = new Button("用户");
 	private Button logout = new Button("退出");
 	// 顶部 菜单，查看用户信息窗口
@@ -56,12 +61,18 @@ public class WeixinStoreScreen extends CustomComponent implements
 
 	// ----------------主界面内容-------------------------------
 	private HorizontalSplitPanel horizontalSplit = new HorizontalSplitPanel();
+	
 
 	// -----------------根据模块动态增加--------------------------
 	// 会员资料组件
 
 	// 数据库对象
 	// public MemberInfoMemberBean memberManager; // 会员管理
+	private CategoryManager categoryManager = null;//商品类目管理
+	private WXProductManager wxproductManager = null;//商品资料管理
+	
+	private CategoryListView categoryListView = null;//商品类目管理
+	private WXProductListView wxproductListView = null;//商品资料管理
 
 	public WeixinStoreScreen() {
 	}
@@ -84,10 +95,10 @@ public class WeixinStoreScreen extends CustomComponent implements
 
 		if ("商品类目管理".equals(itemId)) {
 			Notification.show("商品类目管理");
-			// setMainComponent(this.getMemberInfoListView());
+			 setMainComponent(this.getCategoryListView());
 		} else if ("商品资料管理".equals(itemId)) {
 			Notification.show("商品资料管理");
-			// setMainComponent(this.getMemberAddressListView());
+			setMainComponent(this.getWXProductListView());
 		} else if ("当天订单管理".equals(itemId)) {
 			Notification.show("当天订单管理");
 			// setMainComponent(this.getMemberAddressListView());
@@ -152,26 +163,26 @@ public class WeixinStoreScreen extends CustomComponent implements
 		lo.setExpandRatio(em, 1);
 
 		backToMenu.setDescription("返回系统管理菜单");
-		//search.setDescription("全局搜索");
+		search.setDescription("全局搜索");
 		user.setDescription("当前用户信息");
 		logout.setDescription("退出系统");
 
 		lo.addComponent(backToMenu);
-		//lo.addComponent(search);
+		lo.addComponent(search);
 		lo.addComponent(user);
 		lo.addComponent(logout);
 		lo.setComponentAlignment(backToMenu, Alignment.MIDDLE_RIGHT);
-		//lo.setComponentAlignment(search, Alignment.MIDDLE_RIGHT);
+		lo.setComponentAlignment(search, Alignment.MIDDLE_RIGHT);
 		lo.setComponentAlignment(user, Alignment.MIDDLE_RIGHT);
 		lo.setComponentAlignment(logout, Alignment.MIDDLE_RIGHT);
 
 		backToMenu.addClickListener(this);
-		//search.addClickListener(this);// .addListener((ClickListener) this);
+		search.addClickListener(this);// .addListener((ClickListener) this);
 		user.addClickListener(this);
 		logout.addClickListener(this);
 
 		backToMenu.setIcon(new ThemeResource("icons/19/home.png"));
-		//search.setIcon(new ThemeResource("icons/19/Search.png"));
+		search.setIcon(new ThemeResource("icons/19/Search.png"));
 		user.setIcon(new ThemeResource("icons/19/my-account.png"));
 		logout.setIcon(new ThemeResource("icons/19/logout.png"));
 
@@ -222,11 +233,11 @@ public class WeixinStoreScreen extends CustomComponent implements
 						switch (i) {
 						case 0:
 							Notification.show("商品类目管理");
-							// setMainComponent(this.getMemberInfoListView());
+							 setMainComponent(this.getCategoryListView());
 							break;
 						case 1:
 							Notification.show("商品资料管理");
-							//
+							setMainComponent(this.getWXProductListView());
 							break;
 						case 2:
 							Notification.show("当天订单管理");
@@ -277,5 +288,27 @@ public class WeixinStoreScreen extends CustomComponent implements
 	private void showLoginUserInfoWindow() {
 		UI.getCurrent().addWindow(getLoginUserInfoWindow());
 	}
+	
+	//---------------------------------------------------商品类目管理
+	private CategoryListView getCategoryListView(){
+		if(this.categoryManager == null){
+			categoryManager = new CategoryManager(nutzDao);
+		}
+		if(this.categoryListView == null){
+			categoryListView = new CategoryListView(categoryManager);
+		}
+		return categoryListView;
+	}
+	
+	//---------------------------------------------------商品资料管理
+		private WXProductListView getWXProductListView(){
+			if(this.wxproductManager == null){
+				wxproductManager = new WXProductManager(nutzDao);
+			}
+			if(this.wxproductListView == null){
+				wxproductListView = new WXProductListView(wxproductManager);
+			}
+			return wxproductListView;
+		}
 
 }

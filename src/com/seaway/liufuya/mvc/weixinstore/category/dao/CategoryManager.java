@@ -55,7 +55,7 @@ public class CategoryManager extends BasicDao implements Serializable{
 		List<Category> menus = dao.query(Category.class, condition, pager);
 		return menus;
 	}
-	
+
 	/**
 	 * 新增 产品类别
 	 */
@@ -71,7 +71,17 @@ public class CategoryManager extends BasicDao implements Serializable{
 		dao.execute(sql);
 	}
 	
-	
+   /**
+    * 通过相应类别编码获得对应的类别
+    * 
+    * @author zg
+    * **/
+	public List<Category> getCategory(String categoryCode ){
+		Cnd condition = Cnd.where("category_code", "=", categoryCode); //查询所有
+		List<Category> menus = dao.query(Category.class, condition);
+		return menus;
+	}
+
 	
 	
 }
