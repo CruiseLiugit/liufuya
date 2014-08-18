@@ -16,6 +16,8 @@ import com.seaway.liufuya.mvc.login.ui.UserMenusScreen;
 import com.seaway.liufuya.mvc.login.ui.views.LoginUserInfo;
 import com.seaway.liufuya.mvc.weixinstore.category.dao.CategoryManager;
 import com.seaway.liufuya.mvc.weixinstore.category.layout.CategoryListView;
+import com.seaway.liufuya.mvc.weixinstore.ordernew.dao.OrderDao;
+import com.seaway.liufuya.mvc.weixinstore.ordernew.layout.OrderNewListView;
 import com.seaway.liufuya.mvc.weixinstore.product.dao.WXProductManager;
 import com.seaway.liufuya.mvc.weixinstore.product.layout.WXProductListView;
 import com.vaadin.data.Property;
@@ -42,7 +44,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.Reindeer;
 
 public class WeixinStoreScreen extends CustomComponent implements
-		ClickListener, ValueChangeListener, ItemClickListener,Serializable {
+		ClickListener, ValueChangeListener, ItemClickListener, Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final Log log = Logs.get();
 	private Dao nutzDao = null;
@@ -61,18 +63,19 @@ public class WeixinStoreScreen extends CustomComponent implements
 
 	// ----------------主界面内容-------------------------------
 	private HorizontalSplitPanel horizontalSplit = new HorizontalSplitPanel();
-	
 
 	// -----------------根据模块动态增加--------------------------
 	// 会员资料组件
 
 	// 数据库对象
 	// public MemberInfoMemberBean memberManager; // 会员管理
-	private CategoryManager categoryManager = null;//商品类目管理
-	private WXProductManager wxproductManager = null;//商品资料管理
-	
-	private CategoryListView categoryListView = null;//商品类目管理
-	private WXProductListView wxproductListView = null;//商品资料管理
+	private CategoryManager categoryManager = null;// 商品类目管理
+	private WXProductManager wxproductManager = null;// 商品资料管理
+	private OrderDao orderdao = null; // 订单管理
+
+	private CategoryListView categoryListView = null;// 商品类目管理
+	private WXProductListView wxproductListView = null;// 商品资料管理
+	private OrderNewListView orderNewListView = null;// 今日订单管理
 
 	public WeixinStoreScreen() {
 	}
@@ -95,13 +98,13 @@ public class WeixinStoreScreen extends CustomComponent implements
 
 		if ("商品类目管理".equals(itemId)) {
 			Notification.show("商品类目管理");
-			 setMainComponent(this.getCategoryListView());
+			setMainComponent(this.getCategoryListView());
 		} else if ("商品资料管理".equals(itemId)) {
 			Notification.show("商品资料管理");
 			setMainComponent(this.getWXProductListView());
 		} else if ("当天订单管理".equals(itemId)) {
 			Notification.show("当天订单管理");
-			// setMainComponent(this.getMemberAddressListView());
+		    setMainComponent(this.getWXOrderNewListView());
 		} else if ("历史订单查询".equals(itemId)) {
 			Notification.show("历史订单查询");
 			// setMainComponent(this.getMemberAddressListView());
@@ -203,7 +206,7 @@ public class WeixinStoreScreen extends CustomComponent implements
 		} else if (source == logout) {
 			Notification.show("您已安全退出系统!");
 			UI.getCurrent().setContent(new LoginScreen());
-			//showShareWindow();
+			// showShareWindow();
 			UI.getCurrent().getSession().close();
 		} else if (source == backToMenu) {
 			// addNewContanct();
@@ -233,7 +236,7 @@ public class WeixinStoreScreen extends CustomComponent implements
 						switch (i) {
 						case 0:
 							Notification.show("商品类目管理");
-							 setMainComponent(this.getCategoryListView());
+							setMainComponent(this.getCategoryListView());
 							break;
 						case 1:
 							Notification.show("商品资料管理");
@@ -241,7 +244,7 @@ public class WeixinStoreScreen extends CustomComponent implements
 							break;
 						case 2:
 							Notification.show("当天订单管理");
-							//
+							setMainComponent(this.getWXOrderNewListView());
 							break;
 						case 3:
 							Notification.show("历史订单查询");
@@ -288,27 +291,38 @@ public class WeixinStoreScreen extends CustomComponent implements
 	private void showLoginUserInfoWindow() {
 		UI.getCurrent().addWindow(getLoginUserInfoWindow());
 	}
-	
-	//---------------------------------------------------商品类目管理
-	private CategoryListView getCategoryListView(){
-		if(this.categoryManager == null){
+
+	// ---------------------------------------------------商品类目管理
+	private CategoryListView getCategoryListView() {
+		if (this.categoryManager == null) {
 			categoryManager = new CategoryManager(nutzDao);
 		}
-		if(this.categoryListView == null){
+		if (this.categoryListView == null) {
 			categoryListView = new CategoryListView(categoryManager);
 		}
 		return categoryListView;
 	}
-	
-	//---------------------------------------------------商品资料管理
-		private WXProductListView getWXProductListView(){
-			if(this.wxproductManager == null){
-				wxproductManager = new WXProductManager(nutzDao);
-			}
-			if(this.wxproductListView == null){
-				wxproductListView = new WXProductListView(wxproductManager);
-			}
-			return wxproductListView;
+
+	// ---------------------------------------------------商品资料管理
+	private WXProductListView getWXProductListView() {
+		if (this.wxproductManager == null) {
+			wxproductManager = new WXProductManager(nutzDao);
 		}
+		if (this.wxproductListView == null) {
+			wxproductListView = new WXProductListView(wxproductManager);
+		}
+		return wxproductListView;
+	}
+
+	// ---------------------------------------------------今日订单管理
+	private OrderNewListView getWXOrderNewListView() {
+		if (this.orderdao == null) {
+			orderdao = new OrderDao(nutzDao);
+		}
+		if (this.wxproductListView == null) {
+			orderNewListView = new OrderNewListView(orderdao);
+		}
+		return orderNewListView;
+	}
 
 }

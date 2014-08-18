@@ -42,7 +42,15 @@ public class CategoryManager extends BasicDao implements Serializable{
 	 * 不分页
 	 */
 	public List<Category> getAllCategory(){	
-		return this.dao.query(Category.class, null);
+		List<Category> list = this.dao.query(Category.class, null);
+		  for(Category category:list){
+	        	if(category.getStatus().equals("1")){
+	        		category.setStatus("启用");
+	        	}else{
+	        		category.setStatus("未启用");
+	        	}
+	        }
+		return list;
 	}
 	
 	/**

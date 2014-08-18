@@ -32,6 +32,13 @@ public class CategoryService {
 	 */
     public List<Category> getMemberByPager(int startIndex, int pageRows) {
         List<Category> list = manager.getAllCategoryByPagr(startIndex, pageRows);
+        for(Category category:list){
+        	if(category.getStatus().equals("1")){
+        		category.setStatus("启用");
+        	}else{
+        		category.setStatus("未启用");
+        	}
+        }
         return list;
     }
 	

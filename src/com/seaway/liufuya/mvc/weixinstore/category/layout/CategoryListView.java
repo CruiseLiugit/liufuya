@@ -62,7 +62,7 @@ public class CategoryListView extends VerticalLayout {
 	private TextField category_code = new TextField("类别代码");
 	private TextField category_name = new TextField("类别名");
 	private TextField show_name = new TextField("子标题名称");
-	private NativeSelect status = new NativeSelect();
+	private NativeSelect status = new NativeSelect("状态");
 	private Button saveButton = new Button("修改");
 	private Button addBtn1 = new Button("增加");
 
@@ -164,9 +164,9 @@ public class CategoryListView extends VerticalLayout {
 			bindingFiles.setBuffered(true);
 			bindingFiles.bindMemberFields(this); 
 			if(status.getValue().equals("启用")){
-				status.isSelected(1);
+				status.select(1);
 			}else{
-				status.isSelected(2);
+				status.select(0);
 			}
 			form.addComponents(category_code,category_name,show_name,status,saveButton);
 			category_code.setEnabled(false);
@@ -240,6 +240,7 @@ public class CategoryListView extends VerticalLayout {
 		status.setItemCaption(1, "启用");
 		status.setItemCaption(0, "未启用");
 		status.setRequired(true);
+		status.isSelected(1);
 		saveButton.addClickListener(initButtonClickLister());
 		Button addBtn1 = new Button("增加");
 		addBtn1.addClickListener(initButtonClickLister());

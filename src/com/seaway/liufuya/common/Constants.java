@@ -367,6 +367,10 @@ public class Constants {
 			"状态", "类别编码" };
 	public static final String[] WX_CATEGORY_COL = { "category_name",
 			"show_name", "status", "category_code" };
+	// 包装单位
+	public static final String[] unit_code = { "0", "1", "2", "3", "4", "5" };
+	public static final String[] unit_name = { "无", "份", "普通装", "标准杯", "盒",
+			"其他" };
 
 	// ------------------------------------------------微信商品管理
 	public static final String[] WX_PRODUCT_COL_HEADERS = { "产品编码", "类别", "名称",
@@ -397,5 +401,16 @@ public class Constants {
 	public static final String[] STOREADDRESS_COL_HEADERS_CHINESE = new String[] {
 			"门店编码", "门店名称", "经营类型", "店铺类型", "大区", "省份", "城市", "城区", "开店时间",
 			"状态" };
+
+	// ----------------------------------------------------------------------------
+	// 订单管理,当日订单和历史订单公用一个表头,使用关联查询获得两个数据库表中信息 lfy_order lfy_order_content
+	public static final Object[] ORDER_COL = new String[] { "orderNo",
+			"orderTotalMoney", "couponMoney", "orderStatus", "create_date",
+			"user_name", "user_tel", "city", "area", "user_address",
+			"productName" };
+	// 表明列头
+	public static final String[] ORDER_COL_HEADERS_CHINESE = new String[] {
+			"订单编码", "订单价格", "订单优惠价格", "支付状态", "创建时间", "用户名", "手机号码", "城市",
+			"城区", "收货地址", "订单产品" };
 
 }

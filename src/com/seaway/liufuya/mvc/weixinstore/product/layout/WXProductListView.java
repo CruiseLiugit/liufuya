@@ -115,6 +115,11 @@ public class WXProductListView extends VerticalLayout {
 		List<WXProduct> productList=manager.getAllProduct();
 		for(WXProduct product:productList){
 			product.setCategory_code(service.getCategoryName(product.getCategory_code()));
+			if(product.getStatus().equals("1")){
+				product.setStatus("启用");
+			}else{
+				product.setStatus("未启用");
+			}
 		}
 		container.addAll(productList);
 	}
@@ -189,13 +194,26 @@ public class WXProductListView extends VerticalLayout {
 			bindingFiles.setBuffered(true);
 			bindingFiles.bindMemberFields(this); 
 			if(status.getValue().equals("启用")){
-				status.isSelected(1);
+				status.select(1);
 			}else{
-				status.isSelected(2);
+				status.select(1);
 			}
-			if(!unit.getValue().equals("其他")){
-				otherUnit.setEnabled(false);
+			
+//			if(!unit.getValue().equals("其他")){
+//				otherUnit.setEnabled(false);
+//			}
+			for(CategoryBean categoryBean:service.getAllCategory()){
+				if(category_code.getValue().equals(categoryBean.getName())){
+					category_code.select(categoryBean.getCode());
+				}
 			}
+			for(int i=0;i<Constants.unit_name.length;i++){
+				if(unit.getValue().equals(Constants.unit_name[i])){
+					unit.select(Constants.unit_code[i]);
+				}
+			}
+			taste.select(0);
+			package_type.select(0);
 			form.addComponents(productCode,category_code,productName,productDesc,pic,pic,price,cheapPrice,unit,otherUnit,package_type,taste,status,saveButton);
 		}
 	

@@ -605,9 +605,10 @@ public class StoreAddressListView extends VerticalLayout implements
 						}
 
 					}
+					storeDao.saveStoreAddress(store);
+					Notification.show("添加成功");
 				}
-				storeDao.saveStoreAddress(store);
-				Notification.show("添加成功");
+				
 			}
 		};
 		return lister;
