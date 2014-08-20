@@ -8,6 +8,8 @@ public class CategoryBean {
 	private String create_opid = ""; // 创建人姓名，界面显示
 	private String show_name = ""; // 显示的名称，子名称，界面显示
 	private String status = "";  //界面显示
+	
+	
 	public String getCategory_code() {
 		return category_code;
 	}

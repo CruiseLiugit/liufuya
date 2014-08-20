@@ -1,5 +1,7 @@
-package com.seaway.liufuya.mvc.weixinstore.ordernew.layout;
+package com.seaway.liufuya.mvc.weixinstore.orderold.layout;
 
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.nutz.log.Log;
@@ -11,6 +13,7 @@ import com.seaway.liufuya.mvc.weixinstore.ordernew.dao.OrderDao;
 import com.seaway.liufuya.mvc.weixinstore.ordernew.data.Order;
 import com.seaway.liufuya.mvc.weixinstore.ordernew.data.OrderBean;
 import com.seaway.liufuya.mvc.weixinstore.ordernew.data.OrderContent;
+import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
@@ -19,7 +22,11 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.event.MouseEvents.ClickListener;
+import com.vaadin.server.ThemeResource;
+import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.DateField;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -33,7 +40,7 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 
 @SuppressWarnings("serial")
-public class OrderNewListView extends VerticalLayout implements ClickListener,
+public class OrdderOldListView extends VerticalLayout implements ClickListener,
 		ItemClickListener {
 
 	private static final Log log = Logs.get();
@@ -44,9 +51,9 @@ public class OrderNewListView extends VerticalLayout implements ClickListener,
 	HorizontalLayout navBar = new HorizontalLayout();
 
 	// ----------------------- 整个页面，上下分割的 垂直布局面板
-	//private final HorizontalSplitPanel vsplit = new HorizontalSplitPanel();
-	private final  VerticalLayout vsplit = new VerticalLayout();
-	
+	// private final HorizontalSplitPanel vsplit = new HorizontalSplitPanel();
+	private final VerticalLayout vsplit = new VerticalLayout();
+
 	// ------------------------ 底部
 	private HorizontalLayout footer;
 
@@ -59,19 +66,19 @@ public class OrderNewListView extends VerticalLayout implements ClickListener,
 
 	// ----------------------定义表单
 	FormLayout rightFormlayout = null; // 编辑表单
-	
-	TextField orderNo = null; //订单编号
-	//TextField orderMoney = null; //订单总价
-	TextField orderTotalMoney = null;//订单实际购买价格
-	TextField couponMoney = null;//订单优惠价格
-	//TextField delivery = null; // '2外送 1自取 3 顺丰',
+
+	TextField orderNo = null; // 订单编号
+	// TextField orderMoney = null; //订单总价
+	TextField orderTotalMoney = null;// 订单实际购买价格
+	TextField couponMoney = null;// 订单优惠价格
+	// TextField delivery = null; // '2外送 1自取 3 顺丰',
 	NativeSelect orderStatus;// '订单状态 1默认待支付 2已支付 3已关闭
 	TextField create_date;// 创建时间
-	Table product = null;//订单对应的产品列表
-	TextField user_tel = null;//用户联系电话 当delivery为2时必填
-	TextField user_name = null;//订单用户名
-	TextArea user_address;//地址
-	//TextField status = null;// '状态 1默认未付款 0删除 2已付款 3 外送超时 4 自取超时 5 外送退货
+	Table product = null;// 订单对应的产品列表
+	TextField user_tel = null;// 用户联系电话 当delivery为2时必填
+	TextField user_name = null;// 订单用户名
+	TextArea user_address;// 地址
+	// TextField status = null;// '状态 1默认未付款 0删除 2已付款 3 外送超时 4 自取超时 5 外送退货
 
 	Button saveButton = null;
 
@@ -79,26 +86,57 @@ public class OrderNewListView extends VerticalLayout implements ClickListener,
 	Window addWindow = null;
 
 	// ---------------------开始布局
-	public OrderNewListView() {
+	public OrdderOldListView() {
+		// TODO Auto-generated constructor stub
 	}
-
-	public OrderNewListView(OrderDao dao) {
+	
+	public OrdderOldListView(OrderDao dao) {
 		this.orderDao = dao;
 
 		// -----------------------导航工具条
 		navBar.setStyleName(Reindeer.LAYOUT_BLACK);
 		navBar.setWidth(100, Unit.PERCENTAGE);
 		navBar.setHeight(29, Unit.PIXELS);
-		Label lblNav = new Label("订单管理 / 当天订单管理");
+		Label lblNav = new Label("订单管理 / 历史订单管理");
 		navBar.addComponent(lblNav);
 		
-//		Button btnAdd = new Button("查询"); // 增加 按钮
-//		btnAdd.setIcon(new ThemeResource("icons/16/add.png"));
-//		btnAdd.setDescription("增加门店");
-//		btnAdd.addClickListener(addButtonClickLister());
-//		navBar.addComponent(lblNav);
-//		navBar.addComponent(btnAdd);
-//		navBar.setComponentAlignment(btnAdd, Alignment.TOP_RIGHT);// 定义位置
+		//时间搜索框
+		HorizontalLayout timeBar = new HorizontalLayout();
+		Label fromText = new Label();
+		final DateField from = new DateField();
+		from.setDateFormat("yyyy-MM-dd");
+		// from.setReadOnly(true);
+		Label toText = new Label("--");
+		final DateField to = new DateField();
+		to.setDateFormat("yyyy-MM-dd");
+		// to.setReadOnly(true);
+		Button timeSearch = new Button("时间查询"); // 增加 按钮
+		timeSearch.setIcon(new ThemeResource("icons/16/search.png"));
+		timeBar.addComponent(fromText);
+		timeBar.addComponent(from);
+		timeBar.addComponent(toText);
+		timeBar.addComponent(to);
+		timeBar.addComponent(timeSearch);
+		
+		timeSearch.addListener(new com.vaadin.ui.Button.ClickListener(){
+				@Override
+				public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+					Date fromDate = from.getValue();
+					Date toDate = to.getValue();
+					fillContainer(tableContainer, fromDate, toDate);
+//					VerticalLayout tablelayout = new VerticalLayout();
+//					tablelayout.setStyleName(Reindeer.LAYOUT_WHITE); // 右侧样式
+//					tablelayout.setHeight(436, Unit.PIXELS);
+//					tablelayout.setWidth(100,Unit.PERCENTAGE);
+//					tb = createTable(container);
+//					tablelayout.addComponent(tb); // 表格
+//					hsPanel.setSecondComponent(tablelayout);
+					Notification.show("时间搜索");
+				}
+		});
+		
+		navBar.addComponent(timeBar);
+		navBar.setComponentAlignment(timeBar, Alignment.TOP_RIGHT);// 定义位置
 
 		// --------------------------垂直页面布局
 		initContainer();
@@ -128,37 +166,30 @@ public class OrderNewListView extends VerticalLayout implements ClickListener,
 
 	}
 
-	// ----------------------------------------------------
-	/**
-	 * 导航栏，添加按钮单击事件
-	 */
-//	private Button.ClickListener addButtonClickLister() {
-//		Button.ClickListener listener = new Button.ClickListener() {
-//			@Override
-//			public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-//				addWindow = new Window("查询");
-//				addWindow.setHeight(500, Unit.PIXELS);
-//				addWindow.setWidth(430, Unit.PIXELS);
-//				addWindow.setModal(true);
-//				//addForm();
-//				addWindow.setContent(addFormlayout);
-//				getUI().addWindow(addWindow);
-//			}
-//		};
-//
-//		return listener;
-//	}
-
 	// ----------------------------------------------------------------------
 	/**
 	 * 左边表格容器初始化
 	 */
 	private void initContainer() {
-		tableContainer.removeAllItems();
+		//tableContainer.removeAllItems();
 		// 分页版本
 		// container = new LazyLoadStoreContainer(StoreBean.class,storeDao);
 		// 不分页版本
-		List<OrderBean> list = this.orderDao.getAllOrder("3", "2", "2");
+		//历史订单，传递参数 delivery=3,orderStatus=3,status=2
+		List<OrderBean> list = this.orderDao.getAllOrder("3", "3", "2");
+		for (OrderBean orderBean : list) {
+			tableContainer.addItem(orderBean);
+		}
+	}
+	
+	/**
+	 * 输入日期搜索，获取表格的 容器对象
+	 * 
+	 * @param container
+	 */
+	private void fillContainer(Container container, Date from,Date to) {
+		tableContainer.removeAllItems();
+		List<OrderBean> list = orderDao.getAllOrderByDate("3", "3", "2",from,to);
 		for (OrderBean orderBean : list) {
 			tableContainer.addItem(orderBean);
 		}
@@ -208,9 +239,8 @@ public class OrderNewListView extends VerticalLayout implements ClickListener,
 		couponMoney = new TextField("订单优惠价格");
 		//delivery = new TextField("订单配送方式");//2外送 1自取 3 顺丰
 		orderStatus = new NativeSelect("订单状态");//订单状态 1默认待支付 2已支付 3已关闭
-		orderStatus.addItems(0, 1);
-		orderStatus.setItemCaption(0, "已支付");
-		orderStatus.setItemCaption(1, "已关闭");
+		orderStatus.addItems(0);
+		orderStatus.setItemCaption(0, "已关闭");
 		
 		create_date = new TextField("支付时间");
 	
@@ -242,7 +272,7 @@ public class OrderNewListView extends VerticalLayout implements ClickListener,
 		user_address.setImmediate(true);
 		user_address.setSizeFull();
 	
-		saveButton = new Button("保存");
+		saveButton = new Button("关闭");
 		saveButton.addClickListener(buttonLister());
 
 		rightFormlayout.addComponents(orderNo, orderTotalMoney,
@@ -267,24 +297,23 @@ public class OrderNewListView extends VerticalLayout implements ClickListener,
 			StringBuffer sb = new StringBuffer("");
 			sb.append(address.getCity()+","+address.getArea()+","+address.getAddress_keywords());
 			user_address.setValue(sb.toString());
+			
+			//status.setValue(order.getStatus().equals("2")?"已支付":"");
+			
 			//订单状态 1默认待支付 2已支付 3已关闭
-			if (order.getOrderStatus().equals("2")) {
-				orderStatus.select(0);
-			} else if (order.getStatus().equals("3")){
-				orderStatus.select(1);
-			}
+			orderStatus.select(0);
+			
+
 
 			orderNo.setEnabled(false); //禁用输入框
 			//orderMoney.setEnabled(false); //禁用输入框
 			orderTotalMoney.setEnabled(false); //禁用输入框
 			couponMoney.setEnabled(false); //禁用输入框
-			//delivery.setEnabled(false); //禁用输入框
+			orderStatus.setEnabled(false); //禁用输入框
 			create_date.setEnabled(false); //禁用输入框
 			user_name.setEnabled(false); //禁用输入框
 			user_tel.setEnabled(false); //禁用输入框
 			user_address.setEnabled(false); //禁用输入框
-			
-
 		}
 	}
 	
@@ -297,27 +326,8 @@ public class OrderNewListView extends VerticalLayout implements ClickListener,
 			
 			@Override
 			public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-				
-				if (event.getButton().getCaption().equals("保存")) {
-					//获取订单 编码
-					String order_No = orderNo.getValue();
-					//获取订单状态
-					Integer order_Status = (Integer) orderStatus.getValue();
-					log.info("获取订单 编码 ="+order_No+"      ,order_Status ="+order_Status);
-					if (order_Status == 0) {
-						Notification.show("现在即是已支付状态，切换到 已关闭 状态才能完成订单");
-					}else{
-						//1 根据订单编号，查出对应订单全部信息
-						Order odr =  orderDao.findStoreByOrderNo(order_No);
-						odr.setOrderStatus("3"); //修改为  已关闭   状态
-						//2 修改 orderStatus 然后更新
-						orderDao.updateStore(odr);
-						//3 刷新表格容器
-						//tableContainer.removeItem(odr);
-						initContainer();
-						Notification.show("更新成功");
-						addWindow.close();
-					}
+				if (event.getButton().getCaption().equals("关闭")) {
+					addWindow.close();
 				} 
 			}
 		};

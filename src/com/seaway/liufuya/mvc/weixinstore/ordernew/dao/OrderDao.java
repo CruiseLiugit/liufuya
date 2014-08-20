@@ -1,9 +1,11 @@
 package com.seaway.liufuya.mvc.weixinstore.ordernew.dao;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
 import org.nutz.ioc.loader.annotation.IocBean;
@@ -65,7 +67,8 @@ public class OrderDao extends BasicDao implements Serializable {
 	}
 
 	/**
-	 * 获取所有的订单记录 微信功能 当日订单，传递参数 delivery=3,orderStatus=2,status=2 历史订单，传递参数
+	 * 获取所有的订单记录 微信功能 当日订单，传递参数 delivery=3,orderStatus=2,status=2 
+	 * 历史订单，传递参数
 	 * delivery=3,orderStatus=3,status=2
 	 * 
 	 */
@@ -85,6 +88,31 @@ public class OrderDao extends BasicDao implements Serializable {
 		return beanList;
 	}
 
+	/**
+	 * 页面时间段搜索，获取的订单记录 微信功能 
+	 * 今日订单，传递参数 delivery=3,orderStatus=2,status=2 
+	 * 历史订单，传递参数 delivery=3,orderStatus=3,status=2
+	 * 
+	 * 
+	 */
+	public List<OrderBean> getAllOrderByDate(String delivery, String orderStatus,
+			String status,Date from, Date to) {
+		Cnd condtion = Cnd.where("delivery", "=", delivery)
+				.and("orderStatus", "=", orderStatus)
+				.and("status", "=", status).and("create_date", ">", from).and("create_date", "<", to);
+		List<Order> list = dao.query(Order.class, condtion);
+
+		// 转换为需要显示的bean
+		List<OrderBean> beanList = new LinkedList<OrderBean>();
+		for (Order ord : list) {
+			OrderBean bean = ex(ord);
+			beanList.add(bean);
+		}
+		return beanList;
+	}
+	
+	
+	
 	/**
 	 * 更新门店资料
 	 */

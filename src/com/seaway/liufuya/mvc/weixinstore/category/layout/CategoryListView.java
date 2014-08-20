@@ -97,7 +97,9 @@ public class CategoryListView extends VerticalLayout {
 		vsplit.addComponent(form);
 		this.addComponent(navBar);
 		this.addComponent(vsplit);
-		vsplit.setSplitPosition(70F);
+		vsplit.setSplitPosition(70);
+		vsplit.setStyleName(Reindeer.LAYOUT_WHITE); // 右侧样式
+		vsplit.setHeight(470, Unit.PIXELS);
 	}
 	/**
 	 * 初始化表格容器
@@ -153,9 +155,6 @@ public class CategoryListView extends VerticalLayout {
 		status.setItemCaption(0, "未启用");
 		status.setRequired(true);
 		saveButton.addClickListener(initButtonClickLister());
-		
-		
-		
 		  //绑定数据
 		if(item != null){
 			vsplit.removeComponent(form);

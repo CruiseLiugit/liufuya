@@ -18,6 +18,7 @@ import com.seaway.liufuya.mvc.weixinstore.category.dao.CategoryManager;
 import com.seaway.liufuya.mvc.weixinstore.category.layout.CategoryListView;
 import com.seaway.liufuya.mvc.weixinstore.ordernew.dao.OrderDao;
 import com.seaway.liufuya.mvc.weixinstore.ordernew.layout.OrderNewListView;
+import com.seaway.liufuya.mvc.weixinstore.orderold.layout.OrdderOldListView;
 import com.seaway.liufuya.mvc.weixinstore.product.dao.WXProductManager;
 import com.seaway.liufuya.mvc.weixinstore.product.layout.WXProductListView;
 import com.vaadin.data.Property;
@@ -51,7 +52,7 @@ public class WeixinStoreScreen extends CustomComponent implements
 
 	// --------------顶部工具栏组件-----------------------------
 	private Button backToMenu = new Button("首页");
-	private Button search = new Button("搜索");
+	//private Button search = new Button("搜索");
 	private Button user = new Button("用户");
 	private Button logout = new Button("退出");
 	// 顶部 菜单，查看用户信息窗口
@@ -76,6 +77,7 @@ public class WeixinStoreScreen extends CustomComponent implements
 	private CategoryListView categoryListView = null;// 商品类目管理
 	private WXProductListView wxproductListView = null;// 商品资料管理
 	private OrderNewListView orderNewListView = null;// 今日订单管理
+	private OrdderOldListView orderOldListView = null;// 历史订单查询
 
 	public WeixinStoreScreen() {
 	}
@@ -104,10 +106,10 @@ public class WeixinStoreScreen extends CustomComponent implements
 			setMainComponent(this.getWXProductListView());
 		} else if ("当天订单管理".equals(itemId)) {
 			Notification.show("当天订单管理");
-		    setMainComponent(this.getWXOrderNewListView());
+			setMainComponent(this.getWXOrderNewListView());
 		} else if ("历史订单查询".equals(itemId)) {
 			Notification.show("历史订单查询");
-			// setMainComponent(this.getMemberAddressListView());
+			setMainComponent(this.getWXOrderOldListView());
 		} else if ("优惠券生成".equals(itemId)) {
 			Notification.show("优惠券生成");
 			// setMainComponent(this.getMemberAddressListView());
@@ -166,26 +168,26 @@ public class WeixinStoreScreen extends CustomComponent implements
 		lo.setExpandRatio(em, 1);
 
 		backToMenu.setDescription("返回系统管理菜单");
-		search.setDescription("全局搜索");
+		//search.setDescription("全局搜索");
 		user.setDescription("当前用户信息");
 		logout.setDescription("退出系统");
 
 		lo.addComponent(backToMenu);
-		lo.addComponent(search);
+		//lo.addComponent(search);
 		lo.addComponent(user);
 		lo.addComponent(logout);
 		lo.setComponentAlignment(backToMenu, Alignment.MIDDLE_RIGHT);
-		lo.setComponentAlignment(search, Alignment.MIDDLE_RIGHT);
+		//lo.setComponentAlignment(search, Alignment.MIDDLE_RIGHT);
 		lo.setComponentAlignment(user, Alignment.MIDDLE_RIGHT);
 		lo.setComponentAlignment(logout, Alignment.MIDDLE_RIGHT);
 
 		backToMenu.addClickListener(this);
-		search.addClickListener(this);// .addListener((ClickListener) this);
+		//search.addClickListener(this);// .addListener((ClickListener) this);
 		user.addClickListener(this);
 		logout.addClickListener(this);
 
 		backToMenu.setIcon(new ThemeResource("icons/19/home.png"));
-		search.setIcon(new ThemeResource("icons/19/Search.png"));
+		//search.setIcon(new ThemeResource("icons/19/Search.png"));
 		user.setIcon(new ThemeResource("icons/19/my-account.png"));
 		logout.setIcon(new ThemeResource("icons/19/logout.png"));
 
@@ -248,7 +250,7 @@ public class WeixinStoreScreen extends CustomComponent implements
 							break;
 						case 3:
 							Notification.show("历史订单查询");
-							//
+							setMainComponent(this.getWXOrderOldListView());
 							break;
 						case 4:
 							Notification.show("优惠券生成");
@@ -319,10 +321,21 @@ public class WeixinStoreScreen extends CustomComponent implements
 		if (this.orderdao == null) {
 			orderdao = new OrderDao(nutzDao);
 		}
-		if (this.wxproductListView == null) {
+		if (this.orderNewListView == null) {
 			orderNewListView = new OrderNewListView(orderdao);
 		}
 		return orderNewListView;
+	}
+
+	// ---------------------------------------------------历史订单管理
+	private OrdderOldListView getWXOrderOldListView() {
+		if (this.orderdao == null) {
+			orderdao = new OrderDao(nutzDao);
+		}
+		if (this.orderOldListView == null) {
+			orderOldListView = new OrdderOldListView(orderdao);
+		}
+		return orderOldListView;
 	}
 
 }
