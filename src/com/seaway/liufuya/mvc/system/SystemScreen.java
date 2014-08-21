@@ -85,19 +85,13 @@ public class SystemScreen extends CustomComponent implements ClickListener,
 		if ("已开门店管理".equals(itemId)) {
 			Notification.show("已开门店管理");
 			setMainComponent(this.getStoreAddressListView());
-		} else if ("部门管理".equals(itemId)) {
-			Notification.show("部门管理");
+		} else if ("角色管理".equals(itemId)) {
+			Notification.show("角色管理");
 			// setMainComponent(this.getMemberAddressListView());
 		} else if ("用户管理".equals(itemId)) {
 			Notification.show("用户管理");
 			// setMainComponent(this.getMemberAddressListView());
-		} else if ("角色管理".equals(itemId)) {
-			Notification.show("角色管理");
-			// setMainComponent(this.getMemberAddressListView());
-		} else if ("权限管理".equals(itemId)) {
-			Notification.show("权限管理");
-			// setMainComponent(this.getMemberAddressListView());
-		}
+		} 
 
 	}
 
@@ -234,19 +228,11 @@ public class SystemScreen extends CustomComponent implements ClickListener,
 							setMainComponent(this.getStoreAddressListView());
 							break;
 						case 1:
-							Notification.show("部门管理");
+							Notification.show("角色管理");
 							//
 							break;
 						case 2:
 							Notification.show("用户管理");
-							//
-							break;
-						case 3:
-							Notification.show("角色管理");
-							//
-							break;
-						case 4:
-							Notification.show("权限管理");
 							//
 							break;
 						default:

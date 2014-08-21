@@ -16,6 +16,8 @@ import com.seaway.liufuya.mvc.login.ui.UserMenusScreen;
 import com.seaway.liufuya.mvc.login.ui.views.LoginUserInfo;
 import com.seaway.liufuya.mvc.weixinstore.category.dao.CategoryManager;
 import com.seaway.liufuya.mvc.weixinstore.category.layout.CategoryListView;
+import com.seaway.liufuya.mvc.weixinstore.generatingcoupon.dao.CouponManager;
+import com.seaway.liufuya.mvc.weixinstore.generatingcoupon.layout.CouponListView;
 import com.seaway.liufuya.mvc.weixinstore.ordernew.dao.OrderDao;
 import com.seaway.liufuya.mvc.weixinstore.ordernew.layout.OrderNewListView;
 import com.seaway.liufuya.mvc.weixinstore.orderold.layout.OrdderOldListView;
@@ -52,7 +54,7 @@ public class WeixinStoreScreen extends CustomComponent implements
 
 	// --------------顶部工具栏组件-----------------------------
 	private Button backToMenu = new Button("首页");
-	//private Button search = new Button("搜索");
+	// private Button search = new Button("搜索");
 	private Button user = new Button("用户");
 	private Button logout = new Button("退出");
 	// 顶部 菜单，查看用户信息窗口
@@ -73,11 +75,13 @@ public class WeixinStoreScreen extends CustomComponent implements
 	private CategoryManager categoryManager = null;// 商品类目管理
 	private WXProductManager wxproductManager = null;// 商品资料管理
 	private OrderDao orderdao = null; // 订单管理
+	private CouponManager couponManager = null;// 电子优惠券生成
 
 	private CategoryListView categoryListView = null;// 商品类目管理
 	private WXProductListView wxproductListView = null;// 商品资料管理
 	private OrderNewListView orderNewListView = null;// 今日订单管理
 	private OrdderOldListView orderOldListView = null;// 历史订单查询
+	private CouponListView couponListView = null;// 电子优惠券生成
 
 	public WeixinStoreScreen() {
 	}
@@ -112,14 +116,11 @@ public class WeixinStoreScreen extends CustomComponent implements
 			setMainComponent(this.getWXOrderOldListView());
 		} else if ("优惠券生成".equals(itemId)) {
 			Notification.show("优惠券生成");
-			// setMainComponent(this.getMemberAddressListView());
+			setMainComponent(this.getCouponListView());
 		} else if ("会员优惠券查询".equals(itemId)) {
 			Notification.show("会员优惠券查询");
 			// setMainComponent(this.getMemberAddressListView());
-		} else if ("历史优惠券核实".equals(itemId)) {
-			Notification.show("历史优惠券核实");
-			// setMainComponent(this.getMemberAddressListView());
-		}
+		} 
 
 	}
 
@@ -168,26 +169,26 @@ public class WeixinStoreScreen extends CustomComponent implements
 		lo.setExpandRatio(em, 1);
 
 		backToMenu.setDescription("返回系统管理菜单");
-		//search.setDescription("全局搜索");
+		// search.setDescription("全局搜索");
 		user.setDescription("当前用户信息");
 		logout.setDescription("退出系统");
 
 		lo.addComponent(backToMenu);
-		//lo.addComponent(search);
+		// lo.addComponent(search);
 		lo.addComponent(user);
 		lo.addComponent(logout);
 		lo.setComponentAlignment(backToMenu, Alignment.MIDDLE_RIGHT);
-		//lo.setComponentAlignment(search, Alignment.MIDDLE_RIGHT);
+		// lo.setComponentAlignment(search, Alignment.MIDDLE_RIGHT);
 		lo.setComponentAlignment(user, Alignment.MIDDLE_RIGHT);
 		lo.setComponentAlignment(logout, Alignment.MIDDLE_RIGHT);
 
 		backToMenu.addClickListener(this);
-		//search.addClickListener(this);// .addListener((ClickListener) this);
+		// search.addClickListener(this);// .addListener((ClickListener) this);
 		user.addClickListener(this);
 		logout.addClickListener(this);
 
 		backToMenu.setIcon(new ThemeResource("icons/19/home.png"));
-		//search.setIcon(new ThemeResource("icons/19/Search.png"));
+		// search.setIcon(new ThemeResource("icons/19/Search.png"));
 		user.setIcon(new ThemeResource("icons/19/my-account.png"));
 		logout.setIcon(new ThemeResource("icons/19/logout.png"));
 
@@ -254,14 +255,10 @@ public class WeixinStoreScreen extends CustomComponent implements
 							break;
 						case 4:
 							Notification.show("优惠券生成");
-							//
+							setMainComponent(this.getCouponListView());
 							break;
 						case 5:
 							Notification.show("会员优惠券查询");
-							//
-							break;
-						case 6:
-							Notification.show("历史优惠券核实");
 							//
 							break;
 						default:
@@ -336,6 +333,17 @@ public class WeixinStoreScreen extends CustomComponent implements
 			orderOldListView = new OrdderOldListView(orderdao);
 		}
 		return orderOldListView;
+	}
+
+	// ---------------------------------------------------电子优惠券生成
+	private CouponListView getCouponListView() {
+		if (this.couponManager == null) {
+			couponManager = new CouponManager(nutzDao);
+		}
+		if (this.couponListView == null) {
+			couponListView = new CouponListView(couponManager);
+		}
+		return couponListView;
 	}
 
 }

@@ -159,17 +159,16 @@ public class Constants {
 	// PanelWeixinStore.java 中三个 Tree 中的节点名称
 	public static final String[] WEIXIN_MENUS_TREE1 = { "商品类目管理", "商品资料管理" };
 	public static final String[] WEIXIN_MENUS_TREE2 = { "当天订单管理", "历史订单查询" };
-	public static final String[] WEIXIN_MENUS_TREE3 = { "优惠券生成", "会员优惠券查询",
-			"历史优惠券核实" };
+	public static final String[] WEIXIN_MENUS_TREE3 = { "优惠券生成", "会员优惠券查询" };
 
 	// WeixinStoreScreen.java 中，左侧菜单，二位数组
 	public static final Object[][] WEIXIN_MENUS_TREE = new Object[][] {
 			new Object[] { "商品管理", "商品类目管理", "商品资料管理" },
 			new Object[] { "订单管理", "当天订单管理", "历史订单查询" },
-			new Object[] { "电子优惠券管理", "优惠券生成", "会员优惠券查询", "历史优惠券核实" } };
+			new Object[] { "电子优惠券管理", "优惠券生成", "会员优惠券查询"} };
 	// WeixinStoreScreen.java 中，左侧菜单，选中的节点名称
 	public static final String[] WEIXIN_MENUS_ITEMCLICK = { "商品类目管理", "商品资料管理",
-			"当天订单管理", "历史订单查询", "优惠券生成", "会员优惠券查询", "历史优惠券核实" };
+			"当天订单管理", "历史订单查询", "优惠券生成", "会员优惠券查询" };
 
 	// -----------------------------------20140814----------------------------------------
 	// 系统设置 界面，左侧树状菜单 节点值
@@ -178,15 +177,13 @@ public class Constants {
 	public static final String[] SYSTEM_MENUS_TREE1 = { "已开门店管理" };
 	// public static final String[] SYSTEM_MENUS_TREE2 = { "内容类别管理",
 	// "内容发布管理","图片发布管理" };
-	public static final String[] SYSTEM_MENUS_TREE3 = { "部门管理", "用户管理", "角色管理",
-			"权限管理" };
+	public static final String[] SYSTEM_MENUS_TREE3 = { "角色管理", "用户管理" };
 	// SystemScreen.java 中，左侧菜单，二位数组
 	public static final Object[][] SYSTEM_MENUS_TREE = new Object[][] {
 			new Object[] { "门店管理", "已开门店管理" },
-			new Object[] { "系统权限管理", "部门管理", "用户管理", "角色管理", "权限管理" } };
+			new Object[] { "系统权限管理", "角色管理", "用户管理" } };
 	// SystemScreen.java 中，左侧菜单，选中的节点名称
-	public static final String[] SYSTEM_MENUS_ITEMCLICK = { "已开门店管理", "部门管理",
-			"用户管理", "角色管理", "权限管理" };
+	public static final String[] SYSTEM_MENUS_ITEMCLICK = { "已开门店管理", "角色管理", "用户管理" };
 
 	// ---------------------------------------------------------------------------
 	// 从留夫鸭现有 POS 数据库中获取会员信息、门店信息的接口
@@ -413,4 +410,18 @@ public class Constants {
 			"订单编码", "订单价格", "订单优惠价格", "支付状态", "创建时间", "用户名", "手机号码", "城市",
 			"城区", "收货地址", "订单产品" };
 
+	// ------------------------------------------------------------------------------电子优惠券
+	// 优惠券生成
+	public static final Object[] COUPON_COL = new String[] { "couponCode",
+			"couponName", "couponType", "startDate", "endDate", "avtiveTime",
+			"couponTotals", "couponExchanges", "couponDesc", "isNew", "status",
+			"couponValue" };
+
+	public static final String[] COUPON_COL_HEADERS_CHINESE = new String[] {
+			"优惠券编码", "优惠券名称", "类型", "有效期从", "有效期到", "有效时长", "优惠券总数", "已使用",
+			"优惠券描述", "最新", "状态", "单张金额" };
+
+	public static final String[] COUPON_TYPE_ID = new String[] { "0", "1" };
+	public static final String[] COUPON_TYPE_NAME = new String[] { "微信活动",
+			"普通活动" };
 }
