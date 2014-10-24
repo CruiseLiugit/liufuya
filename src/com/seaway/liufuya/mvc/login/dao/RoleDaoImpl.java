@@ -21,6 +21,7 @@ import org.nutz.log.Logs;
 import com.seaway.liufuya.BasicDao;
 import com.seaway.liufuya.mvc.login.model.Authority;
 import com.seaway.liufuya.mvc.login.model.Role;
+import com.seaway.liufuya.mvc.system.storeaddress.data.StoreAddress;
 
 /**
  * 角色dao类
@@ -61,9 +62,25 @@ public class RoleDaoImpl extends BasicDao {
 		Cnd condition = Cnd.where("status", "=", 1);
 		return this.searchCount(Role.class, condition);
 	}
+	
+	/**
+	 * 新增 角色数据，前，判断角色是否已经存在 不存在，返回 true
+	 * 
+	 * @param memberlevel
+	 */
+	public boolean checkRoleByName(String role_name) {
+		boolean flag = false;
+		Cnd condition = Cnd.where("role_name", "=", role_name);
+		Role store = findByCondition(Role.class, condition);
+		if (store == null) {
+			flag = true;
+		}
+		return flag;
+	}
 
 	/**
 	 * 查询所有角色列表
+	 * 分页
 	 */
 	public List<Role> queryAllRoleList(int startNum, int rp) {
 		Pager pager = dao.createPager(startNum, rp);
@@ -72,6 +89,29 @@ public class RoleDaoImpl extends BasicDao {
 		List<Role> roles = dao.query(Role.class, Cnd.where("status", "=", 1),
 				pager);
 
+		return roles;
+	}
+	
+	/**
+	 * 根据 角色 编码，查询角色对象
+	 * @param role_code
+	 * @return
+	 */
+	public Role findRoleByCode(String role_code) {
+		Cnd condition = Cnd.where("role_code", "=", role_code);
+		Role role = findByCondition(Role.class, condition);
+		
+		return role;
+	}
+	
+	
+	
+	/**
+	 * 查询所有角色列表
+	 * 不分页
+	 */
+	public List<Role> queryAllRoleList() {
+		List<Role> roles = dao.query(Role.class, Cnd.where("status", "=", 1));
 		return roles;
 	}
 

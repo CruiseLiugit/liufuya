@@ -26,109 +26,113 @@ public class Member implements Serializable {
 	private long id;
 
 	@Column("user_code")
-	private String user_code="";
+	private String user_code = "";
 
 	// 1.实体卡 2.网站注册 3.微信注册 4.后台注册
 	@Column("user_type")
-	private String user_type="";
+	private String user_type = "";
 
 	// 必须是手机
 	@Column("loginName")
-	private String loginName="";
+	private String loginName = "";
 
 	@Column("loginPwd")
-	private String loginPwd="";
+	private String loginPwd = "";
 
 	// 真实姓名
 	@Column("realName")
-	private String realName="";
+	private String realName = "";
 
 	// 1.男 0女
 	@Column("sex")
-	private String sex="";
+	private String sex = "";
 
 	@Column("birthday")
 	private Date birthday;
 
 	// 身份证号
 	@Column("card_number")
-	private String card_number="";
+	private String card_number = "";
 
 	// 所在城市
 	@Column("city")
-	private String city="";
+	private String city = "";
 
 	// 手机号码
 	@Column("telphone")
-	private String telphone="";
+	private String telphone = "";
 
 	@Column("email")
-	private String email="";
+	private String email = "";
 
 	// 工作类型
 	@Column("work_type")
-	private String work_type="";
+	private String work_type = "";
 	// 家庭收入
 	@Column("family_money")
-	private String family_money="";
+	private String family_money = "";
 	// 年龄段
 	@Column("age_area")
-	private String age_area="";
+	private String age_area = "";
 
 	// 实体卡卡号
 	@Column("entityCardNumber")
-	private String entityCardNumber="";
+	private String entityCardNumber = "";
 
 	// 实体卡状态
 	// 1 已开卡 2 已使用 3 已作废
 	@Column("entityCardStatus")
-	private String entityCardStatus="";
+	private String entityCardStatus = "";
 
-	//余额、积分 实体卡从 crds 表获取，根据 关联 id 一一获取
+	// 余额、积分 实体卡从 crds 表获取，根据 关联 id 一一获取
 	// 会员卡余额 精确到分
 	@Column("memberCard_balance")
-	private int memberCard_balance=0;
+	private int memberCard_balance = 0;
 
 	// 会员卡总积分
 	@Column("memberCard_score")
-	private int memberCard_score=0;
+	private int memberCard_score = 0;
 
 	// 创建时间
 	@Column("create_date")
 	private Date create_date;
 
+	// ?????? 取值 0 或者 1
+	@Column("is_perfect")
+	private String is_perfect = "";
+
 	// 1正常 0删除 2拉黑
 	@Column("status")
-	private String status="";
+	private String status = "0";
 
-	private String city_part=""; // 城区
-	private String default_address=""; // 地址
+	private String city_part = ""; // 城区
+	private String default_address = ""; // 地址
 
 	// -----------------------------------
-	// 与 POS 系统对接，新增字段
-	// 年龄
-	@Column("age")
-	private String age;
-	// 注册日期
-	@Column("regDate")
-	private Date regDate;
-	
-	//--下面这些目前没有用处
-	// 生效日期
-	@Column("DateStart")
-	private Date dateStart;
-	// 过期日期
-	@Column("DateEnd")
-	private Date dateEnd;
-	// 折扣模式
-	@Column("PriceMode")
-	private String priceMode;
-	// 价格清单
-	@Column("PriceList")
-	private int priceList;
-	// 发卡店铺编码
-	@Column("shpEntry")
-	private int shpEntry;
+	// // 与 POS 系统对接，新增字段
+	// // 年龄
+	// @Column("age")
+	// private String age;
+	// // 注册日期
+	// @Column("regDate")
+	// private Date regDate;
+	//
+	// //--下面这些目前没有用处
+	// // 生效日期
+	// @Column("DateStart")
+	// private Date dateStart;
+	// // 过期日期
+	// @Column("DateEnd")
+	// private Date dateEnd;
+	// // 折扣模式
+	// @Column("PriceMode")
+	// private String priceMode;
+	// // 价格清单
+	// @Column("PriceList")
+	// private int priceList;
+	// // 发卡店铺编码
+	// @Column("shpEntry")
+	// private int shpEntry;
 
 	public long getId() {
 		return id;
@@ -147,17 +151,18 @@ public class Member implements Serializable {
 	}
 
 	public String getUser_type() {
-		if("1".equals(user_type)){
+		if ("1".equals(user_type)) {
 			return "实体卡";
-		}else if("2".equals(user_type)){
+		} else if ("2".equals(user_type)) {
 			return "网站注册";
-		}else if("3".equals(user_type)){
+		} else if ("3".equals(user_type)) {
 			return "微信注册";
-		}else if("4".equals(user_type)){
+		} else if ("4".equals(user_type)) {
 			return "app注册";
 		}
 		return user_type;
 	}
+
 	public String getUser_typeCode() {
 		return user_type;
 	}
@@ -191,13 +196,14 @@ public class Member implements Serializable {
 	}
 
 	public String getSex() {
-		if("1".equals(sex)){
+		if ("1".equals(sex)) {
 			return "男";
-		}else if ("0".equals(sex)){
+		} else if ("0".equals(sex)) {
 			return "女";
 		}
 		return sex;
 	}
+
 	public String getSexCode() {
 		return sex;
 	}
@@ -287,15 +293,16 @@ public class Member implements Serializable {
 	}
 
 	public String getStatus() {
-		if("1".equals(status)){
+		if ("1".equals(status)) {
 			return "正常";
-		}else if ("2".equals(status)){
+		} else if ("2".equals(status)) {
 			return "拉黑";
-		}else if("0".equals(status)){
+		} else if ("0".equals(status)) {
 			return "删除";
 		}
 		return status;
 	}
+
 	public String getStatusCode() {
 		return status;
 	}
@@ -344,60 +351,12 @@ public class Member implements Serializable {
 		this.city_part = city_part;
 	}
 
-	public String getAge() {
-		return age;
+	public String getIs_perfect() {
+		return is_perfect;
 	}
 
-	public void setAge(String age) {
-		this.age = age;
-	}
-
-	public Date getRegDate() {
-		return regDate;
-	}
-
-	public void setRegDate(Date regDate) {
-		this.regDate = regDate;
-	}
-
-	public Date getDateStart() {
-		return dateStart;
-	}
-
-	public void setDateStart(Date dateStart) {
-		this.dateStart = dateStart;
-	}
-
-	public Date getDateEnd() {
-		return dateEnd;
-	}
-
-	public void setDateEnd(Date dateEnd) {
-		this.dateEnd = dateEnd;
-	}
-
-	public String getPriceMode() {
-		return priceMode;
-	}
-
-	public void setPriceMode(String priceMode) {
-		this.priceMode = priceMode;
-	}
-
-	public int getPriceList() {
-		return priceList;
-	}
-
-	public void setPriceList(int priceList) {
-		this.priceList = priceList;
-	}
-
-	public int getShpEntry() {
-		return shpEntry;
-	}
-
-	public void setShpEntry(int shpEntry) {
-		this.shpEntry = shpEntry;
+	public void setIs_perfect(String is_perfect) {
+		this.is_perfect = is_perfect;
 	}
 
 }

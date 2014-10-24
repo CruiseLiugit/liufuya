@@ -94,7 +94,7 @@ public class SMSListView extends VerticalLayout implements
 		// -------------------------------------------正文部分
 		conentHSplit = new HorizontalSplitPanel();
 		conentHSplit.setStyleName(Reindeer.LAYOUT_WHITE); // 右侧样式
-		conentHSplit.setHeight(470, Unit.PIXELS);
+		conentHSplit.setHeight(Constants.PAGE_HEIGHT, Unit.PIXELS);
 
 		// -----------------------------------------左边 tree
 

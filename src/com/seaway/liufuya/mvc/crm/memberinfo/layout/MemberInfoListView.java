@@ -78,7 +78,9 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 	// 查询会员数据的数据库对象
 	private MemberInfoMemberBean memberManager = null;
 	// 整个页面，上下分割的 垂直布局面板
-	private final VerticalSplitPanel vsplit = new VerticalSplitPanel();
+	//private final VerticalSplitPanel vsplit = new VerticalSplitPanel();
+	private final VerticalLayout vsplit = new VerticalLayout();
+	
 	private Table tb = null;   //页面显示数据表格
 	// ---------下面表单 查询，修改需要
 	private VerticalLayout buttonVLayout = new VerticalLayout();
@@ -135,11 +137,12 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 		Button btnAdd = new Button("新增"); // 增加 按钮
 		btnAdd.setIcon(new ThemeResource("icons/16/add.png"));
 		btnAdd.setDescription("增加会员");
-		Button btnDownload = new Button("列表"); // 增加 按钮
-		btnDownload.setIcon(new ThemeResource("icons/16/database-cloud.png"));
-		btnDownload.setDescription("选择显示数据库中数据");
 		navBarButtons.addComponent(btnAdd);
-		navBarButtons.addComponent(btnDownload);
+		
+//		Button btnDownload = new Button("列表"); // 增加 按钮
+//		btnDownload.setIcon(new ThemeResource("icons/16/database-cloud.png"));
+//		btnDownload.setDescription("选择显示数据库中数据");
+//		navBarButtons.addComponent(btnDownload);
 
 		navBar.addComponent(lblNav);
 		navBar.addComponent(navBarButtons);
@@ -154,30 +157,23 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 			}
 		});
 
-		btnDownload.addClickListener(new Button.ClickListener() {
-			@Override
-			public void buttonClick(ClickEvent event) {
-				// personForm.addContact(); // 增加
-				Notification.show("报表功能正在完成中，请等待", Type.HUMANIZED_MESSAGE);
-
-			}
-		});
 
 		vsplit.setStyleName(Reindeer.LAYOUT_WHITE); // 右侧样式
-		vsplit.setHeight(470, Unit.PIXELS);
+		vsplit.setHeight(Constants.PAGE_HEIGHT, Unit.PIXELS);
 		// this.setStyleName(Reindeer.SPLITPANEL_SMALL); //分割线变细线
 		// /////////////////////////////////////////////////////////////////
-		fillContainer(container);
 
 		// 对表格进行改进，增加对每个字段的搜索过滤框
 		VerticalLayout tablelayout = new VerticalLayout();
-		tb = createTable(container);
+		tb = createTable(fillContainer(container));
 		tablelayout.addComponent(createFilters(tb)); // 表格过滤框
 		tablelayout.addComponent(tb); // 表格
-		vsplit.setFirstComponent(tablelayout);
-		vsplit.setSecondComponent(createForm(null)); // 这里把创建表单的代码，放在表格点击事件中
+		vsplit.addComponent(tablelayout);
+		
+		//vsplit.setFirstComponent(tablelayout);
+		//vsplit.setSecondComponent(createForm(null)); // 这里把创建表单的代码，放在表格点击事件中
 		// /////////////////////////////////////////////////////////////////
-		vsplit.setSplitPosition(40);
+		//vsplit.setSplitPosition(40);
 
 		this.addComponent(navBar); // 导航栏
 		this.addComponent(vsplit); // 上下分割面板
@@ -307,7 +303,8 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 	private Table createTable(Container container) {
 		final Table table = new Table(null, container);
 		table.setSizeFull();
-		table.setHeight(230, Unit.PIXELS);
+		//table.setHeight(430, Unit.PIXELS);
+		table.setHeight(Constants.PAGE_HEIGHT, Unit.PIXELS);
 		table.setContainerDataSource(container); // 这里数据源要切换
 
 		table.setVisibleColumns(Constants.MEMEBER_COL_ORDER);
@@ -321,13 +318,15 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 		 */
 		table.setSelectable(true);
 		table.setImmediate(true);
-		table.addItemClickListener(new ItemClickListener() {
-			@Override
-			public void itemClick(ItemClickEvent event) {
-				log.info("选中一行,显示编辑用户表单 :" + event.getItemId());
-				editContact((MemberBean) event.getItemId());
-			}
-		});
+		
+//		table.addItemClickListener(new ItemClickListener() {
+//			@Override
+//			public void itemClick(ItemClickEvent event) {
+//				log.info("选中一行,显示编辑用户表单 :" + event.getItemId());
+//				editContact((MemberBean) event.getItemId());
+//			}
+//		});
+		
 		/* We don't want to allow users to de-select a row */
 		table.setNullSelectionAllowed(false);
 
@@ -501,8 +500,8 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 //						service.saveMemberLevel(name, begin, end, createPerson);
 						
 						// /////////////////////////////////////////////////////////////////
-						fillContainer(container);
-						tb.setContainerDataSource(container); // 这里数据源要切换
+						//fillContainer(container);
+						tb.setContainerDataSource(fillContainer(container)); // 这里数据源要切换
 						window.close();
 					}
 				} catch (Exception e) {
@@ -651,12 +650,13 @@ public class MemberInfoListView extends VerticalLayout implements ClickListener 
 	 * 
 	 * @param container
 	 */
-	private void fillContainer(Container container) {
+	private Container fillContainer(Container container) {
 		List<MemberBean> list = memberManager.getMemberBeanList();
 		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
 			MemberBean memberBean = (MemberBean) iterator.next();
 			container.addItem(memberBean);
 		}
+		return container;
 	}
 
 }

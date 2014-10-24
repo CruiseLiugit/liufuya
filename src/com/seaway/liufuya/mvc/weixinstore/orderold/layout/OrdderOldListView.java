@@ -1,14 +1,21 @@
 package com.seaway.liufuya.mvc.weixinstore.orderold.layout;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
 import com.seaway.liufuya.common.Constants;
 import com.seaway.liufuya.mvc.crm.memberaddressinfo.pojo.MemberAddress;
+import com.seaway.liufuya.mvc.report.TemporaryFileDownloadResource;
 import com.seaway.liufuya.mvc.weixinstore.ordernew.dao.OrderDao;
 import com.seaway.liufuya.mvc.weixinstore.ordernew.data.Order;
 import com.seaway.liufuya.mvc.weixinstore.ordernew.data.OrderBean;
@@ -35,6 +42,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
@@ -70,7 +78,7 @@ public class OrdderOldListView extends VerticalLayout implements ClickListener,
 	TextField orderNo = null; // 订单编号
 	// TextField orderMoney = null; //订单总价
 	TextField orderTotalMoney = null;// 订单实际购买价格
-	TextField couponMoney = null;// 订单优惠价格
+	// TextField couponMoney = null;// 订单优惠价格
 	// TextField delivery = null; // '2外送 1自取 3 顺丰',
 	NativeSelect orderStatus;// '订单状态 1默认待支付 2已支付 3已关闭
 	TextField create_date;// 创建时间
@@ -89,7 +97,7 @@ public class OrdderOldListView extends VerticalLayout implements ClickListener,
 	public OrdderOldListView() {
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public OrdderOldListView(OrderDao dao) {
 		this.orderDao = dao;
 
@@ -99,52 +107,149 @@ public class OrdderOldListView extends VerticalLayout implements ClickListener,
 		navBar.setHeight(29, Unit.PIXELS);
 		Label lblNav = new Label("订单管理 / 历史订单管理");
 		navBar.addComponent(lblNav);
-		
-		//时间搜索框
-		HorizontalLayout timeBar = new HorizontalLayout();
-		Label fromText = new Label();
-		final DateField from = new DateField();
-		from.setDateFormat("yyyy-MM-dd");
-		// from.setReadOnly(true);
-		Label toText = new Label("--");
-		final DateField to = new DateField();
-		to.setDateFormat("yyyy-MM-dd");
-		// to.setReadOnly(true);
-		Button timeSearch = new Button("时间查询"); // 增加 按钮
-		timeSearch.setIcon(new ThemeResource("icons/16/search.png"));
-		timeBar.addComponent(fromText);
-		timeBar.addComponent(from);
-		timeBar.addComponent(toText);
-		timeBar.addComponent(to);
-		timeBar.addComponent(timeSearch);
-		
-		timeSearch.addListener(new com.vaadin.ui.Button.ClickListener(){
-				@Override
-				public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-					Date fromDate = from.getValue();
-					Date toDate = to.getValue();
-					fillContainer(tableContainer, fromDate, toDate);
-//					VerticalLayout tablelayout = new VerticalLayout();
-//					tablelayout.setStyleName(Reindeer.LAYOUT_WHITE); // 右侧样式
-//					tablelayout.setHeight(436, Unit.PIXELS);
-//					tablelayout.setWidth(100,Unit.PERCENTAGE);
-//					tb = createTable(container);
-//					tablelayout.addComponent(tb); // 表格
-//					hsPanel.setSecondComponent(tablelayout);
-					Notification.show("时间搜索");
+
+		// 时间搜索框
+//		HorizontalLayout timeBar = new HorizontalLayout();
+//		Label fromText = new Label();
+//		final DateField from = new DateField();
+//		from.setDateFormat("yyyy-MM-dd");
+//		// from.setReadOnly(true);
+//		Label toText = new Label("--");
+//		final DateField to = new DateField();
+//		to.setDateFormat("yyyy-MM-dd");
+//		// to.setReadOnly(true);
+//		Button timeSearch = new Button("时间查询"); // 增加 按钮
+//		timeSearch.setIcon(new ThemeResource("icons/16/search.png"));
+//		timeBar.addComponent(fromText);
+//		timeBar.addComponent(from);
+//		timeBar.addComponent(toText);
+//		timeBar.addComponent(to);
+//		timeBar.addComponent(timeSearch);
+//
+//		timeSearch.addListener(new com.vaadin.ui.Button.ClickListener() {
+//			@Override
+//			public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+//				Date fromDate = from.getValue();
+//				Date toDate = to.getValue();
+//				fillContainer(tableContainer, fromDate, toDate);
+//				// VerticalLayout tablelayout = new VerticalLayout();
+//				// tablelayout.setStyleName(Reindeer.LAYOUT_WHITE); // 右侧样式
+//				// tablelayout.setHeight(436, Unit.PIXELS);
+//				// tablelayout.setWidth(100,Unit.PERCENTAGE);
+//				// tb = createTable(container);
+//				// tablelayout.addComponent(tb); // 表格
+//				// hsPanel.setSecondComponent(tablelayout);
+//				Notification.show("时间搜索");
+//			}
+//		});
+//
+//		navBar.addComponent(timeBar);
+//		navBar.setComponentAlignment(timeBar, Alignment.TOP_RIGHT);// 定义位置
+
+		// ---------------------------导出 Excel
+		HorizontalLayout navBarButtons = new HorizontalLayout();
+		Button btnExport = new Button("导出"); // 增加 按钮
+		btnExport.setIcon(new ThemeResource("icons/16/disk-download.png"));
+		btnExport.setDescription("导出列表");
+
+		navBarButtons.addComponent(btnExport);
+		btnExport.addClickListener(new Button.ClickListener() {
+
+			@Override
+			public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+				try {
+
+					File tempFile = File.createTempFile("tmp", ".xls");
+
+					HSSFWorkbook workbook = new HSSFWorkbook();
+					HSSFSheet firstSheet = workbook.createSheet("sheet1");
+					HSSFRow row1 = firstSheet.createRow(0);
+
+					List<OrderBean> list = tableContainer.getItemIds();
+					for (int i = 0; i < list.size() + 1; i++) {
+						if (i == 0) {
+							for (short j = 0; j < Constants.ORDER_COL_HEADERS_CHINESE.length; j++) {
+								HSSFCell cellA = row1.createCell(j);
+								cellA.setCellValue(Constants.ORDER_COL_HEADERS_CHINESE[j]);
+							}
+						} else {
+
+							OrderBean m = list.get(i - 1);
+							HSSFRow rowA = firstSheet.createRow(i);
+							for (int j = 0; j < Constants.ORDER_COL.length; j++) {
+								HSSFCell cell = rowA.createCell((short) j);
+								if (Constants.ORDER_COL[j].equals("orderNo")) {
+									cell.setCellValue(m.getOrderNo());
+								}
+								if (Constants.ORDER_COL[j]
+										.equals("orderTotalMoney")) {
+									cell.setCellValue(m.getOrderTotalMoney());
+								}
+								if (Constants.ORDER_COL[j]
+										.equals("orderStatus")) {
+									cell.setCellValue(m.getOrderStatus());
+								}
+								if (Constants.ORDER_COL[j]
+										.equals("create_date")) {
+									cell.setCellValue(m.getCreate_date());
+								}
+								if (Constants.ORDER_COL[j].equals("user_name")) {
+									cell.setCellValue(m.getUser_name());
+								}
+								if (Constants.ORDER_COL[j].equals("user_tel")) {
+									cell.setCellValue(m.getUser_tel());
+								}
+								if (Constants.ORDER_COL[j].equals("city")) {
+									cell.setCellValue(m.getCity());
+								}
+								if (Constants.ORDER_COL[j].equals("area")) {
+									cell.setCellValue(m.getArea());
+								}
+								if (Constants.ORDER_COL[j]
+										.equals("user_address")) {
+									cell.setCellValue(m.getUser_address());
+								}
+								if (Constants.ORDER_COL[j]
+										.equals("productName")) {
+									cell.setCellValue(m.getProductName());
+								}
+
+							}
+						}
+					}
+					FileOutputStream fos = null;
+
+					fos = new FileOutputStream(tempFile);
+					workbook.write(fos);
+
+					fos.flush();
+					fos.close();
+
+					// Create contents here, using POI, and write to tempFile
+					TemporaryFileDownloadResource resource;
+
+					resource = new TemporaryFileDownloadResource(
+							"default-name-of-file.xls",
+							"application/vnd.ms-excel", tempFile);
+					UI.getCurrent().getPage().open(resource, "_self", false);
+
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
+			}
 		});
-		
-		navBar.addComponent(timeBar);
-		navBar.setComponentAlignment(timeBar, Alignment.TOP_RIGHT);// 定义位置
+
+		navBar.addComponent(navBarButtons);
+		navBar.setComponentAlignment(navBarButtons, Alignment.TOP_RIGHT);// 定义位置
 
 		// --------------------------垂直页面布局
 		initContainer();
 		initLeftTable();
 		vsplit.addComponent(leftTable);
-		//vsplit.setSplitPosition(70);
+		// vsplit.setSplitPosition(70);
 		vsplit.setStyleName(Reindeer.LAYOUT_WHITE); // 右侧样式
-		vsplit.setHeight(470, Unit.PIXELS);
+		vsplit.setHeight(Constants.PAGE_HEIGHT, Unit.PIXELS);
 
 		// 整个布局完成
 		this.addComponent(navBar);
@@ -171,31 +276,31 @@ public class OrdderOldListView extends VerticalLayout implements ClickListener,
 	 * 左边表格容器初始化
 	 */
 	private void initContainer() {
-		//tableContainer.removeAllItems();
+		// tableContainer.removeAllItems();
 		// 分页版本
 		// container = new LazyLoadStoreContainer(StoreBean.class,storeDao);
 		// 不分页版本
-		//历史订单，传递参数 delivery=3,orderStatus=3,status=2
-		List<OrderBean> list = this.orderDao.getAllOrder("3", "3", "2");
+		// 历史订单，传递参数 delivery=3,orderStatus=3,status=1
+		List<OrderBean> list = this.orderDao.getAllOrder("3", "3", "1");
 		for (OrderBean orderBean : list) {
 			tableContainer.addItem(orderBean);
 		}
 	}
-	
+
 	/**
 	 * 输入日期搜索，获取表格的 容器对象
 	 * 
 	 * @param container
 	 */
-	private void fillContainer(Container container, Date from,Date to) {
+	private void fillContainer(Container container, Date from, Date to) {
 		tableContainer.removeAllItems();
-		List<OrderBean> list = orderDao.getAllOrderByDate("3", "3", "2",from,to);
+		List<OrderBean> list = orderDao.getAllOrderByDate("3", "3", "1", from,
+				to);
 		for (OrderBean orderBean : list) {
 			tableContainer.addItem(orderBean);
 		}
 	}
-	
-	
+
 	/**
 	 * 左边表格初始化
 	 * **/
@@ -207,26 +312,25 @@ public class OrdderOldListView extends VerticalLayout implements ClickListener,
 		leftTable.setContainerDataSource(tableContainer);
 		leftTable.setVisibleColumns(Constants.ORDER_COL);
 		leftTable.setColumnHeaders(Constants.ORDER_COL_HEADERS_CHINESE);
-		//leftTable.setPageLength(2); //一页显示条数
+		// leftTable.setPageLength(2); //一页显示条数
 		leftTable.setCacheRate(4);
 		leftTable.setColumnCollapsingAllowed(true);
 		leftTable.setColumnReorderingAllowed(true);
 		leftTable.addItemClickListener(new ItemClickListener() {
 			@Override
 			public void itemClick(ItemClickEvent event) {
-				//点击单元格，弹出 窗口，显示订单明细
+				// 点击单元格，弹出 窗口，显示订单明细
 				addWindow = new Window("查询");
 				addWindow.setHeight(500, Unit.PIXELS);
 				addWindow.setWidth(430, Unit.PIXELS);
 				addWindow.setModal(true);
-				initOrderForm(event.getItem());  //打开新窗口，显示明细
+				initOrderForm(event.getItem()); // 打开新窗口，显示明细
 				addWindow.setContent(rightFormlayout);
 				getUI().addWindow(addWindow);
 			}
 		});
 	}
-	
-	
+
 	/**
 	 * 打开新窗口，显示明细
 	 */
@@ -234,16 +338,16 @@ public class OrdderOldListView extends VerticalLayout implements ClickListener,
 		rightFormlayout = new FormLayout();
 
 		orderNo = new TextField("订单编号");
-		//orderMoney = new TextField("订单总价");
+		// orderMoney = new TextField("订单总价");
 		orderTotalMoney = new TextField("订单实际价格");
-		couponMoney = new TextField("订单优惠价格");
-		//delivery = new TextField("订单配送方式");//2外送 1自取 3 顺丰
-		orderStatus = new NativeSelect("订单状态");//订单状态 1默认待支付 2已支付 3已关闭
+		// couponMoney = new TextField("订单优惠价格");
+		// delivery = new TextField("订单配送方式");//2外送 1自取 3 顺丰
+		orderStatus = new NativeSelect("订单状态");// 订单状态 1默认待支付 2已支付 3已关闭
 		orderStatus.addItems(0);
 		orderStatus.setItemCaption(0, "已关闭");
-		
+
 		create_date = new TextField("支付时间");
-	
+
 		product = new Table("订单明细列表");
 		product.setSizeFull();
 		product.setHeight(120, Unit.PIXELS);
@@ -253,14 +357,16 @@ public class OrdderOldListView extends VerticalLayout implements ClickListener,
 		if (item != null) {
 			Property prop = item.getItemProperty("orderNo");
 			String orderNo = (String) prop.getValue();
-			List<OrderContent> list = this.orderDao.findAllOrderContentByOrderNum(orderNo);
+			List<OrderContent> list = this.orderDao
+					.findAllOrderContentByOrderNum(orderNo);
 			for (OrderContent orderBean : list) {
 				orderContentContainer.addItem(orderBean);
 			}
 		}
 		product.setContainerDataSource(orderContentContainer);
-		product.setVisibleColumns(new Object[]{"productName","goodsBuyQrt","goodsBuyPrice"});
-		product.setColumnHeaders(new String[] { "产品名称", "产品数量","价格" });
+		product.setVisibleColumns(new Object[] { "productName", "goodsBuyQrt",
+				"goodsBuyPrice" });
+		product.setColumnHeaders(new String[] { "产品名称", "产品数量", "价格" });
 		product.setSelectable(false);
 		product.setMultiSelect(false);
 		product.setImmediate(true);
@@ -271,64 +377,63 @@ public class OrdderOldListView extends VerticalLayout implements ClickListener,
 		user_address.setRows(6);
 		user_address.setImmediate(true);
 		user_address.setSizeFull();
-	
+
 		saveButton = new Button("关闭");
 		saveButton.addClickListener(buttonLister());
 
-		rightFormlayout.addComponents(orderNo, orderTotalMoney,
-				couponMoney, orderStatus, create_date, product, user_name,
-				user_tel, user_address,saveButton);
+		rightFormlayout.addComponents(orderNo, orderTotalMoney, orderStatus,
+				create_date, product, user_name, user_tel, user_address,
+				saveButton);
 		if (item != null) {
 			Property prop = item.getItemProperty("orderNo");
 			String ordNo = (String) prop.getValue();
-			//log.info("------>选中行的 orderNo ="+orderNo);
+			// log.info("------>选中行的 orderNo ="+orderNo);
 			Order order = this.orderDao.findStoreByOrderNo(ordNo);
-			//log.info("------>选中的订单 order ＝"+order);
-			OrderBean ordBean  = this.orderDao.ex(order);
-			//log.info("------>转化后的  ordBean ="+ordBean);
-			
+			// log.info("------>选中的订单 order ＝"+order);
+			OrderBean ordBean = this.orderDao.ex(order);
+			// log.info("------>转化后的  ordBean ="+ordBean);
+
 			BeanFieldGroup<OrderBean> bindingFiles = new BeanFieldGroup<OrderBean>(
 					OrderBean.class);
 			bindingFiles.setItemDataSource(ordBean);
 			bindingFiles.setBuffered(true);
 			bindingFiles.bindMemberFields(this); // 绑定
 
-			MemberAddress address = this.orderDao.getMemeberAddressByUserCode(order.getAddressCode(),order.getUserCode());
+			MemberAddress address = this.orderDao.getMemeberAddressByUserCode(
+					order.getAddressCode(), order.getUserCode());
 			StringBuffer sb = new StringBuffer("");
-			sb.append(address.getCity()+","+address.getArea()+","+address.getAddress_keywords());
+			sb.append(address.getCity() + "," + address.getArea() + ","
+					+ address.getAddress_keywords());
 			user_address.setValue(sb.toString());
-			
-			//status.setValue(order.getStatus().equals("2")?"已支付":"");
-			
-			//订单状态 1默认待支付 2已支付 3已关闭
+
+			// status.setValue(order.getStatus().equals("2")?"已支付":"");
+
+			// 订单状态 1默认待支付 2已支付 3已关闭
 			orderStatus.select(0);
-			
 
-
-			orderNo.setEnabled(false); //禁用输入框
-			//orderMoney.setEnabled(false); //禁用输入框
-			orderTotalMoney.setEnabled(false); //禁用输入框
-			couponMoney.setEnabled(false); //禁用输入框
-			orderStatus.setEnabled(false); //禁用输入框
-			create_date.setEnabled(false); //禁用输入框
-			user_name.setEnabled(false); //禁用输入框
-			user_tel.setEnabled(false); //禁用输入框
-			user_address.setEnabled(false); //禁用输入框
+			orderNo.setEnabled(false); // 禁用输入框
+			// orderMoney.setEnabled(false); //禁用输入框
+			orderTotalMoney.setEnabled(false); // 禁用输入框
+			// couponMoney.setEnabled(false); //禁用输入框
+			orderStatus.setEnabled(false); // 禁用输入框
+			create_date.setEnabled(false); // 禁用输入框
+			user_name.setEnabled(false); // 禁用输入框
+			user_tel.setEnabled(false); // 禁用输入框
+			user_address.setEnabled(false); // 禁用输入框
 		}
 	}
-	
-	
+
 	/**
 	 * button 保存新增或者修改
 	 * */
 	private Button.ClickListener buttonLister() {
 		Button.ClickListener lister = new Button.ClickListener() {
-			
+
 			@Override
 			public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
 				if (event.getButton().getCaption().equals("关闭")) {
 					addWindow.close();
-				} 
+				}
 			}
 		};
 		return lister;

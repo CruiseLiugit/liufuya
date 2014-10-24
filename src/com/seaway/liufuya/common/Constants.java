@@ -1,6 +1,5 @@
 package com.seaway.liufuya.common;
 
-import com.vaadin.event.ItemClickEvent;
 
 public class Constants {
 
@@ -12,6 +11,9 @@ public class Constants {
 	public static final String lunaLoginRight = "留夫鸭电商核心管理系统";
 	public static final String lunaLoginUsername = "账户名";
 	public static final String lunaLoginPassword = "密码";
+	
+	//页面高度
+	public static final int PAGE_HEIGHT = 900;
 
 	/**
 	 * 当前登录用户Session常量
@@ -164,11 +166,11 @@ public class Constants {
 	// WeixinStoreScreen.java 中，左侧菜单，二位数组
 	public static final Object[][] WEIXIN_MENUS_TREE = new Object[][] {
 			new Object[] { "商品管理", "商品类目管理", "商品资料管理" },
-			new Object[] { "订单管理", "当天订单管理", "历史订单查询" },
-			new Object[] { "电子优惠券管理", "优惠券生成", "会员优惠券查询"} };
+			new Object[] { "订单管理", "未处理订单", "历史订单查询" },
+			new Object[] { "电子优惠券管理", "优惠券生成", "会员优惠券查询" } };
 	// WeixinStoreScreen.java 中，左侧菜单，选中的节点名称
 	public static final String[] WEIXIN_MENUS_ITEMCLICK = { "商品类目管理", "商品资料管理",
-			"当天订单管理", "历史订单查询", "优惠券生成", "会员优惠券查询" };
+			"未处理订单", "历史订单查询", "优惠券生成", "会员优惠券查询" };
 
 	// -----------------------------------20140814----------------------------------------
 	// 系统设置 界面，左侧树状菜单 节点值
@@ -183,7 +185,8 @@ public class Constants {
 			new Object[] { "门店管理", "已开门店管理" },
 			new Object[] { "系统权限管理", "角色管理", "用户管理" } };
 	// SystemScreen.java 中，左侧菜单，选中的节点名称
-	public static final String[] SYSTEM_MENUS_ITEMCLICK = { "已开门店管理", "角色管理", "用户管理" };
+	public static final String[] SYSTEM_MENUS_ITEMCLICK = { "已开门店管理", "角色管理",
+			"用户管理" };
 
 	// ---------------------------------------------------------------------------
 	// 从留夫鸭现有 POS 数据库中获取会员信息、门店信息的接口
@@ -401,13 +404,15 @@ public class Constants {
 
 	// ----------------------------------------------------------------------------
 	// 订单管理,当日订单和历史订单公用一个表头,使用关联查询获得两个数据库表中信息 lfy_order lfy_order_content
+	//去掉优惠价格  "couponMoney", 
 	public static final Object[] ORDER_COL = new String[] { "orderNo",
-			"orderTotalMoney", "couponMoney", "orderStatus", "create_date",
+			"orderTotalMoney", "orderStatus", "create_date",
 			"user_name", "user_tel", "city", "area", "user_address",
 			"productName" };
 	// 表明列头
+	//去掉优惠价格 "订单优惠价格", 
 	public static final String[] ORDER_COL_HEADERS_CHINESE = new String[] {
-			"订单编码", "订单价格", "订单优惠价格", "支付状态", "创建时间", "用户名", "手机号码", "城市",
+			"订单编码", "订单价格", "支付状态", "创建时间", "用户名", "手机号码", "城市",
 			"城区", "收货地址", "订单产品" };
 
 	// ------------------------------------------------------------------------------电子优惠券
@@ -424,4 +429,44 @@ public class Constants {
 	public static final String[] COUPON_TYPE_ID = new String[] { "0", "1" };
 	public static final String[] COUPON_TYPE_NAME = new String[] { "微信活动",
 			"普通活动" };
+
+	// ------------------------------------------------------------------------------电子优惠券
+	// 优惠券兑换记录
+	public static final Object[] EXCOUPON_COL = new String[] { "memCouponcode",
+			"couponPageCode", "downloadDate", "disableDate", "isActive",
+			"isUsed", "status" };
+
+	public static final String[] EXCOUPON_COL_HEADERS_CHINESE = new String[] {
+			"优惠券批次", "此优惠券编码", "优惠券下载时间", "失效时间", "是否有效", "是否使用", "状态" };
+
+	// 会员
+	public static final String[] EXCOUPON_MEMBER_COL_HEADERS = { "会员代码", "会员名",
+			"实体卡号", "会员卡余额", "总积分" };
+	public static final String[] EXCOUPON_MEMBER_COL = { "user_code",
+			"realName", "entityCardNumber", "memberCard_balance",
+			"memberCard_score" };
+
+	// ----------------------------------------------------------------------------权限管理
+	// 角色管理
+	public static final Object[] SYSROLE_COL = new String[] { "roleCode",
+			"roleName", "type", "createDate", "status" };
+	// 表名列头
+	public static final String[] SYSROLE_COL_HEADERS_CHINESE = new String[] {
+			"角色编码", "角色名称", "权限类型", "创建时间","状态" };
+
+	// ----------------------------------------------------------------------------权限管理
+	// 用户管理
+	public static final Object[] SYSUSER_COL = new String[] { "userCode",
+			"loginName", "userName","roleName", "userType",
+			"createDate", "status" };
+	// 表名列头
+	public static final String[] SYSUSER_COL_HEADERS_CHINESE = new String[] {
+			"用户编码", "登录名称", "用户姓名", "角色类型",  "用户类型","创建时间",
+			"状态" };
+	
+	
+	
+	
+	
+
 }

@@ -60,7 +60,7 @@ public class MemberInfoMemberBean extends BasicDao implements
 	@Override
 	public List<MemberBean> getMemberBeanList() {
 		Sql sql = Sqls
-				.create("select m.id as mid,m.user_code as user_code,m.user_type as user_type,m.loginName as loginName,m.realName as realName,m.sex as sex,m.entityCardNumber as entityCardNumber,m.memberCard_score as memberCard_score,m.create_date as create_date,m.memberCard_balance as memberCard_balance,m.regDate as regDate,m.status as status,a.city as city,a.area as area,a.address_keywords as address_keywords,a.available_shops as available_shops,a.is_available as is_available  "
+				.create("select m.id as mid,m.user_code as user_code,m.user_type as user_type,m.loginName as loginName,m.realName as realName,m.sex as sex,m.entityCardNumber as entityCardNumber,m.memberCard_score as memberCard_score,m.create_date as create_date,m.memberCard_balance as memberCard_balance,m.status as status,a.city as city,a.area as area,a.address_keywords as address_keywords,a.available_shops as available_shops,a.is_available as is_available  "
 						+ "from lfy_member m,lfy_member_address a  "
 						+ "where m.user_code=a.user_code and m.status='1' and a.is_default='1' and a.status='1' order by m.create_date desc");
 
@@ -97,11 +97,13 @@ public class MemberInfoMemberBean extends BasicDao implements
 					}
 
 					String time = "";
-					if (rs.getDate("regDate") == null) {
-						time = DateUtil.getDate(rs.getDate("create_date"));
-					} else {
-						time = DateUtil.getDate(rs.getDate("regDate"));
-					}
+					time = DateUtil.getDate(rs.getDate("create_date"));
+					
+//					if (rs.getDate("regDate") == null) {
+//						
+//					} else {
+//						time = DateUtil.getDate(rs.getDate("regDate"));
+//					}
 					menu.setCreatedate(time);// 注册日期
 					String city = rs.getString("city");
 					String area = rs.getString("area");
@@ -165,7 +167,6 @@ public class MemberInfoMemberBean extends BasicDao implements
 		ml.setUser_code(uuid);
 		ml.setUser_type("4");
 		ml.setCreate_date(new Date());
-		ml.setRegDate(new Date());
 		ml.setStatus("1");
 	
 		this.save(ml);

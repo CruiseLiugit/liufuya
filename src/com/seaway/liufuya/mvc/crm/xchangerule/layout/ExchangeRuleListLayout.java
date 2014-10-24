@@ -145,7 +145,7 @@ public class ExchangeRuleListLayout extends VerticalLayout implements
 		});
 
 		mainSplit.setStyleName(Reindeer.LAYOUT_WHITE); // 右侧样式
-		mainSplit.setHeight(470, Unit.PIXELS);
+		mainSplit.setHeight(Constants.PAGE_HEIGHT, Unit.PIXELS);
 		mainSplit.setStyleName(Reindeer.SPLITPANEL_SMALL); // 分割线变细线
 		// /////////////////////////////////////////////////////////////////
 		// 获取所有会员的 数据模型,懒加载分页
@@ -204,7 +204,7 @@ public class ExchangeRuleListLayout extends VerticalLayout implements
 	private Table createTable(Container container) {
 		final Table table = new Table(null, container);
 		table.setSizeFull();
-		table.setHeight(470, Unit.PIXELS);
+		table.setHeight(Constants.PAGE_HEIGHT, Unit.PIXELS);
 		table.setContainerDataSource(container); // 这里数据源要切换
 
 		table.setVisibleColumns(Constants.EXCHANGE_RULE_TABLE_COL);

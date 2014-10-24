@@ -7,7 +7,9 @@ import java.util.List;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.nutz.dao.Cnd;
+import org.nutz.dao.Condition;
 import org.nutz.dao.Dao;
+import org.nutz.dao.sql.OrderBy;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -16,6 +18,7 @@ import com.seaway.liufuya.BasicDao;
 import com.seaway.liufuya.common.util.DateUtil;
 import com.seaway.liufuya.mvc.crm.memberaddressinfo.pojo.MemberAddress;
 import com.seaway.liufuya.mvc.crm.memberinfo.data.Member;
+import com.seaway.liufuya.mvc.weixinstore.ordernew.data.Delivernotify;
 import com.seaway.liufuya.mvc.weixinstore.ordernew.data.Order;
 import com.seaway.liufuya.mvc.weixinstore.ordernew.data.OrderBean;
 import com.seaway.liufuya.mvc.weixinstore.ordernew.data.OrderContent;
@@ -53,16 +56,18 @@ public class OrderDao extends BasicDao implements Serializable {
 	 *            '状态 1默认未付款 0删除 2已付款 3 外送超时 4 自取超时 5 外送退货 6 未外送 7未自取',
 	 * 
 	 * 
-	 *            微信功能 当日订单，传递参数 delivery=3,orderStatus=2,status=2 
+	 *            微信功能 当日订单，传递参数 delivery=3,orderStatus=2,status=1 
 	 *            历史订单，传递参数
-	 *            delivery=3,orderStatus=3,status=2
+	 *            delivery=3,orderStatus=3,status=1
 	 * 
 	 */
 	public int getAllOrderCount(String delivery, String orderStatus,
 			String status) {
-		Cnd condtion = Cnd.where("delivery", "=", delivery)
+
+		Condition condtion = Cnd.where("delivery", "=", delivery)
 				.and("orderStatus", "=", orderStatus)
 				.and("status", "=", status);
+		
 		return this.searchCount(Order.class, condtion);
 	}
 
@@ -74,19 +79,22 @@ public class OrderDao extends BasicDao implements Serializable {
 	 */
 	public List<OrderBean> getAllOrder(String delivery, String orderStatus,
 			String status) {
-		Cnd condtion = Cnd.where("delivery", "=", delivery)
+		Condition condtion = Cnd.where("delivery", "=", delivery)
 				.and("orderStatus", "=", orderStatus)
-				.and("status", "=", status);
+				.and("status", "=", status).desc("create_date");
 		List<Order> list = dao.query(Order.class, condtion);
-
+		log.info("=====================>2  查询结果  list ="+list==null?list:list.size());
 		// 转换为需要显示的bean
 		List<OrderBean> beanList = new LinkedList<OrderBean>();
 		for (Order ord : list) {
+			log.info("=====================>3 循环读取一个 order :"+ord);
 			OrderBean bean = ex(ord);
 			beanList.add(bean);
 		}
 		return beanList;
 	}
+	
+	
 
 	/**
 	 * 页面时间段搜索，获取的订单记录 微信功能 
@@ -162,8 +170,8 @@ public class OrderDao extends BasicDao implements Serializable {
 	public OrderBean ex(Order order) {
 		OrderBean bean = new OrderBean();
 		bean.setOrderNo(order.getOrderNo());// 订单编码
-		bean.setOrderTotalMoney("" + order.getOrderTotalMoney());// 订单价格
-		bean.setCouponMoney("" + order.getCouponMoney());// 订单优惠价格
+		bean.setOrderTotalMoney("" + order.getOrderTotalMoney()*0.01);// 订单价格
+		//bean.setCouponMoney("" + order.getCouponMoney());// 订单优惠价格
 		// 支付状态
 		String orderStatus = "";
 		int ordStatus = 0;
@@ -189,7 +197,9 @@ public class OrderDao extends BasicDao implements Serializable {
 		bean.setCreate_date(DateUtil.convertDateToString(order.getCreate_date()));// 创建时间
 
 		// 查询用户信息，姓名
+		log.info("=====================>4 开始查询用户编码");
 		String user_code = order.getUserCode();
+		log.info("=====================>5 查询出用户编码 user_code ="+user_code);
 		Member mbe = this.getMemeberByUserCode(user_code);
 		bean.setUser_name(mbe.getRealName()); // 用户名
 
@@ -223,5 +233,19 @@ public class OrderDao extends BasicDao implements Serializable {
 		// * @param status '状态 1默认未付款 0删除 2已付款 3 外送超时 4 自取超时 5 外送退货 6 未外送 7未自取',
 		return bean;
 	}
+	
+	
+	//----------------------------------------------------------------
+	//获取支付宝反馈的数据，
+	//根据订单号码查询
+	public Delivernotify findDelivernotifyByOrderNo(String out_trade_no) {
+		Cnd condition = Cnd.where("out_trade_no", "like", "%"+out_trade_no);
+		Delivernotify store = findByCondition(Delivernotify.class, condition);
+		return store;
+	}
+	
+	
+	
+	
 
 }

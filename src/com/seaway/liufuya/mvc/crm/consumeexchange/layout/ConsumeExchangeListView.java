@@ -53,7 +53,7 @@ public class ConsumeExchangeListView extends VerticalLayout implements ClickList
 	    vsplit.addComponent(rightTable);
 		vsplit.setSplitPosition(60);
 		vsplit.setStyleName(Reindeer.LAYOUT_WHITE); // 右侧样式
-		vsplit.setHeight(470, Unit.PIXELS);
+		vsplit.setHeight(Constants.PAGE_HEIGHT, Unit.PIXELS);
 		
 	    this.addComponent(navBar);
 	    this.addComponent(vsplit);

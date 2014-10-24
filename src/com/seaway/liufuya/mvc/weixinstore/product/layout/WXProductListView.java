@@ -133,7 +133,7 @@ public class WXProductListView extends VerticalLayout {
 		
 		table.removeAllItems();
 		table.setSizeFull();
-		table.setHeight(470, Unit.PIXELS);
+		table.setHeight(Constants.PAGE_HEIGHT, Unit.PIXELS);
 		table.setContainerDataSource(container); // 这里数据源要切换
 
 		table.setVisibleColumns(Constants.WX_PRODUCT_COL);

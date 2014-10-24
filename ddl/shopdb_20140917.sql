@@ -22,6 +22,29 @@ SET time_zone = "+00:00";
 
 -- --------------------------------------------------------
 
+-- 微信支付成功反馈信息存储表
+-- 后台订单发货接口调用
+-- 2014-09-18 新增
+
+DROP TABLE IF EXISTS `lfy_delivernotify`;
+CREATE TABLE `lfy_delivernotify` (
+  `id` bigint(10) NOT NULL AUTO_INCREMENT,
+  `deliver_code` varchar(100) NOT NULL COMMENT '编码DC开头',
+  `appid` varchar(100) DEFAULT NULL  COMMENT '公众平台账户的 AppId',
+  `openid` varchar(100) DEFAULT NULL  COMMENT '购买用户的 OpenId',
+  `transid` varchar(100) DEFAULT NULL  COMMENT '微信交易单号',
+  `out_trade_no` varchar(100) DEFAULT NULL COMMENT '第三方订单号',
+  `deliver_timestamp` varchar(100) DEFAULT NULL COMMENT '发货时间戳,这里指的是 Linux 时间戳;',
+  `deliver_status` varchar(50) DEFAULT NULL COMMENT '发货状态1成功,0失败',
+  `deliver_msg` varchar(50) DEFAULT NULL COMMENT '发货状态信息 UTF8',
+  `app_signature` varchar(500) DEFAULT NULL COMMENT '根据支付签名( paySign)生成方法中所讲的签名方式生成的',
+  `sign_method` varchar(50) DEFAULT NULL COMMENT '签名方法',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+
+
+
 --
 -- 表的结构 `lfyshop_memberlevel`
 --
@@ -384,10 +407,12 @@ CREATE TABLE IF NOT EXISTS `lfy_order` (
   `create_date` datetime DEFAULT NULL,
   `orderPayType` varchar(255) DEFAULT NULL COMMENT '1.网上支付 2货到现金支付',
   `pay_date` datetime DEFAULT NULL COMMENT '支付时间',
+  `receiptContent` varchar(200) DEFAULT NULL COMMENT '发票内容',
+  `useReceipt` varchar(10) DEFAULT NULL COMMENT '是否使用发票',
   `userCode` varchar(255) DEFAULT NULL COMMENT '订单用户',
   `status` varchar(255) DEFAULT NULL COMMENT '状态 1正常 0删除',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=gb2312 AUTO_INCREMENT=31 ;
+) ENGINE=InnoDB;
 
 --
 -- 转存表中的数据 `lfy_order`
@@ -2114,7 +2139,7 @@ CREATE TABLE IF NOT EXISTS `sys_user` (
   `user_name` varchar(50) DEFAULT NULL,
   `email` varchar(50) DEFAULT NULL,
   `user_phone` varchar(50) DEFAULT NULL,
-  `user_type` varchar(10) DEFAULT NULL COMMENT '用户类型,1：系统内部用户，2：商家用户，3：其他',
+  `user_type` varchar(10) DEFAULT NULL COMMENT '用户类型,1：系统内部用户，2：商家用户，3：订单操作人员',
   `seller_code` varchar(50) DEFAULT NULL,
   `create_date` date DEFAULT NULL,
   `status` varchar(10) DEFAULT NULL,

@@ -18,7 +18,7 @@ public class DateUtil {
 
 	private static final Log log = Logs.get();
 	
-	private static String datePattern = "yyyy-MM-dd";
+	private static String datePattern = "yyyy-MM-dd HH:mm";
 
 	private static String timePattern = "HH:mm";
 	

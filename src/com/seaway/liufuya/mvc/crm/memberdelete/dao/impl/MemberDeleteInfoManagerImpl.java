@@ -43,7 +43,7 @@ public class MemberDeleteInfoManagerImpl extends BasicDao implements Serializabl
 	@Override
 	public List<MemberDeleteInfoBean> getMemberDeleteInfoBeanList() {
 		Sql sql = Sqls
-				.create("select m.id as mid,m.user_type as user_type,m.loginName as loginName,m.realName as realName,m.sex as sex,m.city as city,m.age_area as area ,m.regDate as regDate,m.memberCard_balance as memberCard_balance,m.memberCard_score as memberCard_score,m.entityCardNumber as entityCardNumber,m.create_date as create_date,m.status as status  "
+				.create("select m.id as mid,m.user_type as user_type,m.loginName as loginName,m.realName as realName,m.sex as sex,m.city as city,m.age_area as area ,m.memberCard_balance as memberCard_balance,m.memberCard_score as memberCard_score,m.entityCardNumber as entityCardNumber,m.create_date as create_date,m.status as status  "
 						+"from lfy_member m  "
 						+"where  m.status='2'  order by m.create_date desc");
 		//设置回调函数  解析返回结果
@@ -79,11 +79,7 @@ public class MemberDeleteInfoManagerImpl extends BasicDao implements Serializabl
 						break;
 					}
 					String time = "";
-					if (rs.getDate("regDate") == null) {
-						time = DateUtil.getDate(rs.getDate("create_date"));
-					} else {
-						time = DateUtil.getDate(rs.getDate("regDate"));
-					}
+					time = DateUtil.getDate(rs.getDate("create_date"));
 					menu.setCreatedate(time);// 注册日期
 					menu.setCity(rs.getString("city")); // 城市
 					menu.setCardbalance(rs.getInt("memberCard_balance")); // 会员卡余额

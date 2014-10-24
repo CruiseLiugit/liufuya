@@ -132,7 +132,7 @@ public class MemberLevelListLayout extends VerticalLayout implements
 		});
 
 		vsplit.setStyleName(Reindeer.LAYOUT_WHITE); // 右侧样式
-		vsplit.setHeight(470, Unit.PIXELS);
+		vsplit.setHeight(Constants.PAGE_HEIGHT, Unit.PIXELS);
 		// this.setStyleName(Reindeer.SPLITPANEL_SMALL); //分割线变细线
 		// /////////////////////////////////////////////////////////////////
 		fillContainer(container);
@@ -147,7 +147,7 @@ public class MemberLevelListLayout extends VerticalLayout implements
 		vsplit.setFirstComponent(tablelayout);
 		vsplit.setSecondComponent(createForm(null)); // 这里把创建表单的代码，放在表格点击事件中
 		// /////////////////////////////////////////////////////////////////
-		vsplit.setSplitPosition(35);
+		vsplit.setSplitPosition(50);
 
 		this.addComponent(navBar); // 导航栏
 		this.addComponent(vsplit); // 上下分割面板
@@ -190,7 +190,7 @@ public class MemberLevelListLayout extends VerticalLayout implements
 	private Table createTable(Container container) {
 		final Table table = new Table(null, container);
 		table.setSizeFull();
-		table.setHeight(470, Unit.PIXELS);
+		table.setHeight(Constants.PAGE_HEIGHT, Unit.PIXELS);
 		table.setContainerDataSource(container); // 这里数据源要切换
 
 		table.setVisibleColumns(Constants.MEMEBER_LEVEL_ORDER);

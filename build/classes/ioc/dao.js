@@ -8,7 +8,7 @@ var ioc ={
 				driverClassName:"com.mysql.jdbc.Driver",
 				url:"jdbc:mysql://localhost:3306/shopdb?useUnicode=true&characterEncoding=UTF-8",
 				username:"root",
-				password:"",
+				password:"rootroot",
 				initialSize : 10,
 				maxActive : 100,
 				minIdle : 10,

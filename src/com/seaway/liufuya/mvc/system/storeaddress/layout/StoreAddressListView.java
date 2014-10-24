@@ -132,7 +132,7 @@ public class StoreAddressListView extends VerticalLayout implements
 		vsplit.addComponent(leftTable);
 		vsplit.setSplitPosition(70);
 		vsplit.setStyleName(Reindeer.LAYOUT_WHITE); // 右侧样式
-		vsplit.setHeight(470, Unit.PIXELS);
+		vsplit.setHeight(Constants.PAGE_HEIGHT, Unit.PIXELS);
 
 		// 整个布局完成
 		this.addComponent(navBar);
@@ -353,7 +353,7 @@ public class StoreAddressListView extends VerticalLayout implements
 			} else if (province.getValue().equals("江苏省")) {
 				province.select(2);
 			}
-			
+
 			// 城市
 			if (city.getValue().equals("上海市")) {
 				city.select(0);
@@ -419,7 +419,7 @@ public class StoreAddressListView extends VerticalLayout implements
 				store.setStore_name(store_name.getValue());// 门店名称
 				// 经营类型
 				Integer manage_typeid = (Integer) manage_type.getValue();
-				switch (manage_typeid) { 
+				switch (manage_typeid) {
 				case 0:
 					store.setManage_type("直营");
 					break;
@@ -442,10 +442,10 @@ public class StoreAddressListView extends VerticalLayout implements
 					store.setManage_type("合作");
 					break;
 				default:
-					store.setManage_type("无");	
+					store.setManage_type("无");
 					break;
 				}
-				//店铺类型
+				// 店铺类型
 				Integer store_typeid = (Integer) store_type.getValue();
 				switch (store_typeid) {
 				case 0:
@@ -470,22 +470,22 @@ public class StoreAddressListView extends VerticalLayout implements
 					store.setStore_type("校区型");
 					break;
 				default:
-					store.setStore_type("无");	
+					store.setStore_type("无");
 					break;
 				}
 				// 所属大区
-				Integer areaid = (Integer)area.getValue();
+				Integer areaid = (Integer) area.getValue();
 				switch (areaid) {
 				case 0:
 					store.setArea("华东");
 					break;
 				default:
-					store.setStore_type("无");	
+					store.setStore_type("无");
 					break;
 				}
-				
-				//省份
-				Integer provinceid = (Integer)province.getValue();	
+
+				// 省份
+				Integer provinceid = (Integer) province.getValue();
 				switch (provinceid) {
 				case 0:
 					store.setProvince("上海市");
@@ -500,9 +500,9 @@ public class StoreAddressListView extends VerticalLayout implements
 					store.setProvince("未知");
 					break;
 				}
-				
+
 				// 城市
-				Integer cityid = (Integer)city.getValue();
+				Integer cityid = (Integer) city.getValue();
 				switch (cityid) {
 				case 0:
 					store.setCity("上海市");
@@ -523,8 +523,7 @@ public class StoreAddressListView extends VerticalLayout implements
 					store.setProvince("未知");
 					break;
 				}
-				
-				
+
 				store.setCity_part(city_part.getValue());// 城区
 				store.setStore_address(store_address.getValue());// 门店地址
 				store.setStore_director(store_director.getValue());// 主管姓名
@@ -536,66 +535,23 @@ public class StoreAddressListView extends VerticalLayout implements
 				if (store_name.getValue().trim().equals("")) {
 					Notification.show("警告", "门店名称必须填写",
 							Notification.Type.WARNING_MESSAGE);
-				}
-
-				if (event.getButton().getCaption().equals("保存")) {
-					// 更新
-					store.setStore_code(store_code.getValue()); // 门店编码
-					store.setGps_lng(gps_lng.getValue());// 经度
-					store.setGps_lat(gps_lat.getValue());// 纬度
-					try {
-						store.setCreate_date(DateUtil
-								.convertStringToDate(create_date.getValue()));// 创建时间
-						store.setStartDate(startDate.getValue());// 开店时间
-					} catch (ParseException e) {
-						try {
-							store.setCreate_date(DateUtil
-									.convertStringToDate(DateUtil
-											.convertDateToString(new Date())));
-							store.setStartDate(DateUtil
-									.convertStringToDate(DateUtil
-											.convertDateToString(new Date())));
-						} catch (ParseException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-						e.printStackTrace();
-					}
-					storeDao.updateStore(store);
-					Notification.show("更新成功");
-				} else if (event.getButton().getCaption().equals("添加")) {
-					if (store_code.getValue().trim().equals("")) {
-						Notification.show("警告", "门店编码必须填写",
-								Notification.Type.WARNING_MESSAGE);
-					} else if (storeDao.checkStoreByStoreCode(store_code
-							.getValue())) {
-						// 增加
-						// 根据城市，地址，得到地理位置
+					store_name.focus();
+				} else {
+					// ------------------------------------------------------------
+					if (event.getButton().getCaption().equals("保存")) {
+						// 更新
 						store.setStore_code(store_code.getValue()); // 门店编码
-						String cityName = (String) city.getValue();
-						String addressName = (String) store_address.getValue();
-						// 如果地址有，那么查询经纬度
-						if (!cityName.trim().equals("")
-								&& !addressName.trim().equals("")) {
-							String jsonGps = this.search(addressName, cityName);
-							Object loca = Json.fromJson(jsonGps);
-							log.info("-------loca =" + loca.getClass());
-							LinkedHashMap map = (LinkedHashMap) loca;
-							store.setGps_lng("" + map.get("lng")); // 经度
-							store.setGps_lat("" + map.get("lat"));// 纬度
-						} else {
-							store.setGps_lng("");// 经度
-							store.setGps_lat("");// 纬度
-						}
-
+						store.setGps_lng(gps_lng.getValue());// 经度
+						store.setGps_lat(gps_lat.getValue());// 纬度
 						try {
 							store.setCreate_date(DateUtil
-									.convertStringToDate(DateUtil
-											.convertDateToString(new Date())));// 创建时间
+									.convertStringToDate(create_date.getValue()));// 创建时间
 							store.setStartDate(startDate.getValue());// 开店时间
 						} catch (ParseException e) {
 							try {
 								store.setCreate_date(DateUtil.convertStringToDate(DateUtil
+										.convertDateToString(new Date())));
+								store.setStartDate(DateUtil.convertStringToDate(DateUtil
 										.convertDateToString(new Date())));
 							} catch (ParseException e1) {
 								// TODO Auto-generated catch block
@@ -603,13 +559,59 @@ public class StoreAddressListView extends VerticalLayout implements
 							}
 							e.printStackTrace();
 						}
+						storeDao.updateStore(store);
+						Notification.show("更新成功");
+					} else if (event.getButton().getCaption().equals("添加")) {
+						if (store_code.getValue().trim().equals("")) {
+							Notification.show("警告", "门店编码必须填写",
+									Notification.Type.WARNING_MESSAGE);
+							store_code.focus();
+						} else if (storeDao.checkStoreByStoreCode(store_code
+								.getValue())) {
+							// 增加
+							// 根据城市，地址，得到地理位置
+							store.setStore_code(store_code.getValue()); // 门店编码
+							String cityName = (String) city.getValue();
+							String addressName = (String) store_address
+									.getValue();
+							// 如果地址有，那么查询经纬度
+							if (!cityName.trim().equals("")
+									&& !addressName.trim().equals("")) {
+								String jsonGps = this.search(addressName,
+										cityName);
+								Object loca = Json.fromJson(jsonGps);
+								log.info("-------loca =" + loca.getClass());
+								LinkedHashMap map = (LinkedHashMap) loca;
+								store.setGps_lng("" + map.get("lng")); // 经度
+								store.setGps_lat("" + map.get("lat"));// 纬度
+							} else {
+								store.setGps_lng("");// 经度
+								store.setGps_lat("");// 纬度
+							}
 
+							try {
+								store.setCreate_date(DateUtil.convertStringToDate(DateUtil
+										.convertDateToString(new Date())));// 创建时间
+								store.setStartDate(startDate.getValue());// 开店时间
+							} catch (ParseException e) {
+								try {
+									store.setCreate_date(DateUtil.convertStringToDate(DateUtil
+											.convertDateToString(new Date())));
+								} catch (ParseException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+								e.printStackTrace();
+							}
+
+							storeDao.saveStoreAddress(store);
+							Notification.show("添加成功");
+							addWindow.close();
+						}
 					}
-					storeDao.saveStoreAddress(store);
-					Notification.show("添加成功");
-					addWindow.close();
+					// ------------------------------------------------------------
 				}
-				
+
 			}
 		};
 		return lister;

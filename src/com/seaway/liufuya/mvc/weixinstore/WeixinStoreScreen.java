@@ -16,6 +16,8 @@ import com.seaway.liufuya.mvc.login.ui.UserMenusScreen;
 import com.seaway.liufuya.mvc.login.ui.views.LoginUserInfo;
 import com.seaway.liufuya.mvc.weixinstore.category.dao.CategoryManager;
 import com.seaway.liufuya.mvc.weixinstore.category.layout.CategoryListView;
+import com.seaway.liufuya.mvc.weixinstore.excoupon.dao.ExcouponManager;
+import com.seaway.liufuya.mvc.weixinstore.excoupon.layout.ExcouponListView;
 import com.seaway.liufuya.mvc.weixinstore.generatingcoupon.dao.CouponManager;
 import com.seaway.liufuya.mvc.weixinstore.generatingcoupon.layout.CouponListView;
 import com.seaway.liufuya.mvc.weixinstore.ordernew.dao.OrderDao;
@@ -76,12 +78,14 @@ public class WeixinStoreScreen extends CustomComponent implements
 	private WXProductManager wxproductManager = null;// 商品资料管理
 	private OrderDao orderdao = null; // 订单管理
 	private CouponManager couponManager = null;// 电子优惠券生成
+	private ExcouponManager excouponManager = null;// 优惠券产生记录
 
 	private CategoryListView categoryListView = null;// 商品类目管理
 	private WXProductListView wxproductListView = null;// 商品资料管理
 	private OrderNewListView orderNewListView = null;// 今日订单管理
 	private OrdderOldListView orderOldListView = null;// 历史订单查询
 	private CouponListView couponListView = null;// 电子优惠券生成
+	private ExcouponListView excouponListView = null;// 优惠券使用记录
 
 	public WeixinStoreScreen() {
 	}
@@ -109,7 +113,7 @@ public class WeixinStoreScreen extends CustomComponent implements
 			Notification.show("商品资料管理");
 			setMainComponent(this.getWXProductListView());
 		} else if ("当天订单管理".equals(itemId)) {
-			Notification.show("当天订单管理");
+			Notification.show("未处理订单管理");
 			setMainComponent(this.getWXOrderNewListView());
 		} else if ("历史订单查询".equals(itemId)) {
 			Notification.show("历史订单查询");
@@ -119,8 +123,8 @@ public class WeixinStoreScreen extends CustomComponent implements
 			setMainComponent(this.getCouponListView());
 		} else if ("会员优惠券查询".equals(itemId)) {
 			Notification.show("会员优惠券查询");
-			// setMainComponent(this.getMemberAddressListView());
-		} 
+			setMainComponent(this.getExcouponListView());
+		}
 
 	}
 
@@ -246,7 +250,7 @@ public class WeixinStoreScreen extends CustomComponent implements
 							setMainComponent(this.getWXProductListView());
 							break;
 						case 2:
-							Notification.show("当天订单管理");
+							Notification.show("未处理订单管理");
 							setMainComponent(this.getWXOrderNewListView());
 							break;
 						case 3:
@@ -259,7 +263,7 @@ public class WeixinStoreScreen extends CustomComponent implements
 							break;
 						case 5:
 							Notification.show("会员优惠券查询");
-							//
+							setMainComponent(this.getExcouponListView());
 							break;
 						default:
 							break;
@@ -296,9 +300,9 @@ public class WeixinStoreScreen extends CustomComponent implements
 		if (this.categoryManager == null) {
 			categoryManager = new CategoryManager(nutzDao);
 		}
-		if (this.categoryListView == null) {
+		//if (this.categoryListView == null) {
 			categoryListView = new CategoryListView(categoryManager);
-		}
+		//}
 		return categoryListView;
 	}
 
@@ -307,9 +311,9 @@ public class WeixinStoreScreen extends CustomComponent implements
 		if (this.wxproductManager == null) {
 			wxproductManager = new WXProductManager(nutzDao);
 		}
-		if (this.wxproductListView == null) {
+		//if (this.wxproductListView == null) {
 			wxproductListView = new WXProductListView(wxproductManager);
-		}
+		//}
 		return wxproductListView;
 	}
 
@@ -318,9 +322,10 @@ public class WeixinStoreScreen extends CustomComponent implements
 		if (this.orderdao == null) {
 			orderdao = new OrderDao(nutzDao);
 		}
-		if (this.orderNewListView == null) {
+		//不管是否存在，都重新创建一次，这样表格里面的数据会更新
+		//if (this.orderNewListView == null) {
 			orderNewListView = new OrderNewListView(orderdao);
-		}
+		//}
 		return orderNewListView;
 	}
 
@@ -329,9 +334,9 @@ public class WeixinStoreScreen extends CustomComponent implements
 		if (this.orderdao == null) {
 			orderdao = new OrderDao(nutzDao);
 		}
-		if (this.orderOldListView == null) {
+		//if (this.orderOldListView == null) {
 			orderOldListView = new OrdderOldListView(orderdao);
-		}
+		//}
 		return orderOldListView;
 	}
 
@@ -340,10 +345,21 @@ public class WeixinStoreScreen extends CustomComponent implements
 		if (this.couponManager == null) {
 			couponManager = new CouponManager(nutzDao);
 		}
-		if (this.couponListView == null) {
+		//if (this.couponListView == null) {
 			couponListView = new CouponListView(couponManager);
-		}
+		//}
 		return couponListView;
+	}
+
+	// ---------------------------------------------------电子优惠券使用记录
+	private ExcouponListView getExcouponListView() {
+		if (this.excouponManager == null) {
+			excouponManager = new ExcouponManager(nutzDao);
+		}
+		//if (this.excouponListView == null) {
+			excouponListView = new ExcouponListView(excouponManager);
+		//}
+		return excouponListView;
 	}
 
 }

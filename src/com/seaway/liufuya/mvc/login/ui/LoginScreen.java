@@ -4,27 +4,39 @@ import static com.vaadin.server.Sizeable.Unit.PERCENTAGE;
 import static com.vaadin.server.Sizeable.Unit.PIXELS;
 import static com.vaadin.ui.Alignment.MIDDLE_CENTER;
 
+import org.nutz.dao.Dao;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
 import com.seaway.liufuya.LiufuyaUI;
 import com.seaway.liufuya.common.Constants;
+import com.seaway.liufuya.common.base.MD5;
+import com.seaway.liufuya.mvc.login.dao.SysUserDaoImpl;
 import com.seaway.liufuya.mvc.login.listener.LoginListener;
+import com.seaway.liufuya.mvc.login.model.SysUser;
 import com.vaadin.annotations.Theme;
+import com.vaadin.data.Property;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.Sizeable;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.server.VaadinSession;
+import com.vaadin.server.WrappedSession;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.Reindeer; //样式
 
 import elemental.events.KeyboardEvent.KeyCode;
@@ -36,6 +48,13 @@ import elemental.events.KeyboardEvent.KeyCode;
  * 
  */
 public class LoginScreen extends VerticalLayout {
+	
+	// ------------------------------------------------
+	// 登录，访问数据库
+	private Dao nutzDao = null;
+
+	//--------------------------------------------------
+	
 
 	private static final Log log = Logs.get();
 	private Button loginButton = new Button("登录");
@@ -50,6 +69,13 @@ public class LoginScreen extends VerticalLayout {
 	 * 创建登录页面
 	 */
 	public LoginScreen() {
+		try {
+			this.nutzDao = LiufuyaUI.getCurrent().initNutzDao();
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		// 整体布局，上下结构
 		//this.setStyleName(Reindeer.LAYOUT_BLUE);
 		// 设置整个页面的 页面填充方式
@@ -129,20 +155,20 @@ public class LoginScreen extends VerticalLayout {
 
 		// ----------登录界面 end-------------------------
 		// 键盘操作
-		final ShortcutListener enter = new ShortcutListener("Sign In",
-				KeyCode.ENTER, null) {
-			@Override
-			public void handleAction(Object sender, Object target) {
-				log.info("键盘回车-----");
-				loginButton.addClickListener(new LoginListener(
-						new UserMenusScreen(), userNameField, passwordField));
-			}
-		};
-		loginButton.addShortcutListener(enter);
+//		final ShortcutListener enter = new ShortcutListener("Sign In",
+//				KeyCode.ENTER, null) {
+//			@Override
+//			public void handleAction(Object sender, Object target) {
+//				log.info("键盘回车-----");
+//				loginButton.addClickListener(new LoginListener(
+//						new UserMenusScreen(), userNameField, passwordField));
+//			}
+//		};
+//		loginButton.addShortcutListener(enter);
 
 		// 按钮点击，第一个参数的下一个新页面的 对象，第二个是 输入框对
-		loginButton.addClickListener(new LoginListener(new UserMenusScreen(),
-				userNameField, passwordField));
+		loginButton.addClickListener(new LoginListener(userNameField, passwordField));
+
 
 		//**********************往 mainLayout 布局中放入上、中、下组件************************
 		// -----------------------------
@@ -158,9 +184,9 @@ public class LoginScreen extends VerticalLayout {
 		main.addComponent(panel);
 		main.setComponentAlignment(panel, MIDDLE_CENTER);//
 		// --------------------------
-		// 下面的占位空间
+		// 下面的占位空间,控制 footer 与登录框之间的间距
 		Label lbl2 = new Label("");
-		lbl2.setHeight("30");
+		lbl2.setHeight("300");
 		main.addComponent(lbl2);
 		// --------------------------
 		//this.addComponent(footer);

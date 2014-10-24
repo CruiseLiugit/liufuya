@@ -15,8 +15,11 @@ import com.seaway.liufuya.mvc.login.dao.SysUserDaoImpl;
 import com.seaway.liufuya.mvc.login.ui.LoginScreen;
 import com.seaway.liufuya.mvc.login.ui.UserMenusScreen;
 import com.seaway.liufuya.mvc.login.ui.views.LoginUserInfo;
+import com.seaway.liufuya.mvc.system.role.dao.RoleDaoImpl;
+import com.seaway.liufuya.mvc.system.role.layout.SysRoleListView;
 import com.seaway.liufuya.mvc.system.storeaddress.dao.StoreDaoImpl;
 import com.seaway.liufuya.mvc.system.storeaddress.layout.StoreAddressListView;
+import com.seaway.liufuya.mvc.system.user.layout.SysUserListView;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -64,9 +67,13 @@ public class SystemScreen extends CustomComponent implements ClickListener,
 	// -----------------根据模块动态增加--------------------------
 	// 界面视图组件
 	private StoreAddressListView storeAddressView;// 门店管理
+	private SysRoleListView roleView;// 角色管理
+	private SysUserListView userView;// 用户管理
 
 	// 数据库对象
 	public StoreDaoImpl storeDao; // 门店管理
+	public RoleDaoImpl roleDao = null; // 角色管理
+	public SysUserDaoImpl userDao = null;// 用户管理
 
 	public SystemScreen() {
 	}
@@ -87,11 +94,11 @@ public class SystemScreen extends CustomComponent implements ClickListener,
 			setMainComponent(this.getStoreAddressListView());
 		} else if ("角色管理".equals(itemId)) {
 			Notification.show("角色管理");
-			// setMainComponent(this.getMemberAddressListView());
+			setMainComponent(this.getRoleListView());
 		} else if ("用户管理".equals(itemId)) {
 			Notification.show("用户管理");
-			// setMainComponent(this.getMemberAddressListView());
-		} 
+			setMainComponent(this.getSysUserListView());
+		}
 
 	}
 
@@ -202,15 +209,46 @@ public class SystemScreen extends CustomComponent implements ClickListener,
 			this.storeDao = new StoreDaoImpl(nutzDao);
 		}
 
-		if (this.storeAddressView == null) {
+		//if (this.storeAddressView == null) {
 			// 所有的表格和表单，都在一个类中控制
 			storeAddressView = new StoreAddressListView(storeDao);
-		}
+		//}
 
 		return storeAddressView;
 	}
 
 	// ------------------------------------------------------------------
+	/**
+	 * 权限管理，进入页面默认显示 角色管理模块
+	 */
+	private SysRoleListView getRoleListView() {
+		log.info(">>>>>>>>>>>>>>>创建门店列表");
+		if (this.roleDao == null) {
+			this.roleDao = new RoleDaoImpl(nutzDao);
+		}
+
+		//if (this.roleView == null) {
+			// 所有的表格和表单，都在一个类中控制
+			roleView = new SysRoleListView(roleDao);
+		//}
+
+		return roleView;
+	}
+
+	/**
+	 * 权限管理，进入页面默认显示 用户管理模块
+	 */
+	private SysUserListView getSysUserListView() {
+		if (this.userDao == null) {
+			this.userDao = new SysUserDaoImpl(nutzDao);
+		}
+
+		//if (this.userView == null) {
+			userView = new SysUserListView(userDao);
+		//}
+
+		return userView;
+	}
 
 	// ------------------------------------------------------------------
 	@Override
@@ -229,11 +267,11 @@ public class SystemScreen extends CustomComponent implements ClickListener,
 							break;
 						case 1:
 							Notification.show("角色管理");
-							//
+							setMainComponent(this.getRoleListView());
 							break;
 						case 2:
 							Notification.show("用户管理");
-							//
+							setMainComponent(this.getSysUserListView());
 							break;
 						default:
 							break;

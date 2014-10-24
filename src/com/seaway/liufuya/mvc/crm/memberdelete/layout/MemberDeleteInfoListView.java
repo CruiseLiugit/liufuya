@@ -110,7 +110,7 @@ public class MemberDeleteInfoListView extends VerticalLayout implements
 		navBar.addComponent(lblNav);
 
 		vsplit.setStyleName(Reindeer.LAYOUT_WHITE); // 右侧样式
-		vsplit.setHeight(470, Unit.PIXELS);
+		vsplit.setHeight(Constants.PAGE_HEIGHT, Unit.PIXELS);
 
 		// 创建表格使用的容器
 		fillContainer(container);
@@ -140,7 +140,7 @@ public class MemberDeleteInfoListView extends VerticalLayout implements
 			BeanItemContainer<MemberDeleteInfoBean> mdInfoBeanList) {
 		final Table table = new Table(null, container);
 		table.setSizeFull();
-		table.setHeight(490, Unit.PERCENTAGE);
+		table.setHeight(Constants.PAGE_HEIGHT, Unit.PIXELS);
 		table.setContainerDataSource(container); // 这里数据源要切换
 
 		table.setVisibleColumns(Constants.MEMEBER_DEL_COL_ORDER);

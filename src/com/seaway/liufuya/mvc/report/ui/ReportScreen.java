@@ -112,10 +112,10 @@ public class ReportScreen extends CustomComponent implements ClickListener,
 			this.memberManager = new MemberInfoMemberBean(nutzDao);
 		}
 
-		if (memberInfoReportView == null) {
+		//if (memberInfoReportView == null) {
 			// 所有的表格和表单，都在一个类中控制
 			memberInfoReportView = new MemberInfoReportView(memberManager);
-		}
+		//}
 		return memberInfoReportView;
 	}
 
@@ -140,7 +140,7 @@ public class ReportScreen extends CustomComponent implements ClickListener,
 		root.addComponent(horizontalSplit); // 中间为左右分割
 		root.setExpandRatio(horizontalSplit, 1);
 
-		horizontalSplit.setHeight(500, Unit.PIXELS);
+		horizontalSplit.setHeight(Constants.PAGE_HEIGHT, Unit.PIXELS);
 		horizontalSplit.setSplitPosition(200, Unit.PIXELS);
 		horizontalSplit.setStyleName(Reindeer.SPLITPANEL_SMALL); // 分割线变细线
 		horizontalSplit.setFirstComponent(tree);

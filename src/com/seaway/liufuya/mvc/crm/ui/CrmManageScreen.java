@@ -329,11 +329,11 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 			this.memberManager = new MemberInfoMemberBean(nutzDao);
 		}
 
-		if (memberListView == null) {
+		//if (memberListView == null) {
 			// 所有的表格和表单，都在一个类中控制
 			memberListView = new MemberInfoListView(memberManager);
-		}
-		log.info("MemberInfoListView =" + memberListView);
+		//}
+		//log.info("MemberInfoListView =" + memberListView);
 		return memberListView;
 	}
 
@@ -349,11 +349,11 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 			this.memberAddressDao = new MemberAddressBeanDao(nutzDao);
 		}
 
-		if (memberAddressListView == null) {
+		//if (memberAddressListView == null) {
 			// 所有的表格和表单，都在一个类中控制
 			memberAddressListView = new MemberAddressListLayout(
 					memberAddressDao);
-		}
+		//}
 		return memberAddressListView;
 	}
 
@@ -364,15 +364,15 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 	 * @return
 	 */
 	private MemberLevelListLayout getMemberLevelListLayout() {
-		log.info(">>>>>>>>>>>>>>>创建会员等级 扩展信息列表");
+		//log.info(">>>>>>>>>>>>>>>创建会员等级 扩展信息列表");
 		if (memberLevelManager == null) {
 			this.memberLevelManager = new MemberLevelDao(nutzDao);
 		}
 
-		if (memberLevelView == null) {
+		//if (memberLevelView == null) {
 			// 所有的表格和表单，都在一个类中控制
 			memberLevelView = new MemberLevelListLayout(memberLevelManager);
-		}
+		//}
 		return memberLevelView;
 	}
 
@@ -388,10 +388,10 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 			this.mdInfoManager = new MemberDeleteInfoManagerImpl(nutzDao);
 		}
 
-		if (mdInfoListView == null) {
+		//if (mdInfoListView == null) {
 			// 所有的表格和表单，都在一个类中控制
 			mdInfoListView = new MemberDeleteInfoListView(mdInfoManager);
-		}
+		//}
 		return mdInfoListView;
 	}
 
@@ -404,10 +404,10 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 			this.complainTypeManager = new ComplainTypeManagerImpl(nutzDao);
 		}
 
-		if (complainTypeListView == null) {
+		//if (complainTypeListView == null) {
 			// 所有的表格和表单，都在一个类中控制
 			complainTypeListView = new ComplainTypeListView(complainTypeManager);
-		}
+		//}
 		return complainTypeListView;
 	}
 
@@ -422,10 +422,10 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 			this.complainManager = new ComplainManagerImpl(nutzDao);
 		}
 
-		if (complainListView == null) {
+		//if (complainListView == null) {
 			// 所有的表格和表单，都在一个类中控制
 			complainListView = new ComplainListView(complainManager);
-		}
+		//}
 		return complainListView;
 	}
 
@@ -440,10 +440,10 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 			this.smsManager = new SMSManagerImpl(nutzDao);
 		}
 
-		if (smsListView == null) {
+		//if (smsListView == null) {
 			// 所有的表格和表单，都在一个类中控制
 			smsListView = new SMSListView(smsManager);
-		}
+		//}
 		return smsListView;
 	}
 
@@ -458,10 +458,10 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 			this.exchangeRuleDao = new ExchangeRuleBeanDao(nutzDao);
 		}
 
-		if (exchangeRuleListView == null) {
+		//if (exchangeRuleListView == null) {
 			// 所有的表格和表单，都在一个类中控制
 			exchangeRuleListView = new ExchangeRuleListLayout(exchangeRuleDao);
-		}
+		//}
 		return exchangeRuleListView;
 	}
 
@@ -476,10 +476,10 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 			this.exproductManager = new EXProductManager(nutzDao);
 		}
 
-		if (exProductListView == null) {
+		//if (exProductListView == null) {
 			// 所有的表格和表单，都在一个类中控制
 			exProductListView = new EXProductListView(exproductManager);
-		}
+		//}
 		return exProductListView;
 	}
 
@@ -494,10 +494,10 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 			this.consumeRuleManager = new ConsumeRuleManager(nutzDao);
 		}
 
-		if (consumeRuleListView == null) {
+		//if (consumeRuleListView == null) {
 			// 所有的表格和表单，都在一个类中控制
 			consumeRuleListView = new ConsumeRuleListView(consumeRuleManager);
-		}
+		//}
 		return consumeRuleListView;
 	}
 
@@ -512,11 +512,11 @@ public class CrmManageScreen extends CustomComponent implements ClickListener,
 			this.consumeExchangeManager = new ConsumeExchangeManager(nutzDao);
 		}
 
-		if (consumeExchangeListView == null) {
+		//if (consumeExchangeListView == null) {
 			// 所有的表格和表单，都在一个类中控制
 			consumeExchangeListView = new ConsumeExchangeListView(
 					consumeExchangeManager);
-		}
+		//}
 		return consumeExchangeListView;
 	}
 

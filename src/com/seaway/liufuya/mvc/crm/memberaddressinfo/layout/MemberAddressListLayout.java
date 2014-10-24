@@ -92,7 +92,9 @@ public class MemberAddressListLayout extends VerticalLayout implements
 	// 整个页面，左右分割面板
 	private final HorizontalSplitPanel mainSplit = new HorizontalSplitPanel();
 	// 后侧上下分割的 垂直布局面板
-	private final VerticalSplitPanel rightSplit = new VerticalSplitPanel();
+	//private final VerticalSplitPanel rightSplit = new VerticalSplitPanel();
+	private final VerticalLayout rightSplit = new VerticalLayout();
+	
 	// ---------下面表单 查询，修改需要
 	private VerticalLayout buttonVLayout = new VerticalLayout();
 	private Button save = new Button("保存", (ClickListener) this);
@@ -132,41 +134,42 @@ public class MemberAddressListLayout extends VerticalLayout implements
 		navBar.setHeight(29, Unit.PIXELS);
 		Label lblNav = new Label("CRM系统 / 扩展资料"); // 导航
 
-		HorizontalLayout navBarButtons = new HorizontalLayout();
-		Button btnAdd = new Button("新增"); // 增加 按钮
-		btnAdd.setIcon(new ThemeResource("icons/16/add.png"));
-		btnAdd.setDescription("增加会员扩展资料");
-		Button btnDownload = new Button("列表"); // 增加 按钮
-		btnDownload.setIcon(new ThemeResource("icons/16/database-cloud.png"));
-		btnDownload.setDescription("选择显示数据库中数据");
-		navBarButtons.addComponent(btnAdd);
-		navBarButtons.addComponent(btnDownload);
+//		HorizontalLayout navBarButtons = new HorizontalLayout();
+//		Button btnAdd = new Button("新增"); // 增加 按钮
+//		btnAdd.setIcon(new ThemeResource("icons/16/add.png"));
+//		btnAdd.setDescription("增加会员扩展资料");
+//		navBarButtons.addComponent(btnAdd);
+		
+//		Button btnDownload = new Button("列表"); // 增加 按钮
+//		btnDownload.setIcon(new ThemeResource("icons/16/database-cloud.png"));
+//		btnDownload.setDescription("选择显示数据库中数据");
+//		navBarButtons.addComponent(btnDownload);
 
 		navBar.addComponent(lblNav);
-		navBar.addComponent(navBarButtons);
+		//navBar.addComponent(navBarButtons);
 
 		navBar.setComponentAlignment(lblNav, Alignment.MIDDLE_LEFT);
-		navBar.setComponentAlignment(navBarButtons, Alignment.MIDDLE_RIGHT);
+		//navBar.setComponentAlignment(navBarButtons, Alignment.MIDDLE_RIGHT);
 
-		btnAdd.addClickListener(new Button.ClickListener() {
-			@Override
-			public void buttonClick(ClickEvent event) {
-				// personForm.addContact(); // 增加
-				// openProductWindow(new BeanItem<Member>(new Member()),
-				// "新增会员窗口");
-			}
-		});
+//		btnAdd.addClickListener(new Button.ClickListener() {
+//			@Override
+//			public void buttonClick(ClickEvent event) {
+//				// personForm.addContact(); // 增加
+//				// openProductWindow(new BeanItem<Member>(new Member()),
+//				// "新增会员窗口");
+//			}
+//		});
 
-		btnDownload.addClickListener(new Button.ClickListener() {
-			@Override
-			public void buttonClick(ClickEvent event) {
-				// personForm.addContact(); // 增加
-				Notification.show("正在从POS系统下载数据，请等待", Type.HUMANIZED_MESSAGE);
-			}
-		});
+//		btnDownload.addClickListener(new Button.ClickListener() {
+//			@Override
+//			public void buttonClick(ClickEvent event) {
+//				// personForm.addContact(); // 增加
+//				Notification.show("正在从POS系统下载数据，请等待", Type.HUMANIZED_MESSAGE);
+//			}
+//		});
 
 		mainSplit.setStyleName(Reindeer.LAYOUT_WHITE); // 右侧样式
-		mainSplit.setHeight(470, Unit.PIXELS);
+		mainSplit.setHeight(Constants.PAGE_HEIGHT, Unit.PIXELS);
 		mainSplit.setStyleName(Reindeer.SPLITPANEL_SMALL); // 分割线变细线
 		// /////////////////////////////////////////////////////////////////
 		// 获取所有会员的 数据模型,懒加载分页
@@ -197,7 +200,7 @@ public class MemberAddressListLayout extends VerticalLayout implements
 	private Table createMemberTable(Container container) {
 		final Table table = new Table(null, container);
 		table.setSizeFull();
-		table.setHeight(470, Unit.PIXELS);
+		table.setHeight(Constants.PAGE_HEIGHT, Unit.PIXELS);
 		table.setContainerDataSource(container); // 这里数据源要切换
 
 		table.setVisibleColumns(Constants.MEMEBER_ADD_COL_ORDER);
@@ -220,8 +223,8 @@ public class MemberAddressListLayout extends VerticalLayout implements
 						.getLoginname());
 				// 到数据库查询会员信息
 				fillAddressContainer(memberManager, mb.getUser_code());
-				rightSplit
-						.setFirstComponent(createMemberAddressTable(memberAddressContainer));
+				//rightSplit.setFirstComponent(createMemberAddressTable(memberAddressContainer));
+				rightSplit.addComponent(createMemberAddressTable(memberAddressContainer));
 			}
 		});
 		/* We don't want to allow users to de-select a row */
@@ -239,7 +242,7 @@ public class MemberAddressListLayout extends VerticalLayout implements
 	private Table createMemberAddressTable(Container container) {
 		final Table table = new Table(null, container);
 		table.setSizeFull();
-		table.setHeight(190, Unit.PIXELS);
+		table.setHeight(Constants.PAGE_HEIGHT, Unit.PIXELS);
 		table.setContainerDataSource(container); // 这里数据源要切换
 
 		table.setVisibleColumns(Constants.MEMEBER_ADDRESS_COL_ORDER);
@@ -253,14 +256,14 @@ public class MemberAddressListLayout extends VerticalLayout implements
 		 */
 		table.setSelectable(true);
 		table.setImmediate(true);
-		table.addItemClickListener(new ItemClickListener() {
-			@Override
-			public void itemClick(ItemClickEvent event) {
-				log.info("选中一行,显示编辑用户表单 :" + event.getItemId());
-				// MemberAddress madd = (MemberAddress)event.getItemId();
-				editContact((MemberAddressBean) event.getItemId());
-			}
-		});
+//		table.addItemClickListener(new ItemClickListener() {
+//			@Override
+//			public void itemClick(ItemClickEvent event) {
+//				log.info("选中一行,显示编辑用户表单 :" + event.getItemId());
+//				// MemberAddress madd = (MemberAddress)event.getItemId();
+//				editContact((MemberAddressBean) event.getItemId());
+//			}
+//		});
 		/* We don't want to allow users to de-select a row */
 		table.setNullSelectionAllowed(false);
 

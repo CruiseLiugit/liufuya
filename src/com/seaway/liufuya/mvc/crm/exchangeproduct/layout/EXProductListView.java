@@ -102,7 +102,7 @@ public class EXProductListView extends VerticalLayout implements ClickListener,I
 		vsplit.addComponent(leftTable);
 		vsplit.setSplitPosition(70);
 		vsplit.setStyleName(Reindeer.LAYOUT_WHITE); // 右侧样式
-		vsplit.setHeight(470, Unit.PIXELS);
+		vsplit.setHeight(Constants.PAGE_HEIGHT, Unit.PIXELS);
 		
 		//整个布局完成
 		this.addComponent(navBar);

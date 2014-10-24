@@ -31,7 +31,7 @@ public class ConsumeExchangeManager extends BasicDao {
 	 * **/
 	public List<MemberBean> getAllMember(){
 		Sql sql = Sqls
-				.create("select m.id as mid,m.user_code as user_code,m.user_type as user_type,m.loginName as loginName,m.realName as realName,m.sex as sex,m.entityCardNumber as entityCardNumber,m.memberCard_score as memberCard_score,m.create_date as create_date,m.memberCard_balance as memberCard_balance,m.regDate as regDate,m.status as status "
+				.create("select m.id as mid,m.user_code as user_code,m.user_type as user_type,m.loginName as loginName,m.realName as realName,m.sex as sex,m.entityCardNumber as entityCardNumber,m.memberCard_score as memberCard_score,m.create_date as create_date,m.memberCard_balance as memberCard_balance,m.status as status "
 						+ "from lfy_member m "
 						+ "where  m.status='1'  order by m.create_date desc");
 
@@ -68,11 +68,7 @@ public class ConsumeExchangeManager extends BasicDao {
 					}
 
 					String time = "";
-					if (rs.getDate("regDate") == null) {
-						time = DateUtil.getDate(rs.getDate("create_date"));
-					} else {
-						time = DateUtil.getDate(rs.getDate("regDate"));
-					}
+					time = DateUtil.getDate(rs.getDate("create_date"));
 					menu.setCreatedate(time);// 注册日期
 					menu.setCardid(rs.getString("entityCardNumber")); // 实体卡号
 					menu.setCardbalance(rs.getInt("memberCard_balance")); // 会员卡余额

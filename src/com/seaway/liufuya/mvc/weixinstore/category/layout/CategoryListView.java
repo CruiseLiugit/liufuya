@@ -99,7 +99,7 @@ public class CategoryListView extends VerticalLayout {
 		this.addComponent(vsplit);
 		vsplit.setSplitPosition(70);
 		vsplit.setStyleName(Reindeer.LAYOUT_WHITE); // 右侧样式
-		vsplit.setHeight(470, Unit.PIXELS);
+		vsplit.setHeight(Constants.PAGE_HEIGHT, Unit.PIXELS);
 	}
 	/**
 	 * 初始化表格容器
@@ -121,7 +121,7 @@ public class CategoryListView extends VerticalLayout {
 		
 		table.removeAllItems();
 		table.setSizeFull();
-		table.setHeight(470, Unit.PIXELS);
+		table.setHeight(Constants.PAGE_HEIGHT, Unit.PIXELS);
 		table.setContainerDataSource(container); // 这里数据源要切换
 
 		table.setVisibleColumns(Constants.WX_CATEGORY_COL);
